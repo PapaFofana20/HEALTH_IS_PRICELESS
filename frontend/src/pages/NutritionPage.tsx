@@ -200,7 +200,7 @@ export default function NutritionPage() {
                       <span className="block text-[10px] font-extrabold uppercase tracking-[0.16em] text-volt">{t.meals[item.category]}</span>
                       <span className="mt-1 block font-display text-lg uppercase leading-tight">{loc(recipe.name)}</span>
                       <span className="mt-1 block text-xs font-semibold text-muted">
-                        {recipe.calories} kcal · {recipe.protein} g {t.nutritionPage.protein.toLowerCase()}
+                        {recipe.calories} kcal Â· {recipe.protein} g {t.nutritionPage.protein.toLowerCase()}
                       </span>
                     </span>
                   </button>

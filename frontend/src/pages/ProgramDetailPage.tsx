@@ -240,7 +240,7 @@ export default function ProgramDetailPage() {
                     )}
                   </td>
                   <td className="px-3 py-2.5 font-bold">
-                    {item.sets} � {loc(item.reps)}
+                    {item.sets} × {loc(item.reps)}
                   </td>
                   <td className="py-2.5 pl-3 text-right text-muted">{item.restSeconds} s</td>
                 </tr>
@@ -358,7 +358,7 @@ export default function ProgramDetailPage() {
                       0{index + 1}
                     </span>
                     <p className={cn(labelClass, 'mt-3')}>
-                      {t.programDetail.weeksRange(phase.from === phase.to ? `${phase.from}` : `${phase.from}�${phase.to}`)}
+                      {t.programDetail.weeksRange(phase.from === phase.to ? `${phase.from}` : `${phase.from}–${phase.to}`)}
                     </p>
                     <h3 className="mt-1 font-display text-2xl uppercase">{loc(phase.title)}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-muted">{loc(phase.description)}</p>

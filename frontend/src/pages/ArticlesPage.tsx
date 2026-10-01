@@ -17,7 +17,7 @@ type CategoryFilter = 'all' | ArticleCategory;
 const CATEGORIES: CategoryFilter[] = ['all', 'weight-loss', 'muscle-gain', 'nutrition', 'training', 'recovery'];
 
 /* ==========================================================
-   /conseils — editorial listing
+   /conseils â€” editorial listing
    ========================================================== */
 export default function ArticlesPage() {
   const { t } = useLanguage();
@@ -90,7 +90,7 @@ export default function ArticlesPage() {
 }
 
 /* ==========================================================
-   /conseils/:id — article detail
+   /conseils/:id â€” article detail
    ========================================================== */
 export function ArticleDetailPage() {
   const { id = '' } = useParams();
@@ -158,9 +158,9 @@ export function ArticleDetailPage() {
               <span>
                 {t.articlesPage.by} <span className="text-ink">{article.author}</span>
               </span>
-              <span aria-hidden>•</span>
+              <span aria-hidden>Â·</span>
               <time dateTime={article.date}>{fmtDate(article.date)}</time>
-              <span aria-hidden>•</span>
+              <span aria-hidden>Â·</span>
               <span className="flex items-center gap-1.5">
                 <Clock className="h-4 w-4" aria-hidden />
                 {t.common.minRead(article.readMinutes)}

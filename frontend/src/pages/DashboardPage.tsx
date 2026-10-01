@@ -209,7 +209,7 @@ function TierPill() {
       )}
     >
       <Crown className="h-4 w-4" aria-hidden />
-      {t.dashboard.tierLabel} � {t.tiers[tier]}
+      {t.dashboard.tierLabel} · {t.tiers[tier]}
     </Link>
   );
 }
@@ -444,7 +444,7 @@ function SessionsView({ userId }: { userId: string }) {
                   <div className="min-w-0 flex-1">
                     <p className="font-bold">{loc(log.title)}</p>
                     <p className="text-xs text-muted">
-                      <time dateTime={log.date}>{fmtDate(log.date, { weekday: 'short', day: 'numeric', month: 'short' })}</time> � {t.dayTypes[log.type]}
+                      <time dateTime={log.date}>{fmtDate(log.date, { weekday: 'short', day: 'numeric', month: 'short' })}</time> · {t.dayTypes[log.type]}
                     </p>
                   </div>
                   <div className="hidden text-right text-xs font-semibold text-ink/80 sm:block">
@@ -540,7 +540,7 @@ function NutritionView({ user }: { user: User }) {
           <p className="shrink-0 text-right text-xs font-bold">
             {recipe.calories} kcal
             <span className="block text-muted">
-              {recipe.protein} g � {t.nutritionPage.protein}
+              {recipe.protein} g · {t.nutritionPage.protein}
             </span>
           </p>
         </li>
