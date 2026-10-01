@@ -18,13 +18,14 @@ import {
 import { cn } from '../utils/cn';
 import { useLanguage, usePageTitle } from '../hooks/useLanguage';
 import { ADMIN_EMAIL, useAuth } from '../hooks/useAuth';
+import { useAsync } from '../hooks/useAsync';
 import { articles } from '../data/articles';
 import { exercises } from '../data/exercises';
 import { mealPlans } from '../data/nutrition';
 import { recipes } from '../data/nutrition';
-import { planPricing, programs } from '../data/programs';
-import type { MemberStatus, OrderStatus } from '../data/admin';
-import { adminMembers, adminOrders } from '../data/admin';
+import { getProgramById, planPricing, programs } from '../data/programs';
+import { fetchAdminMembers, fetchAdminOrders, monthlyBuckets } from '../services/adminApi';
+import type { AdminMember, MemberStatus, OrderStatus } from '../services/adminApi';
 import { ADMIN_SECTIONS, AdminSidebar } from '../components/features/admin/AdminSidebar';
 import type { AdminSection } from '../components/features/admin/AdminSidebar';
 import { RevenueChart, SignupsChart, TierSplit } from '../components/features/admin/AdminCharts';
@@ -32,6 +33,7 @@ import { Chip, PlanBadge, Tag } from '../components/ui/Badge';
 import { ButtonLink } from '../components/ui/Button';
 import { Logo } from '../components/ui/Logo';
 import { ScrollTable } from '../components/ui/ScrollTable';
+import { ErrorState, GridSkeleton, Skeleton } from '../components/ui/States';
 import type { Tier } from '../types';
 
 const VALID_SECTIONS = ADMIN_SECTIONS.map((item) => item.key);
@@ -174,19 +176,47 @@ function KpiCard({ icon: Icon, label, value, sub }: { icon: LucideIcon; label: s
 
 /* ---------- Overview ---------- */
 function OverviewView() {
-  const { t, fmtNumber, fmtPrice } = useLanguage();
-  const activeMembers = adminMembers.filter((member) => member.status === 'active');
-  const monthly = (tier: Tier) => (tier === 'free' ? 0 : (planPricing['muscle-gain'][tier]?.monthly ?? 0));
-  const mrr = activeMembers.reduce((sum, member) => sum + monthly(member.tier), 0);
-  const paidOrders = adminOrders.filter((order) => order.status === 'paid');
+  const { t, fmtDate, fmtNumber, fmtPrice } = useLanguage();
+  const membersQuery = useAsync(fetchAdminMembers, []);
+  const ordersQuery = useAsync(fetchAdminOrders, []);
+
+  if (membersQuery.loading || ordersQuery.loading) {
+    return <GridSkeleton count={4} className="sm:grid-cols-2 xl:grid-cols-4" />;
+  }
+  if (membersQuery.error || ordersQuery.error) {
+    return (
+      <ErrorState
+        onRetry={() => {
+          membersQuery.refetch();
+          ordersQuery.refetch();
+        }}
+      />
+    );
+  }
+
+  const members = membersQuery.data ?? [];
+  const orders = ordersQuery.data ?? [];
+  const activeMembers = members.filter((member) => member.status === 'active');
+  const monthly = (member: AdminMember) =>
+    member.tier === 'free' ? 0 : (planPricing[member.goal][member.tier]?.monthly ?? 0);
+  const mrr = activeMembers.reduce((sum, member) => sum + monthly(member), 0);
+  const paidOrders = orders.filter((order) => order.status === 'paid');
   const collected = paidOrders.reduce((sum, order) => sum + order.amount, 0);
   const avgRating = programs.reduce((sum, program) => sum + program.rating, 0) / programs.length;
-  const latest = [...adminOrders].slice(0, 5);
+  const latest = orders.slice(0, 5);
+
+  const monthLabel = (key: string) => fmtDate(`${key}-01`, { month: 'short' });
+  const revenueSeries = monthlyBuckets(
+    paidOrders.map((order) => ({ date: order.date, value: order.amount })),
+  ).map((bucket) => ({ label: monthLabel(bucket.key), value: Math.round(bucket.value / 1000) }));
+  const signupsSeries = monthlyBuckets(
+    members.filter((member) => member.joined).map((member) => ({ date: member.joined, value: 1 })),
+  ).map((bucket) => ({ label: monthLabel(bucket.key), value: bucket.value }));
 
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard icon={Users} label={t.admin.kpi.members} value={fmtNumber(adminMembers.length)} sub={t.admin.kpi.membersSub(fmtNumber(activeMembers.length))} />
+        <KpiCard icon={Users} label={t.admin.kpi.members} value={fmtNumber(members.length)} sub={t.admin.kpi.membersSub(fmtNumber(activeMembers.length))} />
         <KpiCard icon={TrendingUp} label={t.admin.kpi.revenue} value={fmtPrice(mrr)} sub={t.admin.kpi.revenueSub} />
         <KpiCard icon={Receipt} label={t.admin.kpi.orders} value={fmtNumber(paidOrders.length)} sub={t.admin.kpi.ordersSub(fmtPrice(collected))} />
         <KpiCard
@@ -198,27 +228,31 @@ function OverviewView() {
       </div>
       <div className="grid gap-6 xl:grid-cols-3">
         <div className="xl:col-span-2">
-          <RevenueChart />
+          <RevenueChart data={revenueSeries} />
         </div>
-        <TierSplit />
+        <TierSplit members={members} />
       </div>
       <div className="grid gap-6 xl:grid-cols-3">
         <div className="xl:col-span-2">
-          <SignupsChart />
+          <SignupsChart data={signupsSeries} />
         </div>
         <article className="rounded-xl border border-edge bg-night-800 p-5 sm:p-6">
           <h2 className="font-display text-2xl uppercase">{t.admin.latestTitle}</h2>
-          <ul className="mt-4 divide-y divide-edge">
-            {latest.map((order) => (
-              <li key={order.id} className="flex items-center justify-between gap-3 py-3 text-sm">
-                <div className="min-w-0">
-                  <p className="truncate font-bold">{order.member}</p>
-                  <p className="text-xs text-muted">{order.reference}</p>
-                </div>
-                <Tag tone={orderTone[order.status]}>{t.admin.orderStatus[order.status]}</Tag>
-              </li>
-            ))}
-          </ul>
+          {latest.length === 0 ? (
+            <p className="mt-4 text-sm font-semibold text-muted">{t.admin.orders.empty}</p>
+          ) : (
+            <ul className="mt-4 divide-y divide-edge">
+              {latest.map((order) => (
+                <li key={order.id} className="flex items-center justify-between gap-3 py-3 text-sm">
+                  <div className="min-w-0">
+                    <p className="truncate font-bold">{order.member}</p>
+                    <p className="text-xs text-muted">{order.reference}</p>
+                  </div>
+                  <Tag tone={orderTone[order.status]}>{t.admin.orderStatus[order.status]}</Tag>
+                </li>
+              ))}
+            </ul>
+          )}
         </article>
       </div>
     </div>
@@ -227,18 +261,19 @@ function OverviewView() {
 
 /* ---------- Members ---------- */
 function MembersView() {
-  const { t, fmtNumber, fmtDate } = useLanguage();
+  const { t, loc, fmtNumber, fmtDate } = useLanguage();
   const [query, setQuery] = useState('');
   const [tier, setTier] = useState<'all' | Tier>('all');
+  const { data, loading, error, refetch } = useAsync(fetchAdminMembers, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return adminMembers.filter((member) => {
+    return (data ?? []).filter((member) => {
       const matchesQuery = !q || member.name.toLowerCase().includes(q) || member.email.toLowerCase().includes(q);
       const matchesTier = tier === 'all' || member.tier === tier;
       return matchesQuery && matchesTier;
     });
-  }, [query, tier]);
+  }, [data, query, tier]);
 
   return (
     <div className="space-y-6">
@@ -264,7 +299,16 @@ function MembersView() {
           ))}
         </div>
       </div>
-      <p className="text-sm font-semibold text-muted">{t.admin.members.count(fmtNumber(filtered.length))}</p>
+      {!loading && !error && <p className="text-sm font-semibold text-muted">{t.admin.members.count(fmtNumber(filtered.length))}</p>}
+      {loading ? (
+        <div className="space-y-3" role="status">
+          {[0, 1, 2, 3].map((index) => (
+            <Skeleton key={index} className="h-16 w-full" />
+          ))}
+        </div>
+      ) : error ? (
+        <ErrorState onRetry={refetch} />
+      ) : (
       <ScrollTable className="rounded-xl border border-edge">
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead>
@@ -272,7 +316,7 @@ function MembersView() {
               <th scope="col" className="px-5 py-4">{t.admin.members.table.name}</th>
               <th scope="col" className="px-5 py-4">{t.admin.members.table.plan}</th>
               <th scope="col" className="px-5 py-4">{t.admin.members.table.goal}</th>
-              <th scope="col" className="px-5 py-4">{t.admin.members.table.sessions}</th>
+              <th scope="col" className="px-5 py-4">{t.admin.members.table.program}</th>
               <th scope="col" className="px-5 py-4">{t.admin.members.table.joined}</th>
               <th scope="col" className="px-5 py-4">{t.admin.members.table.status}</th>
             </tr>
@@ -288,7 +332,9 @@ function MembersView() {
                   <PlanBadge plan={member.tier === 'free' ? 'standard' : member.tier} />
                 </td>
                 <td className="px-5 py-4 text-ink/85">{t.goals[member.goal]}</td>
-                <td className="px-5 py-4 font-bold">{fmtNumber(member.sessions)}</td>
+                <td className="px-5 py-4 text-ink/85">
+                  {member.programId ? loc(getProgramById(member.programId)?.name ?? { fr: '—', en: '—' }) : '—'}
+                </td>
                 <td className="px-5 py-4 text-muted">{fmtDate(member.joined)}</td>
                 <td className="px-5 py-4">
                   <Tag tone={memberTone[member.status]}>{t.admin.memberStatus[member.status]}</Tag>
@@ -305,6 +351,7 @@ function MembersView() {
           </tbody>
         </table>
       </ScrollTable>
+      )}
     </div>
   );
 }
@@ -313,12 +360,25 @@ function MembersView() {
 function OrdersView() {
   const { t, fmtNumber, fmtPrice, fmtDate } = useLanguage();
   const [status, setStatus] = useState<'all' | OrderStatus>('all');
+  const { data, loading, error, refetch } = useAsync(fetchAdminOrders, []);
+  const orders = data ?? [];
 
   const filtered = useMemo(
-    () => adminOrders.filter((order) => status === 'all' || order.status === status),
-    [status],
+    () => orders.filter((order) => status === 'all' || order.status === status),
+    [orders, status],
   );
   const total = filtered.filter((order) => order.status === 'paid').reduce((sum, order) => sum + order.amount, 0);
+
+  if (loading) {
+    return (
+      <div className="space-y-3" role="status">
+        {[0, 1, 2, 3].map((index) => (
+          <Skeleton key={index} className="h-16 w-full" />
+        ))}
+      </div>
+    );
+  }
+  if (error) return <ErrorState onRetry={refetch} />;
 
   return (
     <div className="space-y-6">
@@ -328,7 +388,7 @@ function OrdersView() {
             key={option}
             active={status === option}
             onClick={() => setStatus(option)}
-            count={option === 'all' ? adminOrders.length : adminOrders.filter((order) => order.status === option).length}
+            count={option === 'all' ? orders.length : orders.filter((order) => order.status === option).length}
           >
             {option === 'all' ? t.admin.orders.allStatuses : t.admin.orderStatus[option]}
           </Chip>
@@ -391,6 +451,8 @@ function OrdersView() {
 /* ---------- Programs ---------- */
 function ProgramsView() {
   const { t, loc, fmtNumber } = useLanguage();
+  const { data: members } = useAsync(fetchAdminMembers, []);
+  const enrolledCount = (programId: string) => (members ?? []).filter((member) => member.programId === programId).length;
   return (
     <div className="space-y-6">
       <p className="text-sm font-semibold text-muted">{t.admin.programs.count(fmtNumber(programs.length))}</p>
@@ -409,7 +471,7 @@ function ProgramsView() {
                   <Star className="h-3.5 w-3.5 fill-volt text-volt" aria-hidden />
                   {fmtNumber(program.rating, { minimumFractionDigits: 1 })}
                 </span>
-                <span>{fmtNumber(program.enrolled)} · {t.common.weeks(program.durationWeeks)}</span>
+                <span>{fmtNumber(enrolledCount(program.id))} · {t.common.weeks(program.durationWeeks)}</span>
               </p>
               <Link
                 to={`/programmes/${program.id}`}
