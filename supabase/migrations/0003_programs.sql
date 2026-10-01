@@ -8,12 +8,16 @@
 -- démarrage, donc tous les membres voient la version à jour.
 -- visible = false : le programme reste résolvable par id (membres
 -- déjà inscrits) mais disparaît des listes.
+-- deleted = true  : suppression depuis le back-office — le programme
+-- disparaît partout (listes ET résolution par id) ; un DELETE de la
+-- ligne le rétablit.
 -- ==========================================================
 
 create table if not exists public.programs (
   id text primary key,
-  payload jsonb not null,
+  payload jsonb,
   visible boolean not null default true,
+  deleted boolean not null default false,
   updated_at timestamptz not null default now()
 );
 

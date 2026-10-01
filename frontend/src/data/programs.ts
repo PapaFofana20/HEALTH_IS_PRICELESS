@@ -546,9 +546,11 @@ export let programs: Program[] = DEFAULT_PROGRAMS;
 
 const patches = new Map<string, Partial<Program>>();
 const hiddenPrograms = new Set<string>();
+const deletedPrograms = new Set<string>();
 let catalogSync: Promise<boolean> | null = null;
 
 function materialize(id: string): Program | null {
+  if (deletedPrograms.has(id)) return null;
   const base = DEFAULT_PROGRAMS.find((program) => program.id === id) ?? null;
   const patch = patches.get(id);
   if (!base) return patch && 'id' in patch ? ({ ...(patch as Program) } as Program) : null;
@@ -556,10 +558,11 @@ function materialize(id: string): Program | null {
 }
 
 function rebuildCatalog() {
-  const merged = DEFAULT_PROGRAMS.filter((program) => !hiddenPrograms.has(program.id)).map(
-    (program) => materialize(program.id) as Program,
-  );
+  const merged = DEFAULT_PROGRAMS.filter((program) => !hiddenPrograms.has(program.id))
+    .map((program) => materialize(program.id))
+    .filter((program): program is Program => program !== null);
   for (const id of patches.keys()) {
+    if (deletedPrograms.has(id)) continue;
     if (!DEFAULT_PROGRAMS.some((program) => program.id === id)) {
       const custom = materialize(id);
       if (custom) merged.push(custom);
@@ -573,10 +576,13 @@ export const getProgramById = (id: string | null | undefined): Program | null =>
   return materialize(id);
 };
 
-/** Catalogue complet, y compris les programmes masqués (usage admin). */
+/** Catalogue complet pour le back-office (masqué inclus, supprimé exclu). */
 export function getAllPrograms(): Program[] {
-  const base = DEFAULT_PROGRAMS.map((program) => materialize(program.id) as Program);
+  const base = DEFAULT_PROGRAMS.map((program) => materialize(program.id)).filter(
+    (program): program is Program => program !== null,
+  );
   for (const id of patches.keys()) {
+    if (deletedPrograms.has(id)) continue;
     if (!DEFAULT_PROGRAMS.some((program) => program.id === id)) {
       const custom = materialize(id);
       if (custom) base.push(custom);
@@ -589,18 +595,28 @@ export function isProgramVisible(id: string): boolean {
   return !hiddenPrograms.has(id);
 }
 
+/** Des programmes ont été supprimés depuis le back-office ? (bouton « Rétablir ») */
+export function hasDeletedPrograms(): boolean {
+  return deletedPrograms.size > 0;
+}
+
 /** Charge les éditions admin depuis Supabase (idempotent, single-flight). */
 export function syncProgramCatalog(): Promise<boolean> {
   catalogSync ??= (async () => {
     if (!isSupabaseConfigured || !supabase) return false;
     try {
-      const { data, error } = await supabase.from('programs').select('id, payload, visible');
+      const { data, error } = await supabase.from('programs').select('id, payload, visible, deleted');
       if (error) {
         // PGRST205 = table absente (migration 0003 non exécutée) : on garde le catalogue intégré.
         console.warn('[programs] sync skipped:', error.message);
         return false;
       }
-      for (const row of (data ?? []) as { id: string; payload: Partial<Program> | null; visible: boolean | null }[]) {
+      for (const row of (data ?? []) as { id: string; payload: Partial<Program> | null; visible: boolean | null; deleted: boolean | null }[]) {
+        if (row.deleted) {
+          deletedPrograms.add(row.id);
+          continue;
+        }
+        deletedPrograms.delete(row.id);
         if (row.visible === false) hiddenPrograms.add(row.id);
         else hiddenPrograms.delete(row.id);
         if (row.payload) patches.set(row.id, row.payload);
@@ -636,6 +652,44 @@ export async function resetProgramOverride(id: string): Promise<void> {
   if (error) throw new Error(error.message);
   patches.delete(id);
   hiddenPrograms.delete(id);
+  rebuildCatalog();
+}
+
+/**
+ * Supprime un programme du catalogue (back-office) : partout pour tout
+ * le monde, listes ET résolution par id. Tombstone en base — la
+ * suppression de la ligne le rétablit.
+ */
+export async function deleteProgram(id: string): Promise<void> {
+  if (!getProgramById(id)) throw new Error('unknown-program');
+  if (!isSupabaseConfigured || !supabase) throw new Error('supabase-disabled');
+  const { error } = await supabase
+    .from('programs')
+    .upsert({ id, payload: patches.get(id) ?? {}, visible: false, deleted: true, updated_at: new Date().toISOString() });
+  if (error) throw new Error(error.message);
+  deletedPrograms.add(id);
+  rebuildCatalog();
+}
+
+/** Rétablit tous les programmes supprimés (supprime leurs tombstones). */
+export async function restoreDeletedPrograms(): Promise<void> {
+  if (!isSupabaseConfigured || !supabase) throw new Error('supabase-disabled');
+  const { error } = await supabase.from('programs').delete().eq('deleted', true);
+  if (error) throw new Error(error.message);
+  deletedPrograms.clear();
+  rebuildCatalog();
+}
+
+/** Supprime tout le catalogue (back-office), en un seul upsert. */
+export async function deleteAllPrograms(): Promise<void> {
+  const ids = getAllPrograms().map((program) => program.id);
+  if (!ids.length) return;
+  if (!isSupabaseConfigured || !supabase) throw new Error('supabase-disabled');
+  const now = new Date().toISOString();
+  const rows = ids.map((id) => ({ id, payload: patches.get(id) ?? {}, visible: false, deleted: true, updated_at: now }));
+  const { error } = await supabase.from('programs').upsert(rows);
+  if (error) throw new Error(error.message);
+  for (const id of ids) deletedPrograms.add(id);
   rebuildCatalog();
 }
 
