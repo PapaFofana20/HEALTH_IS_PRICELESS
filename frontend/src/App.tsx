@@ -24,7 +24,7 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 
 function PageLoader() {
   return (
-    <div className="grid min-h-[60vh] place-items-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <Spinner />
     </div>
   );
@@ -33,7 +33,7 @@ function PageLoader() {
 /** Full-screen boot screen while the admin program catalogue syncs. */
 function BootScreen() {
   return (
-    <div className="grid min-h-screen place-items-center bg-night-900">
+    <div className="min-h-screen bg-night-900 flex items-center justify-center">
       <Spinner />
     </div>
   );
