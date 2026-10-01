@@ -25,7 +25,7 @@ export function Hero() {
         {/* Copy — centered on mobile, left-aligned from lg */}
         <div className="flex flex-col items-center text-center lg:col-span-6 lg:items-start lg:text-left">
           <Eyebrow className="animate-fade-up">{t.hero.eyebrow}</Eyebrow>
-          <h1 className="mt-5 animate-fade-up font-display text-[4.3rem] uppercase leading-[0.88] tracking-tight [animation-delay:80ms] sm:text-[5.2rem] lg:text-[5.9rem] xl:text-[7.3rem]">
+          <h1 className="mt-5 animate-fade-up font-display text-[4.8rem] uppercase leading-[0.88] tracking-tight [animation-delay:80ms] sm:text-[5.6rem] lg:text-[6.2rem] xl:text-[7.6rem]">
             <span className="block">{t.hero.line1}</span>{' '}
             <span className="block">
               {t.hero.line2} <span className="text-volt">{t.hero.line2Accent}</span>
