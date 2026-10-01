@@ -76,7 +76,11 @@ export async function fetchAdminOrders(): Promise<AdminOrder[]> {
     .from('orders')
     .select('id, user_id, reference, plan, amount, method, status, created_at')
     .order('created_at', { ascending: false });
-  if (error) throw new Error(error.message);
+  // PGRST205 = table missing (migration 0002_admin.sql not run yet): show an empty list instead of breaking the page.
+  if (error) {
+    if (error.code === 'PGRST205') return [];
+    throw new Error(error.message);
+  }
   const rows = (data as Record<string, unknown>[] | null ?? []) as Record<string, unknown>[];
 
   const userIds = [...new Set(rows.map((row) => String(row.user_id ?? '')).filter(Boolean))];
