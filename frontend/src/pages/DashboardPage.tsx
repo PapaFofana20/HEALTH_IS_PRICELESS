@@ -82,6 +82,7 @@ export default function DashboardPage() {
 /* ---------- Guest state (not logged in) ---------- */
 function GuestScreen() {
   const { t } = useLanguage();
+  const location = useLocation();
   return (
     <section className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-night-900 px-4 py-16">
       <div aria-hidden className="absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
@@ -95,7 +96,7 @@ function GuestScreen() {
         <h1 className="mt-6 font-display text-4xl uppercase">{t.dashboard.guest.title}</h1>
         <p className="mt-3 text-muted">{t.dashboard.guest.text}</p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <ButtonLink to="/connexion" icon={<LogIn />}>
+          <ButtonLink to="/connexion" state={{ from: location.pathname }} icon={<LogIn />}>
             {t.dashboard.guest.login}
           </ButtonLink>
         </div>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import {
   ArrowLeft,
@@ -68,6 +68,7 @@ export default function AdminPage() {
 /* ---------- Guest (not logged in) ---------- */
 function AdminGuestScreen() {
   const { t } = useLanguage();
+  const location = useLocation();
   return (
     <section className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-night-900 px-4 py-16">
       <div aria-hidden className="absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
@@ -85,7 +86,7 @@ function AdminGuestScreen() {
           <span className="font-bold text-volt">{ADMIN_EMAIL}</span>
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <ButtonLink to="/connexion" icon={<LogIn />}>
+          <ButtonLink to="/connexion" state={{ from: location.pathname }} icon={<LogIn />}>
             {t.admin.guestLogin}
           </ButtonLink>
         </div>
@@ -110,6 +111,10 @@ function AdminDeniedScreen() {
         </span>
         <h1 className="mt-6 font-display text-4xl uppercase">{t.admin.deniedTitle}</h1>
         <p className="mt-3 text-muted">{t.admin.deniedText}</p>
+        <p className="mt-4 rounded-lg border border-edge bg-night-900 px-4 py-3 text-sm">
+          <span className="text-muted">{t.admin.guestHint} </span>
+          <span className="font-bold text-volt">{ADMIN_EMAIL}</span>
+        </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <ButtonLink to="/dashboard" iconRight={<ArrowRight />}>
             {t.admin.deniedCta}

@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowRight, Check, Crown, Dumbbell, Eye, EyeOff, Flame, LoaderCircle, Lock, LogOut, Mail, User as UserIcon } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { useLanguage, usePageTitle } from '../hooks/useLanguage';
@@ -68,6 +68,7 @@ export default function AuthPage() {
   const { t, loc } = useLanguage();
   const { user, login, register, logout, setTier } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [params, setParams] = useSearchParams();
   const mode: Mode = params.get('mode') === 'register' ? 'register' : 'login';
   usePageTitle(mode === 'login' ? t.auth.loginTab : t.auth.registerTab);
@@ -113,7 +114,7 @@ export default function AuthPage() {
       document.getElementById('auth-legal')?.focus();
       return;
     }
-    setSubmitting(true);
+      setSubmitting(true);
     try {
       if (mode === 'login') {
         await login(form.email, form.password);
@@ -121,7 +122,10 @@ export default function AuthPage() {
       } else {
         await register({ firstName: form.firstName, email: form.email, password: form.password, goal: form.goal, tier: plan ?? 'free' });
       }
-      navigate('/dashboard', { state: plan ? { notice: t.plans.activated(t.tiers[plan]) } : null });
+      // Return to where the user came from (e.g. the admin gate), else the dashboard.
+      const from = (location.state as { from?: string } | null)?.from;
+      const target = from && from !== '/connexion' ? from : '/dashboard';
+      navigate(target, { state: plan ? { notice: t.plans.activated(t.tiers[plan]) } : null });
     } catch (thrown) {
       const code = thrown instanceof Error ? thrown.message : '';
       setErrors({ form: code === 'confirm-email' ? t.auth.errors.confirmEmail : t.auth.errors.generic });

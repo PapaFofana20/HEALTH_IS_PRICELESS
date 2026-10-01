@@ -55,6 +55,16 @@ export const ADMIN_EMAIL = ADMIN_EMAILS.join(' · ');
 
 export const isAdminEmail = (email: string): boolean => ADMIN_EMAILS.includes(email.trim().toLowerCase());
 
+/**
+ * Admin access is decided by email ONLY. Stored/local and remote profiles
+ * can carry a stale role 'user' (from an earlier registration) — they must
+ * never downgrade an admin email, otherwise /admin stays locked forever.
+ */
+function enforceAdmin<T extends User>(user: T): T {
+  if (!isAdminEmail(user.email)) return user;
+  return { ...user, role: 'admin', tier: 'premium' };
+}
+
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 function read<T>(key: string, fallback: T): T {
@@ -92,7 +102,10 @@ async function withRemoteProfile(base: User): Promise<User> {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => read<User | null>(USER_KEY, null));
+  const [user, setUser] = useState<User | null>(() => {
+    const stored = read<User | null>(USER_KEY, null);
+    return stored ? enforceAdmin(stored) : null;
+  });
   const [favorites, setFavorites] = useState<string[]>(() => read<string[]>(FAV_KEY, ['muscle-builder', 'hiit-shred']));
 
   useEffect(() => {
@@ -112,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!alive || !sbUser) return;
       const stored = read<User | null>(profileKey(sbUser.id), null);
       if (stored) {
-        setUser(stored);
+        setUser(enforceAdmin(stored));
         return;
       }
       const normalized = (sbUser.email ?? '').toLowerCase();
@@ -131,7 +144,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         memberSince: new Date().toISOString().slice(0, 10),
       };
       if (!alive) return;
-      setUser(await withRemoteProfile(base));
+      setUser(enforceAdmin(await withRemoteProfile(base)));
     });
     const { data: listener } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_OUT') setUser(null);
@@ -163,7 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         weightGoal: 76,
         memberSince: new Date().toISOString().slice(0, 10),
       };
-      const next = await withRemoteProfile(base);
+      const next = enforceAdmin(await withRemoteProfile(base));
       setUser(next);
       return next;
     }
@@ -209,7 +222,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         memberSince: new Date().toISOString().slice(0, 10),
       };
       // Signup intent wins over the trigger-created empty row: persist first.
-      setUser(base);
+      setUser(enforceAdmin(base));
       void saveProfile(base).catch(() => {});
       return base;
     }
@@ -228,7 +241,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       weightGoal: input.goal === 'weight-loss' ? 72 : 80,
       memberSince: new Date().toISOString().slice(0, 10),
     };
-    setUser(next);
+    setUser(enforceAdmin(next));
     return next;
   }, []);
 
