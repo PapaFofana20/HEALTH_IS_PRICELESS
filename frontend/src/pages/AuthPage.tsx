@@ -109,6 +109,10 @@ export default function AuthPage() {
       document.getElementById(`auth-${firstError}`)?.focus();
       return;
     }
+    if (found.legal) {
+      document.getElementById('auth-legal')?.focus();
+      return;
+    }
     setSubmitting(true);
     try {
       if (mode === 'login') {
