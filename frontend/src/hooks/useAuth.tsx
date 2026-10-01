@@ -38,8 +38,22 @@ const USER_KEY = 'forge-user';
 const FAV_KEY = 'forge-favorites';
 const profileKey = (id: string) => `forge-profile-${id}`;
 
-/** Demo back-office account (mock auth): log in with this email to open /admin. */
-export const ADMIN_EMAIL = 'admin@hip.app';
+/**
+ * Back-office accounts: these emails are granted role 'admin' (tier 'premium')
+ * and are the only ones allowed to open /admin.
+ * Override or extend via VITE_ADMIN_EMAILS (comma-separated) in .env.
+ */
+const ADMIN_EMAILS = ((import.meta.env.VITE_ADMIN_EMAILS as string | undefined) ?? '')
+  .split(',')
+  .map((value) => value.trim().toLowerCase())
+  .filter(Boolean);
+
+if (ADMIN_EMAILS.length === 0) ADMIN_EMAILS.push('admin@hip.app', 'papafofana200@gmail.com');
+
+/** Display string for the admin guest hint (never a credential). */
+export const ADMIN_EMAIL = ADMIN_EMAILS.join(' · ');
+
+export const isAdminEmail = (email: string): boolean => ADMIN_EMAILS.includes(email.trim().toLowerCase());
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
@@ -108,8 +122,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         firstName: capitalize((sbUser.user_metadata?.firstName as string) || prefixOf(sbUser.email ?? '')) || demoUser.firstName,
         lastName: '',
         email: sbUser.email ?? '',
-        role: normalized === ADMIN_EMAIL ? 'admin' : 'user',
-        tier: normalized === ADMIN_EMAIL ? 'premium' : 'free',
+        role: isAdminEmail(normalized) ? 'admin' : 'user',
+        tier: isAdminEmail(normalized) ? 'premium' : 'free',
         goal: toGoal(sbUser.user_metadata?.goal),
         currentProgramId: null,
         currentWeek: 1,
@@ -141,8 +155,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         firstName: capitalize((data.user.user_metadata?.firstName as string) || prefixOf(email)) || demoUser.firstName,
         lastName: '',
         email: data.user.email ?? email.trim(),
-        role: normalized === ADMIN_EMAIL ? 'admin' : 'user',
-        tier: normalized === ADMIN_EMAIL ? 'premium' : 'free',
+        role: isAdminEmail(normalized) ? 'admin' : 'user',
+        tier: isAdminEmail(normalized) ? 'premium' : 'free',
         goal: toGoal(data.user.user_metadata?.goal),
         currentProgramId: null,
         currentWeek: 1,
@@ -160,8 +174,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: email.trim(),
       firstName: isDemo ? demoUser.firstName : capitalize(prefixOf(email)) || demoUser.firstName,
       lastName: isDemo ? demoUser.lastName : '',
-      role: normalized === ADMIN_EMAIL ? 'admin' : 'user',
-      tier: normalized === ADMIN_EMAIL ? 'premium' : demoUser.tier,
+      role: isAdminEmail(normalized) ? 'admin' : 'user',
+      tier: isAdminEmail(normalized) ? 'premium' : demoUser.tier,
     };
     setUser(next);
     return next;
