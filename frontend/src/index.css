@@ -1,0 +1,192 @@
+@import "tailwindcss";
+
+/* ==========================================================
+   HIP — Design system
+   Night blue backgrounds, volt (lime) accents, condensed titles
+   ========================================================== */
+@theme {
+  --font-display: "Bebas Neue", "Impact", "Haettenschweiler", "Arial Narrow Bold", sans-serif;
+  --font-sans: "Special Gothic Condensed One", "Arial Narrow", ui-sans-serif, system-ui, sans-serif;
+
+  --color-night-950: #040b15;
+  --color-night-900: #07111f;
+  --color-night-800: #0d1b2a;
+  --color-night-700: #102235;
+  --color-night-600: #16304a;
+  --color-edge: #1e3448;
+  --color-edge-strong: #2b4a66;
+  --color-volt: #c7ff00;
+  --color-volt-dark: #b0e600;
+  --color-ink: #f8fafc;
+  --color-muted: #94a3b8;
+  --color-success: #22c55e;
+  --color-danger: #f87171;
+  --color-mist: #eaf0f6;
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-fade-up: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 0.25s ease-out both;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background-color: var(--color-night-900);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background-color: var(--color-volt);
+    color: var(--color-night-900);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-volt);
+    outline-offset: 3px;
+  }
+  button,
+  [role="button"],
+  summary {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  select option {
+    background-color: var(--color-night-800);
+    color: var(--color-ink);
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .recharts-surface:focus,
+  .recharts-wrapper:focus,
+  .recharts-sector:focus {
+    outline: none;
+  }
+}
+
+/* ---------- Decorative patterns ---------- */
+@utility pattern-grid {
+  background-image:
+    linear-gradient(to right, rgb(199 255 0 / 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(199 255 0 / 0.055) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+@utility pattern-grid-soft {
+  background-image:
+    linear-gradient(to right, rgb(148 163 184 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(148 163 184 / 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+@utility pattern-stripes {
+  background-image: repeating-linear-gradient(135deg, var(--color-volt) 0 2px, transparent 2px 14px);
+}
+@utility pattern-stripes-dark {
+  background-image: repeating-linear-gradient(135deg, var(--color-night-900) 0 2px, transparent 2px 14px);
+}
+@utility pattern-dots {
+  background-image: radial-gradient(rgb(148 163 184 / 0.16) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+@utility pattern-dots-dark {
+  background-image: radial-gradient(rgb(7 17 31 / 0.12) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ---------- Outlined display text ---------- */
+@utility txt-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(248 250 252 / 0.92);
+}
+@utility txt-outline-soft {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(248 250 252 / 0.09);
+}
+@utility txt-outline-volt {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-volt);
+}
+@utility txt-outline-dark {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(7 17 31 / 0.22);
+}
+
+/* ---------- Masks ---------- */
+@utility fade-mask-hero {
+  -webkit-mask-image: radial-gradient(ellipse 72% 74% at 50% 46%, #000 50%, transparent 100%);
+  mask-image: radial-gradient(ellipse 72% 74% at 50% 46%, #000 50%, transparent 100%);
+}
+@utility fade-mask-radial {
+  -webkit-mask-image: radial-gradient(ellipse at 60% 40%, #000 15%, transparent 72%);
+  mask-image: radial-gradient(ellipse at 60% 40%, #000 15%, transparent 72%);
+}
+@utility fade-mask-left {
+  -webkit-mask-image: linear-gradient(to left, #000 30%, transparent);
+  mask-image: linear-gradient(to left, #000 30%, transparent);
+}
+@utility fade-mask-bottom {
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+
+/* ---------- Helpers ---------- */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
