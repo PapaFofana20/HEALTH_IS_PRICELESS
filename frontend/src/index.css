@@ -179,6 +179,23 @@
     display: none;
   }
 }
+@utility scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-edge) transparent;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-edge);
+    border-radius: 999px;
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    background-color: var(--color-edge-strong);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -3,6 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import {
   ArrowLeft,
   BookOpen,
+  ChevronRight,
   Dumbbell,
   LayoutDashboard,
   LogOut,
@@ -26,6 +27,16 @@ export const ADMIN_SECTIONS: { key: AdminSection; to: string; icon: LucideIcon }
   { key: 'content', to: '/admin/content', icon: BookOpen },
 ];
 
+type NavGroupKey = 'pilotage' | 'catalog';
+
+/** Grouped navigation — labels come from `t.admin.navGroups`. */
+const ADMIN_NAV_GROUPS: { label: NavGroupKey; keys: AdminSection[] }[] = [
+  { label: 'pilotage', keys: ['overview', 'members', 'orders'] },
+  { label: 'catalog', keys: ['programs', 'content'] },
+];
+
+const NAV_GROUP_LABEL = 'px-3 pb-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-muted/70';
+
 export function AdminSidebar({ active }: { active: AdminSection }) {
   const { t } = useLanguage();
   const { user, logout } = useAuth();
@@ -38,65 +49,112 @@ export function AdminSidebar({ active }: { active: AdminSection }) {
     navigate('/');
   };
 
+  const byKey = new Map(ADMIN_SECTIONS.map((item) => [item.key, item]));
+  const groups = ADMIN_NAV_GROUPS.map((group) => ({
+    label: group.label,
+    items: group.keys.flatMap((key) => {
+      const item = byKey.get(key);
+      return item ? [item] : [];
+    }),
+  }));
+
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-edge bg-night-950 lg:flex">
-        <div className="flex h-20 items-center border-b border-edge px-6">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col overflow-hidden border-r border-edge bg-night-950 lg:flex">
+        <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-volt/10 blur-3xl" />
+        <div className="relative flex h-20 items-center border-b border-edge px-6">
           <Logo />
         </div>
-        <div className="flex items-center gap-3 border-b border-edge px-6 py-5">
-          <span aria-hidden className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-volt font-display text-lg text-night-900">
-            {user.firstName.charAt(0).toUpperCase()}
-          </span>
-          <div className="min-w-0">
-            <p className="truncate font-bold">
-              {user.firstName} {user.lastName}
-            </p>
-            <p className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-volt">
-              <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
-              {t.admin.role}
-            </p>
+
+        {/* Admin card */}
+        <div className="relative border-b border-edge p-4">
+          <div className="flex items-center gap-3 rounded-2xl border border-edge bg-night-800/60 p-3">
+            <span
+              aria-hidden
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-volt to-volt-dark font-display text-xl text-night-900"
+            >
+              {user.firstName.charAt(0).toUpperCase()}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-bold leading-tight">
+                {user.firstName} {user.lastName}
+              </p>
+              <p className="mt-1 inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-[0.16em] text-volt">
+                <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
+                {t.admin.role}
+              </p>
+            </div>
+            <Link
+              to="/dashboard"
+              aria-label={t.dashboard.nav.accueil}
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-edge text-muted transition-colors hover:border-volt/50 hover:text-volt"
+            >
+              <ChevronRight className="h-4 w-4" aria-hidden />
+            </Link>
           </div>
         </div>
-        <nav aria-label={t.admin.navLabel} className="flex-1 overflow-y-auto px-4 py-5">
-          <ul className="space-y-1">
-            {ADMIN_SECTIONS.map(({ key, to, icon: Icon }) => {
-              const isActive = active === key;
-              return (
-                <li key={key}>
-                  <Link
-                    to={to}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold transition-colors duration-200',
-                      isActive ? 'bg-volt text-night-900' : 'text-muted hover:bg-night-800 hover:text-ink',
-                    )}
-                  >
-                    <Icon className="h-[18px] w-[18px]" aria-hidden />
-                    {t.admin.nav[key]}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+
+        {/* Grouped navigation */}
+        <nav aria-label={t.admin.navLabel} className="scrollbar-slim relative flex-1 overflow-y-auto px-4 py-4">
+          {groups.map((group) => (
+            <div key={group.label} className="mb-4">
+              <p className={NAV_GROUP_LABEL}>{t.admin.navGroups[group.label]}</p>
+              <ul className="space-y-0.5">
+                {group.items.map(({ key, to, icon: Icon }) => {
+                  const isActive = active === key;
+                  return (
+                    <li key={key}>
+                      <Link
+                        to={to}
+                        aria-current={isActive ? 'page' : undefined}
+                        className={cn(
+                          'group relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-colors duration-150',
+                          isActive ? 'bg-night-800 text-ink' : 'text-muted hover:bg-night-800/50 hover:text-ink',
+                        )}
+                      >
+                        {isActive && (
+                          <span aria-hidden className="absolute -left-4 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-volt" />
+                        )}
+                        <Icon
+                          className={cn(
+                            'h-[18px] w-[18px] shrink-0 transition-colors',
+                            isActive ? 'text-volt' : 'text-muted group-hover:text-ink',
+                          )}
+                          aria-hidden
+                        />
+                        <span className="truncate">{t.admin.nav[key]}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
         </nav>
-        <div className="space-y-4 border-t border-edge p-5">
-          <div className="flex items-center justify-between gap-2">
-            <Link to="/" className="inline-flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted transition-colors hover:text-ink">
-              <ArrowLeft className="h-4 w-4" aria-hidden />
-              {t.dashboard.backToSite}
-            </Link>
-            <LanguageSwitcher />
+
+        {/* Footer */}
+        <div className="relative border-t border-edge p-4">
+          <div className="divide-y divide-edge overflow-hidden rounded-xl border border-edge bg-night-800/50">
+            <div className="flex items-center justify-between gap-2 px-3 py-2.5">
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted transition-colors hover:text-ink"
+              >
+                <ArrowLeft className="h-4 w-4" aria-hidden />
+                {t.dashboard.backToSite}
+              </Link>
+              <LanguageSwitcher />
+            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex w-full items-center gap-2 px-3 py-2.5 text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted transition-colors hover:text-danger"
+            >
+              <LogOut className="h-4 w-4" aria-hidden />
+              {t.dashboard.logout}
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted transition-colors hover:bg-night-800 hover:text-danger"
-          >
-            <LogOut className="h-4 w-4" aria-hidden />
-            {t.dashboard.logout}
-          </button>
         </div>
       </aside>
 
