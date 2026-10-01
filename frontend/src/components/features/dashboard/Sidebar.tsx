@@ -13,6 +13,7 @@ import {
   LogOut,
   Salad,
   Settings,
+  ShieldCheck,
   Target,
   TrendingUp,
   User,
@@ -121,6 +122,17 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
                 </li>
               );
             })}
+            {user.role === 'admin' && (
+              <li className="mt-4 border-t border-edge pt-4">
+                <Link
+                  to="/admin"
+                  className="flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-bold text-muted transition-colors duration-200 hover:bg-night-800 hover:text-volt"
+                >
+                  <ShieldCheck className="h-[18px] w-[18px]" aria-hidden />
+                  {t.nav.admin}
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
         <div className="space-y-4 border-t border-edge p-5">
@@ -200,6 +212,17 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
                 </Link>
               </li>
             ))}
+            {user.role === 'admin' && (
+              <li>
+                <Link
+                  to="/admin"
+                  className="inline-flex h-11 items-center gap-2 rounded-full border border-edge px-3.5 text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted transition-colors duration-200 hover:border-volt hover:text-volt"
+                >
+                  <ShieldCheck className="h-4 w-4" aria-hidden />
+                  {t.nav.admin}
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
       </div>

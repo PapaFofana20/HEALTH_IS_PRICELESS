@@ -116,15 +116,17 @@ export default function AuthPage() {
     }
       setSubmitting(true);
     try {
+      let landed: { role: string } | null = null;
       if (mode === 'login') {
-        await login(form.email, form.password);
+        landed = await login(form.email, form.password);
         if (plan) setTier(plan);
       } else {
-        await register({ firstName: form.firstName, email: form.email, password: form.password, goal: form.goal, tier: plan ?? 'free' });
+        landed = await register({ firstName: form.firstName, email: form.email, password: form.password, goal: form.goal, tier: plan ?? 'free' });
       }
-      // Return to where the user came from (e.g. the admin gate), else the dashboard.
+      // Return to where the user came from (e.g. the admin gate), else the
+      // admin console for admin accounts, else the dashboard.
       const from = (location.state as { from?: string } | null)?.from;
-      const target = from && from !== '/connexion' ? from : '/dashboard';
+      const target = from && from !== '/connexion' ? from : landed?.role === 'admin' ? '/admin' : '/dashboard';
       navigate(target, { state: plan ? { notice: t.plans.activated(t.tiers[plan]) } : null });
     } catch (thrown) {
       const code = thrown instanceof Error ? thrown.message : '';

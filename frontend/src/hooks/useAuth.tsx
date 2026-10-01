@@ -222,9 +222,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         memberSince: new Date().toISOString().slice(0, 10),
       };
       // Signup intent wins over the trigger-created empty row: persist first.
-      setUser(enforceAdmin(base));
+      const created = enforceAdmin(base);
+      setUser(created);
       void saveProfile(base).catch(() => {});
-      return base;
+      return created;
     }
     await wait(800);
     const next: User = {
@@ -241,8 +242,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       weightGoal: input.goal === 'weight-loss' ? 72 : 80,
       memberSince: new Date().toISOString().slice(0, 10),
     };
-    setUser(enforceAdmin(next));
-    return next;
+    const created = enforceAdmin(next);
+    setUser(created);
+    return created;
   }, []);
 
   const logout = useCallback(() => {
