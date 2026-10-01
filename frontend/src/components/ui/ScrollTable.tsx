@@ -47,7 +47,7 @@ export function ScrollTable({ children, className, fadeClassName = 'from-night-9
   return (
     <div>
       <div className="relative">
-        <div ref={viewport} className={cn('overflow-x-auto', className)}>
+        <div ref={viewport} className={cn('relative overflow-x-auto', className)}>
           {children}
         </div>
         {overflowing && !atEnd && (
