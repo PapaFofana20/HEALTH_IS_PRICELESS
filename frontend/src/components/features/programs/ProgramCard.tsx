@@ -8,7 +8,7 @@ import type { Program } from '../../../types';
 
 interface ProgramCardProps {
   program: Program;
-  /** Quiz compatibility score (0100) */
+  /** Quiz compatibility score (0–100) */
   matchScore?: number;
   /** Optional ribbon label (e.g. "Best match") */
   highlight?: string;
@@ -56,7 +56,7 @@ export function ProgramCard({ program, matchScore, highlight, className }: Progr
           type="button"
           onClick={() => toggleFavorite(program.id)}
           aria-pressed={favorite}
-          aria-label={`${favorite ? t.common.removeFavorite : t.common.addFavorite}  ${name}`}
+          aria-label={`${favorite ? t.common.removeFavorite : t.common.addFavorite} — ${name}`}
           className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full border border-ink/15 bg-night-900/70 text-ink backdrop-blur transition-colors duration-200 hover:border-volt hover:text-volt"
         >
           {favorite ? <BookmarkCheck className="h-4 w-4 text-volt" aria-hidden /> : <Bookmark className="h-4 w-4" aria-hidden />}

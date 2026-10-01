@@ -91,7 +91,7 @@ export function PlanComparison() {
             <Sparkles className="h-3 w-3" aria-hidden />
             {t.plans.recommended}
           </span>
-          <p className="relative text-[11px] font-extrabold uppercase tracking-[0.24em] text-volt">02  {t.tiers.premium}</p>
+          <p className="relative text-[11px] font-extrabold uppercase tracking-[0.24em] text-volt">02 — {t.tiers.premium}</p>
           <h3 className="relative mt-3 flex items-center gap-3 font-display text-4xl uppercase leading-none sm:text-5xl">
             {t.plans.premium.name}
             <Crown className="h-6 w-6 text-volt sm:h-7 sm:w-7" aria-hidden />

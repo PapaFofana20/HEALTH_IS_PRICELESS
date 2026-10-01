@@ -341,15 +341,15 @@ export function ProteinCalculator() {
               <div className="flex items-center justify-between rounded-lg border border-edge p-3">
                 <dt className="text-muted">{t.calc.protein.range}</dt>
                 <dd className="text-right font-bold">
-                  {fmtNumber(result.min)}{fmtNumber(result.max)} g
+                  {fmtNumber(result.min)}–{fmtNumber(result.max)} g
                   <span className="block text-[11px] font-semibold text-muted">
-                    {fmtNumber(result.minPerKg)}{fmtNumber(result.maxPerKg)} {t.calc.protein.perKg}
+                    {fmtNumber(result.minPerKg)}–{fmtNumber(result.maxPerKg)} {t.calc.protein.perKg}
                   </span>
                 </dd>
               </div>
               <div className="flex items-center justify-between rounded-lg border border-edge p-3">
                 <dt className="text-muted">{t.calc.protein.perMeal}</dt>
-                <dd className="font-bold"> {fmtNumber(result.perMeal)} g</dd>
+                <dd className="font-bold">≈ {fmtNumber(result.perMeal)} g</dd>
               </div>
             </dl>
             <p className="mt-5 text-xs leading-relaxed text-muted">{t.calc.protein.sources}</p>

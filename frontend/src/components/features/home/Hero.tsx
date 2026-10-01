@@ -123,7 +123,7 @@ export function Marquee() {
   const { t } = useLanguage();
   return (
     <div className="relative overflow-hidden bg-night-900 py-8 sm:py-10">
-      <p className="sr-only">{t.marquee.join('  ')}</p>
+      <p className="sr-only">{t.marquee.join(' • ')}</p>
       <div aria-hidden className="absolute inset-x-[-5%] top-1/2 -translate-y-1/2 rotate-[2deg] border-y border-edge bg-night-800 py-3 text-ink/25">
         <MarqueeTrack items={t.marquee} reverse />
       </div>

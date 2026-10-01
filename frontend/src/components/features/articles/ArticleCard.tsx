@@ -42,9 +42,9 @@ export function ArticleCard({ article, variant = 'default', className }: Article
             <span>
               {t.articlesPage.by} {article.author}
             </span>
-            <span aria-hidden></span>
+            <span aria-hidden>•</span>
             <time dateTime={article.date}>{fmtDate(article.date)}</time>
-            <span aria-hidden></span>
+            <span aria-hidden>•</span>
             <span className="flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5" aria-hidden />
               {t.common.minRead(article.readMinutes)}

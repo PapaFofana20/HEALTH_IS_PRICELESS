@@ -54,7 +54,7 @@ export function RecipeCard({ recipe, onOpen }: RecipeCardProps) {
           className="mt-auto inline-flex items-center gap-2 pt-5 text-left text-[11px] font-extrabold uppercase tracking-[0.14em] text-ink outline-none transition-colors duration-200 after:absolute after:inset-0 after:content-[''] group-hover:text-volt"
         >
           {t.nutritionPage.viewRecipe}
-          <span className="sr-only">  {loc(recipe.name)}</span>
+          <span className="sr-only"> — {loc(recipe.name)}</span>
           <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden />
         </button>
       </div>
