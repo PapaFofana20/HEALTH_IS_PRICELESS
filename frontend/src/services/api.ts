@@ -1,4 +1,4 @@
-import { programs } from '../data/programs';
+import { getProgramById, programs } from '../data/programs';
 import { exercises } from '../data/exercises';
 import { recipes } from '../data/nutrition';
 import { articles } from '../data/articles';
@@ -42,7 +42,7 @@ function readWeights(userId: string): WeightEntry[] {
 
 export const api = {
   getPrograms: (): Promise<Program[]> => respond(programs),
-  getProgram: (id: string): Promise<Program | null> => respond(programs.find((p) => p.id === id) ?? null),
+  getProgram: (id: string): Promise<Program | null> => respond(getProgramById(id)),
   getExercises: (): Promise<Exercise[]> => respond(exercises),
   getRecipes: (): Promise<Recipe[]> => respond(recipes),
   getArticles: (): Promise<Article[]> => respond(articles),

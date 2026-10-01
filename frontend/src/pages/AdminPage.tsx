@@ -8,6 +8,7 @@ import {
   Dumbbell,
   Lock,
   LogIn,
+  Pencil,
   Receipt,
   Salad,
   ShieldAlert,
@@ -23,18 +24,19 @@ import { articles } from '../data/articles';
 import { exercises } from '../data/exercises';
 import { mealPlans } from '../data/nutrition';
 import { recipes } from '../data/nutrition';
-import { getProgramById, planPricing, programs } from '../data/programs';
+import { getAllPrograms, getProgramById, isProgramVisible, planPricing, programs } from '../data/programs';
 import { fetchAdminMembers, fetchAdminOrders, monthlyBuckets } from '../services/adminApi';
 import type { AdminMember, MemberStatus, OrderStatus } from '../services/adminApi';
 import { ADMIN_SECTIONS, AdminSidebar } from '../components/features/admin/AdminSidebar';
 import type { AdminSection } from '../components/features/admin/AdminSidebar';
+import { ProgramEditModal } from '../components/features/admin/ProgramEditModal';
 import { RevenueChart, SignupsChart, TierSplit } from '../components/features/admin/AdminCharts';
 import { Chip, PlanBadge, Tag } from '../components/ui/Badge';
 import { ButtonLink } from '../components/ui/Button';
 import { Logo } from '../components/ui/Logo';
 import { ScrollTable } from '../components/ui/ScrollTable';
 import { ErrorState, GridSkeleton, Skeleton } from '../components/ui/States';
-import type { Tier } from '../types';
+import type { Program, Tier } from '../types';
 
 const VALID_SECTIONS = ADMIN_SECTIONS.map((item) => item.key);
 const labelClass = 'text-[10px] font-extrabold uppercase tracking-[0.14em] text-muted';
@@ -452,38 +454,83 @@ function OrdersView() {
 function ProgramsView() {
   const { t, loc, fmtNumber } = useLanguage();
   const { data: members } = useAsync(fetchAdminMembers, []);
+  const [editing, setEditing] = useState<Program | null>(null);
+  const [flash, setFlash] = useState<'saved' | 'reset' | null>(null);
+  const [, setVersion] = useState(0);
   const enrolledCount = (programId: string) => (members ?? []).filter((member) => member.programId === programId).length;
+
+  useEffect(() => {
+    if (!flash) return;
+    const timer = window.setTimeout(() => setFlash(null), 4000);
+    return () => window.clearTimeout(timer);
+  }, [flash]);
+
   return (
     <div className="space-y-6">
-      <p className="text-sm font-semibold text-muted">{t.admin.programs.count(fmtNumber(programs.length))}</p>
+      {flash && (
+        <p
+          role="status"
+          className="inline-flex rounded-xl border border-volt/40 bg-volt/10 px-4 py-2.5 text-sm font-bold text-volt"
+        >
+          {flash === 'saved' ? t.admin.programs.saved : t.admin.programs.resetDone}
+        </p>
+      )}
+      <p className="text-sm font-semibold text-muted">{t.admin.programs.count(fmtNumber(getAllPrograms().length))}</p>
       <ul className="grid gap-4 md:grid-cols-2">
-        {programs.map((program) => (
-          <li key={program.id} className="flex gap-4 rounded-xl border border-edge bg-night-800 p-4 transition-colors hover:border-edge-strong">
-            <img src={program.image} alt="" loading="lazy" className="h-24 w-24 shrink-0 rounded-lg object-cover" />
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <PlanBadge plan={program.plan} />
-                <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted">{t.goals[program.goal]}</span>
+        {getAllPrograms().map((program) => {
+          const visible = isProgramVisible(program.id);
+          return (
+            <li key={program.id} className="flex gap-4 rounded-xl border border-edge bg-night-800 p-4 transition-colors hover:border-edge-strong">
+              <img src={program.image} alt="" loading="lazy" className="h-24 w-24 shrink-0 rounded-lg object-cover" />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <PlanBadge plan={program.plan} />
+                  <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted">{t.goals[program.goal]}</span>
+                  {!visible && <Tag tone="light">{t.admin.programs.hiddenTag}</Tag>}
+                </div>
+                <p className="mt-1.5 truncate font-display text-xl uppercase">{loc(program.name)}</p>
+                <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-semibold text-muted">
+                  <span className="inline-flex items-center gap-1">
+                    <Star className="h-3.5 w-3.5 fill-volt text-volt" aria-hidden />
+                    {fmtNumber(program.rating, { minimumFractionDigits: 1 })}
+                  </span>
+                  <span>{fmtNumber(enrolledCount(program.id))} · {t.common.weeks(program.durationWeeks)}</span>
+                </p>
+                <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <Link
+                    to={`/programmes/${program.id}`}
+                    className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-volt underline-offset-4 hover:underline"
+                  >
+                    {t.admin.programs.view}
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setEditing(program)}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-edge px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-muted transition-colors hover:border-volt hover:text-volt"
+                  >
+                    <Pencil className="h-3.5 w-3.5" aria-hidden />
+                    {t.admin.programs.edit}
+                  </button>
+                </div>
               </div>
-              <p className="mt-1.5 truncate font-display text-xl uppercase">{loc(program.name)}</p>
-              <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-semibold text-muted">
-                <span className="inline-flex items-center gap-1">
-                  <Star className="h-3.5 w-3.5 fill-volt text-volt" aria-hidden />
-                  {fmtNumber(program.rating, { minimumFractionDigits: 1 })}
-                </span>
-                <span>{fmtNumber(enrolledCount(program.id))} · {t.common.weeks(program.durationWeeks)}</span>
-              </p>
-              <Link
-                to={`/programmes/${program.id}`}
-                className="mt-2.5 inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-volt underline-offset-4 hover:underline"
-              >
-                {t.admin.programs.view}
-                <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-              </Link>
-            </div>
-          </li>
-        ))}
+            </li>
+          );
+        })}
       </ul>
+      {editing && (
+        <ProgramEditModal
+          key={editing.id}
+          program={editing}
+          initialVisible={isProgramVisible(editing.id)}
+          onClose={() => setEditing(null)}
+          onSaved={(kind) => {
+            setVersion((version) => version + 1);
+            setFlash(kind);
+            setEditing(null);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -13,6 +13,7 @@ import type {
   WorkoutSession,
 } from '../types';
 import { avatar, media } from './media';
+import { isSupabaseConfigured, supabase } from '../lib/supabase';
 
 const L = (fr: string, en: string): Localized => ({ fr, en });
 const ex = (exerciseId: string, sets: number, reps: Localized | string, restSeconds: number): SessionExercise => ({
@@ -207,7 +208,7 @@ function makePhases(goal: Goal, weeks: number): ProgramPhase[] {
 }
 
 /* ---------- Programs ---------- */
-export const programs: Program[] = [
+const DEFAULT_PROGRAMS: Program[] = [
   {
     id: 'fat-burn-starter',
     name: L('Fat Burn Starter', 'Fat Burn Starter'),
@@ -530,7 +531,113 @@ export const programs: Program[] = [
   },
 ];
 
-export const getProgramById = (id: string | null | undefined) => programs.find((p) => p.id === id) ?? null;
+/* ==========================================================
+   Catalogue vivant — remplacements Supabase pilotés par l'admin.
+   `programs` est un export let : après syncProgramCatalog(), tous
+   les consommateurs (listes, quiz, dashboard, admin) voient la
+   version fusionnée sans changer d'API.
+   - Seuls les champs édités sont stockés (payload = patch) puis
+     fusionnés par-dessus le catalogue intégré : les ajouts futurs
+     du code survivent aux éditions.
+   - un programme masqué reste résolvable par id (membres déjà
+     inscrits) mais disparaît des listes.
+   ========================================================== */
+export let programs: Program[] = DEFAULT_PROGRAMS;
+
+const patches = new Map<string, Partial<Program>>();
+const hiddenPrograms = new Set<string>();
+let catalogSync: Promise<boolean> | null = null;
+
+function materialize(id: string): Program | null {
+  const base = DEFAULT_PROGRAMS.find((program) => program.id === id) ?? null;
+  const patch = patches.get(id);
+  if (!base) return patch && 'id' in patch ? ({ ...(patch as Program) } as Program) : null;
+  return patch ? { ...base, ...patch } : base;
+}
+
+function rebuildCatalog() {
+  const merged = DEFAULT_PROGRAMS.filter((program) => !hiddenPrograms.has(program.id)).map(
+    (program) => materialize(program.id) as Program,
+  );
+  for (const id of patches.keys()) {
+    if (!DEFAULT_PROGRAMS.some((program) => program.id === id)) {
+      const custom = materialize(id);
+      if (custom) merged.push(custom);
+    }
+  }
+  programs = merged;
+}
+
+export const getProgramById = (id: string | null | undefined): Program | null => {
+  if (!id) return null;
+  return materialize(id);
+};
+
+/** Catalogue complet, y compris les programmes masqués (usage admin). */
+export function getAllPrograms(): Program[] {
+  const base = DEFAULT_PROGRAMS.map((program) => materialize(program.id) as Program);
+  for (const id of patches.keys()) {
+    if (!DEFAULT_PROGRAMS.some((program) => program.id === id)) {
+      const custom = materialize(id);
+      if (custom) base.push(custom);
+    }
+  }
+  return base;
+}
+
+export function isProgramVisible(id: string): boolean {
+  return !hiddenPrograms.has(id);
+}
+
+/** Charge les éditions admin depuis Supabase (idempotent, single-flight). */
+export function syncProgramCatalog(): Promise<boolean> {
+  catalogSync ??= (async () => {
+    if (!isSupabaseConfigured || !supabase) return false;
+    try {
+      const { data, error } = await supabase.from('programs').select('id, payload, visible');
+      if (error) {
+        // PGRST205 = table absente (migration 0003 non exécutée) : on garde le catalogue intégré.
+        console.warn('[programs] sync skipped:', error.message);
+        return false;
+      }
+      for (const row of (data ?? []) as { id: string; payload: Partial<Program> | null; visible: boolean | null }[]) {
+        if (row.visible === false) hiddenPrograms.add(row.id);
+        else hiddenPrograms.delete(row.id);
+        if (row.payload) patches.set(row.id, row.payload);
+      }
+      rebuildCatalog();
+      return true;
+    } catch (error) {
+      console.warn('[programs] sync failed:', error);
+      return false;
+    }
+  })();
+  return catalogSync;
+}
+
+/** Sauvegarde l'édition d'un programme (Supabase, admin only via RLS). */
+export async function saveProgramOverride(id: string, patch: Partial<Program>, visible: boolean): Promise<void> {
+  if (!getProgramById(id)) throw new Error('unknown-program');
+  if (!isSupabaseConfigured || !supabase) throw new Error('supabase-disabled');
+  const { error } = await supabase
+    .from('programs')
+    .upsert({ id, payload: patch, visible, updated_at: new Date().toISOString() });
+  if (error) throw new Error(error.message);
+  patches.set(id, patch);
+  if (visible) hiddenPrograms.delete(id);
+  else hiddenPrograms.add(id);
+  rebuildCatalog();
+}
+
+/** Supprime l'édition : le programme redevient celui du catalogue intégré. */
+export async function resetProgramOverride(id: string): Promise<void> {
+  if (!isSupabaseConfigured || !supabase) throw new Error('supabase-disabled');
+  const { error } = await supabase.from('programs').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+  patches.delete(id);
+  hiddenPrograms.delete(id);
+  rebuildCatalog();
+}
 
 /* ---------- Plans & pricing ---------- */
 const FCFA_PER_EUR = 656;
