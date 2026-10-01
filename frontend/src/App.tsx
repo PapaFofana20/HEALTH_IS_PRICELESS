@@ -18,6 +18,7 @@ const ArticleDetailPage = lazy(() => import('./pages/ArticlesPage').then((module
 const PricingPage = lazy(() => import('./pages/PricingPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const AuthPage = lazy(() => import('./pages/AuthPage'));
+const EspacePage = lazy(() => import('./pages/EspacePage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 
@@ -81,6 +82,7 @@ export default function App() {
                   <Route path="conseils" element={<ArticlesPage />} />
                   <Route path="conseils/:id" element={<ArticleDetailPage />} />
                   <Route path="tarifs" element={<PricingPage />} />
+                  <Route path="espace/:spaceId" element={<EspacePage />} />
                   <Route path="a-propos" element={<AboutPage />} />
                   <Route path="connexion" element={<AuthPage />} />
                   <Route path="*" element={<NotFoundState />} />

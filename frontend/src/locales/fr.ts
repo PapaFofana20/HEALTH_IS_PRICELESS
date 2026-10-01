@@ -201,6 +201,22 @@ export const fr = {
     summary: '4,8/5 · plus de 1 200 avis',
     followed: 'Programme suivi',
   },
+  space: {
+    eyebrow: 'Espace membre',
+    unavailable: 'Programme non disponible.',
+    lockedNote: 'Cette page est réservée aux membres ayant acheté le programme dédié.',
+    unlockedNote: 'Ton accès à ce programme est actif.',
+    lockedCta: 'Ce programme n’est pas encore débloqué sur ton compte.',
+    unlockedCta: 'Accès confirmé — le contenu de ce programme arrive bientôt.',
+    seePricing: 'Voir les tarifs',
+    createAccount: 'Créer un compte',
+    names: {
+      'standard-perte-de-poids': 'Standard_Perte de poids',
+      'standard-prise-de-masse': 'Standard_Prise de masse',
+      'premium-perte-de-poids': 'Premium_Perte de poids',
+      'premium-prise-de-masse': 'Premium_Prise de masse',
+    },
+  },
   newsletter: {
     title1: '1 conseil fitness par semaine.',
     title2: '0 spam.',

@@ -199,6 +199,22 @@ export const en: Translations = {
     summary: '4.8/5 · over 1,200 reviews',
     followed: 'Program followed',
   },
+  space: {
+    eyebrow: 'Member area',
+    unavailable: 'Program not available.',
+    lockedNote: 'This page is reserved for members who purchased the dedicated program.',
+    unlockedNote: 'Your access to this program is active.',
+    lockedCta: 'This program is not unlocked on your account yet.',
+    unlockedCta: 'Access confirmed — this program’s content is coming soon.',
+    seePricing: 'See pricing',
+    createAccount: 'Create account',
+    names: {
+      'standard-perte-de-poids': 'Standard_Weight Loss',
+      'standard-prise-de-masse': 'Standard_Muscle Gain',
+      'premium-perte-de-poids': 'Premium_Weight Loss',
+      'premium-prise-de-masse': 'Premium_Muscle Gain',
+    },
+  },
   newsletter: {
     title1: '1 fitness tip per week.',
     title2: '0 spam.',

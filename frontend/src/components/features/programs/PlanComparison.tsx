@@ -5,6 +5,7 @@ import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { useAuth } from '../../../hooks/useAuth';
 import { planPricing } from '../../../data/programs';
+import { spaceSlug } from '../../../data/spaces';
 import { Button, ButtonLink } from '../../ui/Button';
 import { Reveal } from '../../ui/Reveal';
 import { SectionHeading, container } from '../../ui/SectionHeading';
@@ -25,17 +26,17 @@ function PriceBlock({ plan, goal }: { plan: Plan; goal: Goal }) {
 /** Standard vs Premium cards with goal toggle. Reused on Home and Pricing. */
 export function PlanComparison() {
   const { t } = useLanguage();
-  const { user, tier, setTier } = useAuth();
+  const { user, tier, setTier, updateUser } = useAuth();
   const navigate = useNavigate();
   const [goal, setGoal] = useState<Goal>('muscle-gain');
 
   const choose = (plan: Plan) => {
-    if (!user) {
-      navigate(`/connexion?mode=register&plan=${plan}&goal=${goal}`);
-      return;
+    // L'achat (tier + objectif du programme choisi) ouvre la page dédiée.
+    if (user) {
+      setTier(plan);
+      updateUser({ goal });
     }
-    setTier(plan);
-    navigate('/dashboard', { state: { notice: t.plans.activated(t.tiers[plan]) } });
+    navigate(`/espace/${spaceSlug(plan, goal)}`);
   };
 
   return (
@@ -79,7 +80,7 @@ export function PlanComparison() {
               </li>
             ))}
           </ul>
-          <Button size="lg" fullWidth className="relative mt-10" onClick={() => choose('standard')} disabled={tier === 'standard'}>
+          <Button size="lg" fullWidth className="relative mt-10" onClick={() => choose('standard')}>
             {tier === 'standard' ? t.plans.currentPlan : t.plans.standard.cta}
           </Button>
         </article>
@@ -108,7 +109,7 @@ export function PlanComparison() {
               </li>
             ))}
           </ul>
-          <Button size="lg" fullWidth className="relative mt-10" icon={<Crown />} onClick={() => choose('premium')} disabled={tier === 'premium'}>
+          <Button size="lg" fullWidth className="relative mt-10" icon={<Crown />} onClick={() => choose('premium')}>
             {tier === 'premium' ? t.plans.currentPlan : t.plans.premium.cta}
           </Button>
         </article>
