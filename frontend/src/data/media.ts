@@ -11,7 +11,7 @@ export const avatar = (gender: 'men' | 'women', n: number) => `https://randomuse
 export const media = {
   goals: {
     weightLoss: px(6455787, 1100, 1300),
-    muscleGain: px(19132573, 1100, 1300),
+    muscleGain: px(5327456, 1100, 1300),
   },
   programs: {
     fatBurn: px(8173428, 900, 675),
