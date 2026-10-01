@@ -7,6 +7,7 @@ import { PlanComparison } from '../components/features/programs/PlanComparison';
 import { ButtonLink } from '../components/ui/Button';
 import { FaqList } from '../components/ui/Faq';
 import { Reveal } from '../components/ui/Reveal';
+import { ScrollTable } from '../components/ui/ScrollTable';
 import { PageHero, SectionHeading, container } from '../components/ui/SectionHeading';
 import type { FeatureAvailability, Tier } from '../types';
 
@@ -68,36 +69,38 @@ export default function PricingPage() {
           <Reveal>
             <SectionHeading eyebrow={t.pricing.tableEyebrow} title={t.pricing.tableTitle} />
           </Reveal>
-          <div className="mt-10 overflow-x-auto rounded-2xl border border-edge bg-night-900">
-            <table className="w-full min-w-[640px] text-left text-sm">
-              <caption className="sr-only">{t.pricing.tableTitle}</caption>
-              <thead>
-                <tr className="border-b border-edge bg-night-800">
-                  <th scope="col" className="px-5 py-4 text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">
-                    {t.pricing.feature}
-                  </th>
-                  {TIERS.map((item) => (
-                    <th key={item} scope="col" className={cn('px-5 py-4 text-center font-display text-xl uppercase', item === 'premium' && 'text-volt')}>
-                      {t.tiers[item]}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-edge">
-                {pricingFeatures.map((feature) => (
-                  <tr key={feature.label.en} className="transition-colors hover:bg-night-800/60">
-                    <th scope="row" className="px-5 py-4 font-semibold text-ink/90">
-                      {loc(feature.label)}
+          <div className="mt-10">
+            <ScrollTable className="rounded-2xl border border-edge bg-night-900">
+              <table className="w-full min-w-[640px] text-left text-sm">
+                <caption className="sr-only">{t.pricing.tableTitle}</caption>
+                <thead>
+                  <tr className="border-b border-edge bg-night-800">
+                    <th scope="col" className="px-5 py-4 text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">
+                      {t.pricing.feature}
                     </th>
                     {TIERS.map((item) => (
-                      <td key={item} className={cn('px-5 py-4 text-center', item === 'premium' && 'bg-volt/[0.03]')}>
-                        <Availability value={feature[item]} />
-                      </td>
+                      <th key={item} scope="col" className={cn('px-5 py-4 text-center font-display text-xl uppercase', item === 'premium' && 'text-volt')}>
+                        {t.tiers[item]}
+                      </th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-edge">
+                  {pricingFeatures.map((feature) => (
+                    <tr key={feature.label.en} className="transition-colors hover:bg-night-800/60">
+                      <th scope="row" className="px-5 py-4 font-semibold text-ink/90">
+                        {loc(feature.label)}
+                      </th>
+                      {TIERS.map((item) => (
+                        <td key={item} className={cn('px-5 py-4 text-center', item === 'premium' && 'bg-volt/[0.03]')}>
+                          <Availability value={feature[item]} />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </ScrollTable>
           </div>
         </div>
       </section>

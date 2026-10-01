@@ -42,7 +42,7 @@ export default function ExercisesPage() {
 
           <div className="mt-6">
             {loading ? (
-              <GridSkeleton count={8} className="lg:grid-cols-4" />
+              <GridSkeleton count={8} className="sm:grid-cols-2 lg:grid-cols-4" />
             ) : error ? (
               <ErrorState title={t.exercisesPage.errorTitle} onRetry={refetch} />
             ) : list.length === 0 ? (

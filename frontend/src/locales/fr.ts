@@ -35,6 +35,7 @@ export const fr = {
     minutes: (n: number) => `${n} min`,
     exercises: (n: number) => `${n} exercice${n > 1 ? 's' : ''}`,
     ratingLabel: (value: string) => `Note : ${value} sur 5`,
+    scrollHint: 'Glissez pour voir le tableau',
   },
   goals: { 'weight-loss': 'Perte de poids', 'muscle-gain': 'Prise de masse' },
   levels: { beginner: 'Débutant', intermediate: 'Intermédiaire', advanced: 'Avancé' },

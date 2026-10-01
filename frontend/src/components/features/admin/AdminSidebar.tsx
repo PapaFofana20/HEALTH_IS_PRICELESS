@@ -104,10 +104,20 @@ export function AdminSidebar({ active }: { active: AdminSection }) {
       <div className="sticky top-0 z-40 border-b border-edge bg-night-950/95 backdrop-blur-md lg:hidden">
         <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-6">
           <Logo compact />
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-volt/40 bg-volt/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-volt">
-            <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
-            {t.admin.role}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="hidden items-center gap-1.5 rounded-full border border-volt/40 bg-volt/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-volt sm:inline-flex">
+              <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
+              {t.admin.role}
+            </span>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-edge text-muted transition-colors hover:border-danger/50 hover:text-danger"
+            >
+              <LogOut className="h-[18px] w-[18px]" aria-hidden />
+              <span className="sr-only">{t.dashboard.logout}</span>
+            </button>
+          </div>
         </div>
         <nav aria-label={t.admin.navLabel} className="scrollbar-none overflow-x-auto px-4 pb-3 sm:px-6">
           <ul className="flex w-max gap-2">

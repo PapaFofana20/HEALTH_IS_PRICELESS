@@ -152,7 +152,7 @@ export function FreeTools() {
             />
           </Reveal>
 
-          <Reveal className="h-full lg:col-span-2" delay={120}>
+          <Reveal className="h-full sm:col-span-2 lg:col-span-2" delay={120}>
             <ToolCard
               icon={Beef}
               title={t.freeTools.protein.title}

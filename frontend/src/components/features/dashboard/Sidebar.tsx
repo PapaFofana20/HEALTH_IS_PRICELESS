@@ -118,7 +118,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
             <Link
               to="/"
               aria-label={t.dashboard.backToSite}
-              className="grid h-9 w-9 place-items-center rounded-full border border-edge text-muted transition-colors hover:text-ink"
+              className="grid h-11 w-11 place-items-center rounded-full border border-edge text-muted transition-colors hover:text-ink"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden />
             </Link>
@@ -126,7 +126,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
               type="button"
               onClick={handleLogout}
               aria-label={t.dashboard.logout}
-              className="grid h-9 w-9 place-items-center rounded-full border border-edge text-muted transition-colors hover:text-danger"
+              className="grid h-11 w-11 place-items-center rounded-full border border-edge text-muted transition-colors hover:text-danger"
             >
               <LogOut className="h-4 w-4" aria-hidden />
             </button>
@@ -140,7 +140,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
                   to={to}
                   aria-current={active === key ? 'page' : undefined}
                   className={cn(
-                    'inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-[11px] font-extrabold uppercase tracking-[0.12em] transition-colors duration-200',
+                    'inline-flex h-11 items-center gap-2 rounded-full border px-3.5 text-[11px] font-extrabold uppercase tracking-[0.12em] transition-colors duration-200',
                     active === key ? 'border-volt bg-volt text-night-900' : 'border-edge text-muted hover:text-ink',
                   )}
                 >

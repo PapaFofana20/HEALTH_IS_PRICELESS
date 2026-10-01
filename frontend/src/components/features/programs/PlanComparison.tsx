@@ -15,7 +15,7 @@ function PriceBlock({ plan, goal }: { plan: Plan; goal: Goal }) {
   return (
     <div className="relative mt-8">
       <p className="flex items-baseline gap-2">
-        <span className="font-display text-6xl leading-none">{fmtPrice(planPricing[goal][plan].monthly)}</span>
+        <span className="font-display text-5xl leading-none sm:text-6xl">{fmtPrice(planPricing[goal][plan].monthly)}</span>
         <span className="text-sm font-semibold text-muted">{t.plans.perMonth}</span>
       </p>
     </div>
@@ -59,14 +59,14 @@ export function PlanComparison() {
         </div>
       </div>
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-2">
+      <div className="mt-10 grid gap-6 md:grid-cols-2">
         {/* Standard */}
-        <article className="relative flex flex-col overflow-hidden rounded-2xl border border-edge bg-night-800 p-7 sm:p-10">
+        <article className="relative flex flex-col overflow-hidden rounded-2xl border border-edge bg-night-800 p-6 sm:p-8 lg:p-10">
           <div aria-hidden className="pointer-events-none absolute -left-16 -bottom-16 h-48 w-48 rotate-12 pattern-stripes opacity-10" />
           <p className="relative text-[11px] font-extrabold uppercase tracking-[0.24em] text-muted">
             <span className="text-volt">01</span> — {t.tiers.standard}
           </p>
-          <h3 className="relative mt-3 font-display text-5xl uppercase leading-none">{t.plans.standard.name}</h3>
+          <h3 className="relative mt-3 font-display text-4xl uppercase leading-none sm:text-5xl">{t.plans.standard.name}</h3>
           <p className="relative mt-3 text-muted">{t.plans.standard.tagline}</p>
           <PriceBlock plan="standard" goal={goal} />
           <ul className="relative mt-6 flex-1 space-y-3.5 border-t border-edge pt-6">
@@ -85,16 +85,16 @@ export function PlanComparison() {
         </article>
 
         {/* Premium */}
-        <article className="relative flex flex-col overflow-hidden rounded-2xl border-2 border-volt bg-night-700 p-7 sm:p-10">
+        <article className="relative flex flex-col overflow-hidden rounded-2xl border-2 border-volt bg-night-700 p-6 sm:p-8 lg:p-10">
           <div aria-hidden className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rotate-12 pattern-stripes opacity-[0.16]" />
           <span className="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-sm bg-volt px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-night-900 sm:right-7 sm:top-7">
             <Sparkles className="h-3 w-3" aria-hidden />
             {t.plans.recommended}
           </span>
           <p className="relative text-[11px] font-extrabold uppercase tracking-[0.24em] text-volt">02  {t.tiers.premium}</p>
-          <h3 className="relative mt-3 flex items-center gap-3 font-display text-5xl uppercase leading-none">
+          <h3 className="relative mt-3 flex items-center gap-3 font-display text-4xl uppercase leading-none sm:text-5xl">
             {t.plans.premium.name}
-            <Crown className="h-7 w-7 text-volt" aria-hidden />
+            <Crown className="h-6 w-6 text-volt sm:h-7 sm:w-7" aria-hidden />
           </h3>
           <p className="relative mt-3 text-ink/75">{t.plans.premium.tagline}</p>
           <PriceBlock plan="premium" goal={goal} />

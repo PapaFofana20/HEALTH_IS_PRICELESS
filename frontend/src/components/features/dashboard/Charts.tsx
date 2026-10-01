@@ -137,7 +137,7 @@ export function MuscleVolumeChart({ data }: { data: MuscleVolume[] }) {
         <BarChart data={chartData} layout="vertical" margin={{ top: 0, right: 16, left: 0, bottom: 0 }}>
           <CartesianGrid stroke="#1E3448" strokeDasharray="3 6" horizontal={false} />
           <XAxis type="number" tick={{ fill: '#94A3B8', fontSize: 12 }} axisLine={false} tickLine={false} />
-          <YAxis type="category" dataKey="label" width={112} tick={{ fill: '#F8FAFC', fontSize: 12 }} axisLine={false} tickLine={false} />
+          <YAxis type="category" dataKey="label" width={80} tick={{ fill: '#F8FAFC', fontSize: 12 }} axisLine={false} tickLine={false} />
           <Tooltip {...chartTooltip} cursor={{ fill: 'rgba(199,255,0,0.06)' }} />
           <Bar dataKey="sets" name={t.dashboard.advanced.sets} fill="#C7FF00" radius={[0, 6, 6, 0]} barSize={14} />
         </BarChart>

@@ -22,14 +22,14 @@ export function GoalSelector() {
         <Reveal>
           <SectionHeading id="goal-title" eyebrow={t.goalSection.eyebrow} title={t.goalSection.title} subtitle={t.goalSection.subtitle} />
         </Reveal>
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2">
           {cards.map(({ goal, number, image, content, Icon }, index) => {
             const count = programs.filter((program) => program.goal === goal).length;
             return (
               <Reveal key={goal} delay={index * 120} className="h-full">
                 <Link
                   to={`/programmes?goal=${goal}`}
-                  className="group relative flex h-[440px] flex-col justify-end overflow-hidden rounded-2xl border border-edge bg-night-800 p-6 transition-colors duration-300 hover:border-volt/70 sm:h-[500px] sm:p-8 lg:h-[560px] lg:p-10"
+                  className="group relative flex h-[380px] flex-col justify-end overflow-hidden rounded-2xl border border-edge bg-night-800 p-6 transition-colors duration-300 hover:border-volt/70 sm:h-[440px] sm:p-8 lg:h-[560px] lg:p-10"
                 >
                   <img
                     src={image}
@@ -48,7 +48,7 @@ export function GoalSelector() {
                       </span>
                       <Tag tone="light">{t.goalSection.programsCount(count)}</Tag>
                     </div>
-                    <h3 className="mt-5 font-display text-5xl uppercase leading-none tracking-tight sm:text-6xl">{content.title}</h3>
+                    <h3 className="mt-5 font-display text-4xl uppercase leading-none tracking-tight sm:text-5xl">{content.title}</h3>
                     <p className="mt-3 max-w-md text-base leading-relaxed text-ink/80">{content.text}</p>
                     <ul className="mt-5 flex flex-wrap gap-2">
                       {content.tags.map((tag) => (

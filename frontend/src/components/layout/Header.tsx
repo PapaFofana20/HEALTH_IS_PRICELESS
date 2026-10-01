@@ -64,7 +64,7 @@ export function Header() {
         <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:h-20 lg:px-8">
           <Logo compact />
 
-          <nav aria-label={t.nav.main} className="hidden xl:block">
+          <nav aria-label={t.nav.main} className="hidden lg:block">
             <ul className="flex items-center gap-1">
               {user?.role === 'admin' && (
                 <li key="/admin">
@@ -117,13 +117,13 @@ export function Header() {
             {user ? (
               <Link
                 to="/dashboard"
-                className="hidden items-center gap-2 rounded-full border border-edge py-1 pl-1 pr-3 text-[12px] font-extrabold uppercase tracking-[0.12em] text-ink transition-colors hover:border-volt xl:inline-flex"
+                className="hidden items-center gap-2 rounded-full border border-edge py-1 pl-1 pr-3 text-[12px] font-extrabold uppercase tracking-[0.12em] text-ink transition-colors hover:border-volt lg:inline-flex"
               >
                 <img src={user.avatar} alt="" className="h-7 w-7 rounded-full object-cover" />
                 {t.nav.dashboard}
               </Link>
             ) : (
-              <ButtonLink to="/connexion" variant="outline" size="sm" className="hidden xl:inline-flex">
+              <ButtonLink to="/connexion" variant="outline" size="sm" className="hidden lg:inline-flex">
                 {t.nav.login}
               </ButtonLink>
             )}
@@ -131,7 +131,7 @@ export function Header() {
               {t.nav.start}
             </ButtonLink>
             {!user && (
-              <ButtonLink to="/connexion" size="sm" className="xl:hidden">
+              <ButtonLink to="/connexion" size="sm" className="lg:hidden">
                 {t.nav.login}
               </ButtonLink>
             )}
@@ -141,7 +141,7 @@ export function Header() {
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
-              className="grid h-10 w-10 place-items-center rounded-full border border-edge text-ink transition-colors hover:border-volt hover:text-volt xl:hidden"
+              className="grid h-10 w-10 place-items-center rounded-full border border-edge text-ink transition-colors hover:border-volt hover:text-volt lg:hidden"
             >
               {open ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
             </button>
@@ -153,7 +153,7 @@ export function Header() {
       <div
         id="mobile-menu"
         className={cn(
-          'fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-night-900 transition-all duration-300 lg:top-20 xl:hidden',
+          'fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-night-900 transition-all duration-300 lg:hidden',
           open ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-3 opacity-0',
         )}
       >

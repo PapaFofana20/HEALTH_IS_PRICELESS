@@ -31,6 +31,7 @@ import { RevenueChart, SignupsChart, TierSplit } from '../components/features/ad
 import { Chip, PlanBadge, Tag } from '../components/ui/Badge';
 import { ButtonLink } from '../components/ui/Button';
 import { Logo } from '../components/ui/Logo';
+import { ScrollTable } from '../components/ui/ScrollTable';
 import type { Tier } from '../types';
 
 const VALID_SECTIONS = ADMIN_SECTIONS.map((item) => item.key);
@@ -259,7 +260,7 @@ function MembersView() {
         </div>
       </div>
       <p className="text-sm font-semibold text-muted">{t.admin.members.count(fmtNumber(filtered.length))}</p>
-      <div className="overflow-x-auto rounded-xl border border-edge">
+      <ScrollTable className="rounded-xl border border-edge">
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead>
             <tr className="border-b border-edge bg-night-800 text-[10px] font-extrabold uppercase tracking-[0.14em] text-muted">
@@ -298,7 +299,7 @@ function MembersView() {
             )}
           </tbody>
         </table>
-      </div>
+      </ScrollTable>
     </div>
   );
 }
@@ -328,7 +329,7 @@ function OrdersView() {
           </Chip>
         ))}
       </div>
-      <div className="overflow-x-auto rounded-xl border border-edge">
+      <ScrollTable className="rounded-xl border border-edge">
         <table className="w-full min-w-[820px] text-left text-sm">
           <thead>
             <tr className="border-b border-edge bg-night-800 text-[10px] font-extrabold uppercase tracking-[0.14em] text-muted">
@@ -377,7 +378,7 @@ function OrdersView() {
             </tfoot>
           )}
         </table>
-      </div>
+      </ScrollTable>
     </div>
   );
 }

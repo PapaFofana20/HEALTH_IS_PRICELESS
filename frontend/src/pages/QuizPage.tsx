@@ -243,7 +243,7 @@ export default function QuizPage() {
               </ul>
             </div>
 
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
               {matches.map((match, index) => (
                 <ProgramCard key={match.program.id} program={match.program} matchScore={match.score} highlight={index === 0 ? t.quiz.bestMatch : undefined} />
               ))}

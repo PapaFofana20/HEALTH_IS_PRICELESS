@@ -100,7 +100,7 @@ export function Footer() {
                     target="_blank"
                     rel="noreferrer"
                     aria-label={`${t.footer.social} ${social.label}`}
-                    className="grid h-10 w-10 place-items-center rounded-full border border-edge text-muted transition-colors duration-200 hover:border-volt hover:text-volt"
+                    className="grid h-11 w-11 place-items-center rounded-full border border-edge text-muted transition-colors duration-200 hover:border-volt hover:text-volt"
                   >
                     {social.icon}
                   </a>

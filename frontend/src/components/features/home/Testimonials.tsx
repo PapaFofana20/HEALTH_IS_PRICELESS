@@ -119,7 +119,7 @@ export function Testimonials() {
         </div>
 
         <div className="mt-10 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             {testimonials.map((testimonial, i) => (
               <button
                 key={testimonial.id}
@@ -127,11 +127,15 @@ export function Testimonials() {
                 onClick={() => setIndex(i)}
                 aria-label={t.testimonials.goTo(i + 1)}
                 aria-current={i === index}
-                className={cn(
-                  'h-2 rounded-full transition-all duration-300 focus-visible:outline-night-900',
-                  i === index ? 'w-10 bg-night-900' : 'w-4 bg-night-900/25 hover:bg-night-900/50',
-                )}
-              />
+                className="grid h-11 w-11 place-items-center focus-visible:outline-night-900"
+              >
+                <span
+                  className={cn(
+                    'h-2 rounded-full transition-all duration-300',
+                    i === index ? 'w-10 bg-night-900' : 'w-4 bg-night-900/25 hover:bg-night-900/50',
+                  )}
+                />
+              </button>
             ))}
           </div>
           <p className="text-sm font-bold text-slate-600">{t.testimonials.summary}</p>

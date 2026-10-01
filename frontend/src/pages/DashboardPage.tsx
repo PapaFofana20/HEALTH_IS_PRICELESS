@@ -269,7 +269,7 @@ function OverviewView({ user, stats, program, weekStatus, onComplete, progressQu
         <WeekStrip statuses={weekStatus} />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-5">
+      <div className="grid gap-6 xl:grid-cols-5 xl:gap-4">
         <div className="min-w-0 xl:col-span-3">
           <ProgressChart data={progressQuery.data} loading={progressQuery.loading} error={progressQuery.error} onRetry={progressQuery.refetch} />
         </div>

@@ -240,7 +240,7 @@ export function CalorieCalculator() {
             { value: 'female', label: t.calc.female },
           ]}
         />
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-2">
           <NumberField id="cal-age" label={t.calc.age} unit={t.calc.ageUnit} value={age} onChange={setAge} min={15} max={90} />
           <NumberField id="cal-height" label={t.calc.height} unit={t.calc.heightUnit} value={height} onChange={setHeight} min={120} max={230} />
           <NumberField id="cal-weight" label={t.calc.weight} unit={t.calc.weightUnit} value={weight} onChange={setWeight} min={30} max={300} step={0.1} />

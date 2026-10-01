@@ -15,7 +15,7 @@ export function QuizBanner() {
       <div className={cn(container, 'relative grid items-center gap-14 lg:grid-cols-2')}>
         <Reveal>
           <Eyebrow>{t.quizBanner.eyebrow}</Eyebrow>
-          <h2 id="quiz-banner-title" className="mt-4 font-display text-5xl uppercase leading-[0.92] tracking-tight sm:text-6xl lg:text-7xl">
+          <h2 id="quiz-banner-title" className="mt-4 font-display text-4xl uppercase leading-[0.92] tracking-tight sm:text-6xl lg:text-7xl">
             {t.quizBanner.title1} <span className="text-volt">{t.quizBanner.title2}</span>
           </h2>
           <p className="mt-5 max-w-lg text-base leading-relaxed text-muted sm:text-lg">{t.quizBanner.text}</p>

@@ -43,9 +43,9 @@ export default function AboutPage() {
       <section className="py-16 lg:py-24">
         <div className={cn(container, 'grid items-center gap-14 lg:grid-cols-2')}>
           <Reveal>
-            <div className="relative isolate mr-5 sm:mr-6">
+            <div className="relative isolate mr-4 sm:mr-6">
               <img src={media.aboutMission} alt="" className="aspect-[4/3] w-full rounded-2xl object-cover lg:aspect-[4/5]" />
-              <div aria-hidden className="absolute -bottom-5 -right-5 -z-10 h-full w-full rounded-2xl border-2 border-volt/60 sm:-bottom-6 sm:-right-6" />
+              <div aria-hidden className="absolute -bottom-4 -right-4 -z-10 h-full w-full rounded-2xl border-2 border-volt/60 sm:-bottom-6 sm:-right-6" />
             </div>
           </Reveal>
           <Reveal delay={100}>
@@ -97,9 +97,13 @@ export default function AboutPage() {
           <Reveal>
             <SectionHeading eyebrow={t.about.teamEyebrow} title={t.about.teamTitle} />
           </Reveal>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {coaches.map((coach, index) => (
-              <Reveal key={coach.id} delay={index * 80} className="h-full">
+              <Reveal
+                key={coach.id}
+                delay={index * 80}
+                className={cn('h-full', index === coaches.length - 1 && 'sm:col-span-2 lg:col-span-1')}
+              >
                 <article className="flex h-full flex-col items-start rounded-2xl border border-edge bg-night-800 p-6">
                   <img src={coach.avatar} alt="" className="h-20 w-20 rounded-full object-cover ring-2 ring-volt/60 ring-offset-4 ring-offset-night-800" />
                   <h3 className="mt-6 font-display text-2xl uppercase">{coach.name}</h3>

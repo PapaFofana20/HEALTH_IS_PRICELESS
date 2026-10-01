@@ -36,6 +36,7 @@ export const en: Translations = {
     minutes: (n: number) => `${n} min`,
     exercises: (n: number) => `${n} exercise${n > 1 ? 's' : ''}`,
     ratingLabel: (value: string) => `Rated ${value} out of 5`,
+    scrollHint: 'Swipe to see the table',
   },
   goals: { 'weight-loss': 'Weight loss', 'muscle-gain': 'Muscle gain' },
   levels: { beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced' },
