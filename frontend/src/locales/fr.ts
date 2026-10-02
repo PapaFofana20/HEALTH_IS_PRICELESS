@@ -183,7 +183,7 @@ export const fr = {
     title1: 'Trouve ton',
     title2: 'programme',
     text: 'Réponds à 5 questions rapides : objectif, niveau, disponibilités, lieu et durée. On te recommande les programmes les plus adaptés.',
-    steps: ['Objectif', 'Niveau', 'Fréquence', 'Lieu', 'Durée'],
+    steps: ['Taille', 'Poids', 'Objectif', 'Niveau', 'Fréquence', 'Lieu', 'Durée'],
     cta: 'Commencer le quiz',
     duration: '2 minutes · sans inscription',
     previewStep: 'Question 1 / 5',
@@ -404,7 +404,7 @@ export const fr = {
         },
       },
       duration: {
-        title: 'Durée préférée par séance\u00a0?',
+        title: 'Durée préférée par séance ?',
         subtitle: 'Des séances efficaces, quel que soit ton temps.',
         options: {
           '20': { label: '20 min', desc: 'Express' },
@@ -412,6 +412,14 @@ export const fr = {
           '45': { label: '45 min', desc: 'Complet' },
           '60': { label: '60 min', desc: 'Approfondi' },
         },
+      },
+      height: {
+        title: 'Quelle est ta taille ?',
+        subtitle: 'On adapte les exercices et les charges à ta morphologie.',
+      },
+      weight: {
+        title: 'Quel est ton poids ?',
+        subtitle: 'On l’utilise pour calibrer ton programme et ton suivi.',
       },
     },
     sessionsUnit: 'séances / sem.',
@@ -421,6 +429,8 @@ export const fr = {
     resultText: 'Voici les programmes les plus adaptés à tes réponses. Tu peux modifier une réponse à tout moment.',
     match: (n: number) => `${n} % compatible`,
     bestMatch: 'Meilleur choix',
+    yourGoal: 'Ton objectif',
+    otherMatches: 'Autres programmes recommandés',
     yourAnswers: 'Tes réponses',
     editAnswer: (label: string) => `Modifier : ${label}`,
     restart: 'Refaire le quiz',

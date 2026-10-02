@@ -256,6 +256,8 @@ export interface QuizAnswers {
   sessions?: number;
   location?: TrainingLocation;
   duration?: number;
+  height?: number;
+  weight?: number;
 }
 
 export interface ProgramMatch {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
-import { ArrowLeft, ArrowRight, Building2, Check, Dumbbell, Flame, House, Pencil, Repeat, RotateCcw, Sprout, TrendingUp, Trophy } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Building2, Check, Dumbbell, Flame, House, Pencil, Repeat, RotateCcw, Ruler, Sprout, TrendingUp, Trophy, Weight } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { recommendPrograms } from '../utils/fitness';
 import { useLanguage, usePageTitle } from '../hooks/useLanguage';
@@ -12,8 +12,8 @@ import { Button, ButtonLink } from '../components/ui/Button';
 import { Eyebrow } from '../components/ui/SectionHeading';
 import type { Goal, Level, QuizAnswers, TrainingLocation } from '../types';
 
-type StepKey = 'goal' | 'level' | 'sessions' | 'location' | 'duration';
-const STEPS: StepKey[] = ['goal', 'level', 'sessions', 'location', 'duration'];
+type StepKey = 'goal' | 'level' | 'sessions' | 'location' | 'duration' | 'height' | 'weight';
+const STEPS: StepKey[] = ['height', 'weight', 'goal', 'level', 'sessions', 'location', 'duration'];
 
 const OPTIONS: Record<StepKey, { value: string; icon?: LucideIcon }[]> = {
   goal: [
@@ -32,7 +32,11 @@ const OPTIONS: Record<StepKey, { value: string; icon?: LucideIcon }[]> = {
     { value: 'both', icon: Repeat },
   ],
   duration: [{ value: '20' }, { value: '30' }, { value: '45' }, { value: '60' }],
+  height: [],
+  weight: [],
 };
+
+const INPUT_STEPS: StepKey[] = ['height', 'weight'];
 
 type Answers = Partial<Record<StepKey, string>>;
 const isGoal = (value: string | null | undefined): value is Goal => value === 'weight-loss' || value === 'muscle-gain';
@@ -40,6 +44,8 @@ const isLevel = (value: string | null | undefined): value is Level =>
   value === 'beginner' || value === 'intermediate' || value === 'advanced';
 const isLocation = (value: string | null | undefined): value is TrainingLocation =>
   value === 'home' || value === 'gym' || value === 'both';
+const isHeight = (value: string | null | undefined): boolean => value !== null && value !== undefined && value !== '';
+const isWeight = (value: string | null | undefined): boolean => value !== null && value !== undefined && value !== '';
 
 export default function QuizPage() {
   const { t } = useLanguage();
@@ -84,11 +90,19 @@ export default function QuizPage() {
       sessions: answers.sessions ? Number(answers.sessions) : undefined,
       location: isLocation(answers.location) ? answers.location : undefined,
       duration: answers.duration ? Number(answers.duration) : undefined,
+      height: answers.height ? Number(answers.height) : undefined,
+      weight: answers.weight ? Number(answers.weight) : undefined,
     }),
     [answers],
   );
 
   const matches = useMemo(() => (isResult ? recommendPrograms(quizAnswers, programs, 3) : []), [isResult, quizAnswers]);
+
+  const topPick = useMemo(() => {
+    if (!isResult || !quizAnswers.goal) return null;
+    const goalMatches = matches.filter((m) => m.program.goal === quizAnswers.goal);
+    return goalMatches.length > 0 ? goalMatches[0] : matches[0] ?? null;
+  }, [isResult, matches, quizAnswers.goal]);
 
   const restart = () => {
     window.clearTimeout(timer.current);
@@ -98,6 +112,7 @@ export default function QuizPage() {
 
   const options = OPTIONS[currentKey];
   const question = t.quiz.questions[currentKey];
+  const isInputStep = INPUT_STEPS.includes(currentKey);
 
   return (
     <section className="relative isolate min-h-screen overflow-hidden pb-20 pt-28 lg:pt-36">
@@ -122,7 +137,7 @@ export default function QuizPage() {
         >
           <div className="h-full rounded-full bg-volt transition-[width] duration-500 ease-out" style={{ width: `${progress}%` }} />
         </div>
-        <ol aria-hidden className="mt-3 hidden grid-cols-5 gap-2 sm:grid">
+        <ol aria-hidden className="mt-3 hidden grid-cols-7 gap-2 sm:grid">
           {STEPS.map((key, index) => (
             <li
               key={key}
@@ -143,70 +158,101 @@ export default function QuizPage() {
             </h1>
             <p className="mt-3 text-muted sm:text-lg">{question.subtitle}</p>
 
-            <div
-              role="group"
-              aria-label={question.title}
-              className={cn(
-                'mt-10 grid gap-3 sm:gap-4',
-                options.length === 2 ? 'sm:grid-cols-2' : options.length === 3 ? 'sm:grid-cols-3' : 'grid-cols-2 lg:grid-cols-4',
-              )}
-            >
-              {options.map(({ value, icon: Icon }) => {
-                const option = optionText(currentKey, value);
-                const selected = answers[currentKey] === value;
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-pressed={selected}
-                    onClick={() => select(value)}
-                    className={cn(
-                      'group relative flex flex-col items-start rounded-2xl border-2 p-5 text-left transition-all duration-200 sm:p-6',
-                      selected ? 'border-volt bg-volt/10' : 'border-edge bg-night-800 hover:-translate-y-0.5 hover:border-edge-strong',
-                    )}
-                  >
-                    {Icon ? (
-                      <>
-                        <span
-                          className={cn(
-                            'grid h-12 w-12 place-items-center rounded-xl transition-colors duration-200',
-                            selected ? 'bg-volt text-night-900' : 'bg-night-700 text-volt',
-                          )}
-                        >
-                          <Icon className="h-6 w-6" aria-hidden />
-                        </span>
-                        <span className="mt-5 font-display text-2xl uppercase">{option.label}</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className={cn('font-display text-5xl uppercase leading-none transition-colors', selected ? 'text-volt' : 'text-ink')}>
-                          {option.label}
-                        </span>
-                        {currentKey === 'sessions' && (
-                          <span className="mt-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{t.quiz.sessionsUnit}</span>
-                        )}
-                      </>
-                    )}
-                    <span className="mt-2 text-sm text-muted">{option.desc}</span>
-                    <span
-                      aria-hidden
+            {isInputStep ? (
+              <div className="mt-10 mx-auto max-w-md">
+                <label htmlFor={currentKey} className="sr-only">
+                  {question.title}
+                </label>
+                <div className="relative">
+                  <input
+                    id={currentKey}
+                    type="number"
+                    min={currentKey === 'height' ? 100 : 30}
+                    max={currentKey === 'height' ? 250 : 300}
+                    value={answers[currentKey] || ''}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setAnswers((prev) => ({ ...prev, [currentKey]: val }));
+                    }}
+                    placeholder={currentKey === 'height' ? '170' : '70'}
+                    className="w-full rounded-2xl border-2 border-edge bg-night-800 px-5 py-4 pr-16 text-2xl font-display text-ink placeholder:text-muted/50 focus:border-volt focus:outline-none transition-colors"
+                  />
+                  <span className="absolute right-5 top-1/2 -translate-y-1/2 text-sm font-bold uppercase tracking-wider text-muted">
+                    {currentKey === 'height' ? 'cm' : 'kg'}
+                  </span>
+                </div>
+                <p className="mt-3 text-sm text-muted">{question.subtitle}</p>
+              </div>
+            ) : (
+              <div
+                role="group"
+                aria-label={question.title}
+                className={cn(
+                  'mt-10 grid gap-3 sm:gap-4',
+                  options.length === 2 ? 'sm:grid-cols-2' : options.length === 3 ? 'sm:grid-cols-3' : 'grid-cols-2 lg:grid-cols-4',
+                )}
+              >
+                {options.map(({ value, icon: Icon }) => {
+                  const option = optionText(currentKey, value);
+                  const selected = answers[currentKey] === value;
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => select(value)}
                       className={cn(
-                        'absolute right-4 top-4 grid h-6 w-6 place-items-center rounded-full border transition-colors duration-200',
-                        selected ? 'border-volt bg-volt text-night-900' : 'border-edge-strong',
+                        'group relative flex flex-col items-start rounded-2xl border-2 p-5 text-left transition-all duration-200 sm:p-6',
+                        selected ? 'border-volt bg-volt/10' : 'border-edge bg-night-800 hover:-translate-y-0.5 hover:border-edge-strong',
                       )}
                     >
-                      {selected && <Check className="h-3.5 w-3.5" />}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+                      {Icon ? (
+                        <>
+                          <span
+                            className={cn(
+                              'grid h-12 w-12 place-items-center rounded-xl transition-colors duration-200',
+                              selected ? 'bg-volt text-night-900' : 'bg-night-700 text-volt',
+                            )}
+                          >
+                            <Icon className="h-6 w-6" aria-hidden />
+                          </span>
+                          <span className="mt-5 font-display text-2xl uppercase">{option.label}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className={cn('font-display text-5xl uppercase leading-none transition-colors', selected ? 'text-volt' : 'text-ink')}>
+                            {option.label}
+                          </span>
+                          {currentKey === 'sessions' && (
+                            <span className="mt-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{t.quiz.sessionsUnit}</span>
+                          )}
+                        </>
+                      )}
+                      <span className="mt-2 text-sm text-muted">{option.desc}</span>
+                      <span
+                        aria-hidden
+                        className={cn(
+                          'absolute right-4 top-4 grid h-6 w-6 place-items-center rounded-full border transition-colors duration-200',
+                          selected ? 'border-volt bg-volt text-night-900' : 'border-edge-strong',
+                        )}
+                      >
+                        {selected && <Check className="h-3.5 w-3.5" />}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
             <div className="mt-10 flex items-center justify-between gap-4">
               <Button variant="ghost" icon={<ArrowLeft />} onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0}>
                 {t.common.back}
               </Button>
-              <Button onClick={() => setStep((s) => Math.min(s + 1, STEPS.length))} disabled={!answers[currentKey]} iconRight={<ArrowRight />}>
+              <Button
+                onClick={() => setStep((s) => Math.min(s + 1, STEPS.length))}
+                disabled={isInputStep ? !answers[currentKey] || Number(answers[currentKey]) <= 0 : !answers[currentKey]}
+                iconRight={<ArrowRight />}
+              >
                 {t.common.next}
               </Button>
             </div>
@@ -243,11 +289,27 @@ export default function QuizPage() {
               </ul>
             </div>
 
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-              {matches.map((match, index) => (
-                <ProgramCard key={match.program.id} program={match.program} matchScore={match.score} highlight={index === 0 ? t.quiz.bestMatch : undefined} />
-              ))}
-            </div>
+            {topPick && (
+              <div className="mt-10">
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">{t.quiz.yourGoal}</p>
+                <div className="mt-4">
+                  <ProgramCard program={topPick.program} matchScore={topPick.score} highlight={t.quiz.bestMatch} />
+                </div>
+              </div>
+            )}
+
+            {matches.filter((m) => m.program.id !== topPick?.program.id).length > 0 && (
+              <div className="mt-10">
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">{t.quiz.otherMatches}</p>
+                <div className="mt-4 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+                  {matches
+                    .filter((m) => m.program.id !== topPick?.program.id)
+                    .map((match) => (
+                      <ProgramCard key={match.program.id} program={match.program} matchScore={match.score} />
+                    ))}
+                </div>
+              </div>
+            )}
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Button variant="outline" icon={<RotateCcw />} onClick={restart}>

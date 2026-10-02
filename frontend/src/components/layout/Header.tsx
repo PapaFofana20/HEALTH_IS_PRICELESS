@@ -114,8 +114,8 @@ export function Header() {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <LanguageSwitcher className="hidden sm:inline-flex" />
-            <ButtonLink to="/quiz" size="sm" className="hidden md:inline-flex" iconRight={<ArrowRight />}>
-              {t.nav.start}
+            <ButtonLink to="/connexion" size="sm" className="hidden md:inline-flex" iconRight={<ArrowRight />}>
+              {t.nav.login}
             </ButtonLink>
             {user ? (
               <Link
