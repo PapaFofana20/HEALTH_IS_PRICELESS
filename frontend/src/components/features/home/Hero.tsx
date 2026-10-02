@@ -1,5 +1,5 @@
 import { ArrowRight, Flame } from 'lucide-react';
-import heroImg from '../../../assets/hero-athlete.jpg';
+import heroImg from '../../../assets/hero-athlete 2.png';
 import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { communityMembers } from '../../../data/community';
@@ -56,7 +56,7 @@ export function Hero() {
 
         {/* Visual composition */}
         <div className="relative lg:col-span-6">
-          <div className="relative mx-auto aspect-[4/3] w-full max-w-[560px] sm:aspect-[4/5] lg:aspect-[4/5] lg:max-w-none">
+          <div className="relative mx-auto aspect-[3/4] w-full max-w-[560px] sm:aspect-[4/5] lg:aspect-[4/5] lg:max-w-none">
             <div aria-hidden className="absolute right-0 top-[4%] h-[60%] w-[62%] pattern-stripes opacity-30 fade-mask-bottom" />
             <span aria-hidden className="absolute -left-2 bottom-[5%] select-none font-display text-[6.5rem] leading-none txt-outline-soft sm:text-[9rem]">
               HIP
