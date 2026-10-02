@@ -16,12 +16,12 @@ export function Hero() {
   ];
 
   return (
-    <section className="relative isolate overflow-hidden bg-night-900 pt-24 sm:pt-28 lg:pt-32">
+    <section className="relative isolate overflow-hidden bg-night-900 pt-24 sm:pt-28 lg:pt-28">
       {/* Background: grid + soft navy glow */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
       <div aria-hidden className="pointer-events-none absolute -right-40 -top-24 -z-10 h-[46rem] w-[46rem] rounded-full bg-night-700/60 blur-3xl" />
 
-      <div className={cn(container, 'grid items-center gap-12 pb-14 lg:grid-cols-12 lg:gap-6 lg:pb-20')}>
+      <div className={cn(container, 'grid items-center gap-12 pb-14 lg:grid-cols-12 lg:items-start lg:gap-6 lg:pb-20')}>
         {/* Copy — centered on mobile, left-aligned from lg */}
         <div className="flex flex-col items-center text-center lg:col-span-6 lg:items-start lg:text-left">
           <Eyebrow className="animate-fade-up">{t.hero.eyebrow}</Eyebrow>
@@ -56,7 +56,7 @@ export function Hero() {
 
         {/* Visual composition */}
         <div className="relative lg:col-span-6">
-          <div className="relative mx-auto aspect-[4/3] w-full max-w-[560px] sm:aspect-square lg:aspect-[4/5] lg:max-w-none">
+          <div className="relative mx-auto aspect-[4/3] w-full max-w-[560px] sm:aspect-[4/5] lg:aspect-[4/5] lg:max-w-none">
             <div aria-hidden className="absolute right-0 top-[4%] h-[60%] w-[62%] pattern-stripes opacity-30 fade-mask-bottom" />
             <span aria-hidden className="absolute -left-2 bottom-[5%] select-none font-display text-[6.5rem] leading-none txt-outline-soft sm:text-[9rem]">
               HIP
