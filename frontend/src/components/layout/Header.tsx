@@ -114,19 +114,16 @@ export function Header() {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <LanguageSwitcher className="hidden sm:inline-flex" />
-            <ButtonLink to="/connexion" size="sm" className="hidden md:inline-flex" iconRight={<ArrowRight />}>
-              {t.nav.login}
-            </ButtonLink>
+            {!user && (
+              <ButtonLink to="/connexion" size="sm" className="hidden md:inline-flex" iconRight={<ArrowRight />}>
+                {t.nav.login}
+              </ButtonLink>
+            )}
             {user ? (
               <Link
                 to="/dashboard"
-                className="flex items-center gap-2 rounded-full border border-edge py-1 pl-1 pr-3 text-[12px] font-extrabold uppercase tracking-[0.12em] text-ink transition-colors hover:border-volt lg:inline-flex"
+                className="flex items-center rounded-full border border-edge px-4 py-2 text-[12px] font-extrabold uppercase tracking-[0.12em] text-ink transition-colors hover:border-volt lg:inline-flex"
               >
-                <img
-                  src={user.avatar}
-                  alt=""
-                  className="h-7 w-7 rounded-full object-cover"
-                />
                 {t.nav.dashboard}
               </Link>
             ) : (
