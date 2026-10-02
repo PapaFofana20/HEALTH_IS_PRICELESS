@@ -9,7 +9,7 @@ export const en: Translations = {
     name: 'HIP',
     tagline: 'Train. Eat better. Progress.',
     homeLabel: 'HIP — back to home',
-    defaultTitle: 'HIP — Fitness coaching: weight loss & muscle gain',
+    defaultTitle: 'HEALTH IS PRICELESS',
   },
   common: {
     viewProgram: 'View program',
@@ -91,7 +91,7 @@ export const en: Translations = {
     mobile: 'Mobile navigation',
   },
   hero: {
-    eyebrow: 'HEALTH IS PRICELESS',
+    eyebrow: 'FITNESS COACHING',
     line1: 'Transform',
     line2: 'your',
     line2Accent: 'body.',
@@ -234,7 +234,7 @@ export const en: Translations = {
     cta: 'All articles',
   },
   footer: {
-    tagline: 'HEALTH IS PRICELESS',
+    tagline: 'HIP',
     platform: 'Platform',
     goals: 'Goals',
     help: 'Help',

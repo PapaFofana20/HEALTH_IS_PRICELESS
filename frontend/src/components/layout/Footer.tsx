@@ -141,7 +141,7 @@ export function Footer() {
         aria-hidden
         className="pointer-events-none select-none whitespace-nowrap px-4 text-center font-display text-[12vw] leading-[0.78] tracking-tight txt-outline-volt opacity-60"
       >
-        HEALTH IS PRICELESS
+        HIP
       </p>
     </footer>
   );

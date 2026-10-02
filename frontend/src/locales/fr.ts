@@ -8,7 +8,7 @@ export const fr = {
     name: 'HIP',
     tagline: 'Entraîne-toi. Mange mieux. Progresse.',
     homeLabel: 'HIP — retour à l’accueil',
-    defaultTitle: 'HIP — Coaching fitness : perte de poids & prise de masse',
+    defaultTitle: 'HEALTH IS PRICELESS',
   },
   common: {
     viewProgram: 'Voir le programme',
@@ -90,7 +90,7 @@ export const fr = {
     mobile: 'Navigation mobile',
   },
   hero: {
-    eyebrow: 'HEALTH IS PRICELESS',
+    eyebrow: 'FITNESS COACHING',
     line1: 'Transforme',
     line2: 'ton',
     line2Accent: 'corps.',
@@ -236,7 +236,7 @@ export const fr = {
     cta: 'Tous les articles',
   },
   footer: {
-    tagline: 'HEALTH IS PRICELESS',
+    tagline: 'HIP',
     platform: 'Plateforme',
     goals: 'Objectifs',
     help: 'Aide',
