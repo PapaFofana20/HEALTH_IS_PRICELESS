@@ -1,4 +1,4 @@
--- HIP back-office (admin) + commandes.
+-- HEALTH IS PRICELESS back-office (admin) + commandes.
 -- À exécuter une fois dans : Supabase Dashboard → SQL Editor → New query → Coller → Run.
 -- (À faire APRÈS 0001_profiles.sql)
 

@@ -6,9 +6,9 @@
 
 export const en: Translations = {
   brand: {
-    name: 'HIP',
+    name: 'HEALTH IS PRICELESS',
     tagline: 'Train. Eat better. Progress.',
-    homeLabel: 'HIP — back to home',
+    homeLabel: 'HEALTH IS PRICELESS — back to home',
     defaultTitle: 'HEALTH IS PRICELESS',
   },
   common: {
@@ -91,7 +91,7 @@ export const en: Translations = {
     mobile: 'Mobile navigation',
   },
   hero: {
-    eyebrow: 'FITNESS COACHING',
+    eyebrow: 'HEALTH IS PRICELESS',
     line1: 'Transform',
     line2: 'your',
     line2Accent: 'body.',
@@ -234,7 +234,7 @@ export const en: Translations = {
     cta: 'All articles',
   },
   footer: {
-    tagline: 'HIP',
+    tagline: 'HEALTH IS PRICELESS',
     platform: 'Platform',
     goals: 'Goals',
     help: 'Help',
@@ -244,7 +244,7 @@ export const en: Translations = {
     terms: 'Terms',
     rights: 'All rights reserved.',
     disclaimer: 'The information provided does not replace the advice of a healthcare professional.',
-    social: 'Follow HIP on',
+    social: 'Follow HEALTH IS PRICELESS on',
   },
   calc: {
     tabsLabel: 'Choose a calculator',
@@ -584,7 +584,7 @@ export const en: Translations = {
     eyebrow: 'About',
     title1: 'Fitness,',
     title2: 'no nonsense',
-    intro: 'HIP was born from a simple idea: make structured training accessible to everyone, whatever their starting point.',
+    intro: 'HEALTH IS PRICELESS was born from a simple idea: make structured training accessible to everyone, whatever their starting point.',
     missionEyebrow: 'Our mission',
     missionTitle: 'Clear methods, measurable progress',
     missionText:
@@ -617,7 +617,7 @@ export const en: Translations = {
     legalEyebrow: 'Legal',
     legalTitle: 'Privacy & terms',
     legal: [
-      'HIP only collects the data needed to run the service (profile, progress, preferences). It is never sold.',
+      'HEALTH IS PRICELESS only collects the data needed to run the service (profile, progress, preferences). It is never sold.',
       'You can access, edit or delete your data at any time from your settings or by contacting us.',
       'The content provided is informational and does not replace the advice of a healthcare professional. Consult a doctor before starting a program if in doubt.',
     ],
@@ -855,7 +855,7 @@ export const en: Translations = {
   admin: {
     eyebrow: 'Back office',
     title: 'Admin',
-    subtitle: 'Members, orders, programs and content: everything to run HIP in one place.',
+    subtitle: 'Members, orders, programs and content: everything to run HEALTH IS PRICELESS in one place.',
     role: 'Admin',
     navLabel: 'Admin navigation',
     nav: { overview: 'Overview', members: 'Members', orders: 'Orders', programs: 'Programs', content: 'Content' },

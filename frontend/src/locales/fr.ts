@@ -5,9 +5,9 @@
 
 export const fr = {
   brand: {
-    name: 'HIP',
+    name: 'HEALTH IS PRICELESS',
     tagline: 'Entraîne-toi. Mange mieux. Progresse.',
-    homeLabel: 'HIP — retour à l’accueil',
+    homeLabel: 'HEALTH IS PRICELESS — retour à l’accueil',
     defaultTitle: 'HEALTH IS PRICELESS',
   },
   common: {
@@ -90,7 +90,7 @@ export const fr = {
     mobile: 'Navigation mobile',
   },
   hero: {
-    eyebrow: 'FITNESS COACHING',
+    eyebrow: 'HEALTH IS PRICELESS',
     line1: 'Transforme',
     line2: 'ton',
     line2Accent: 'corps.',
@@ -236,7 +236,7 @@ export const fr = {
     cta: 'Tous les articles',
   },
   footer: {
-    tagline: 'HIP',
+    tagline: 'HEALTH IS PRICELESS',
     platform: 'Plateforme',
     goals: 'Objectifs',
     help: 'Aide',
@@ -246,7 +246,7 @@ export const fr = {
     terms: 'CGU',
     rights: 'Tous droits réservés.',
     disclaimer: 'Les informations proposées ne remplacent pas l’avis d’un professionnel de santé.',
-    social: 'Suivre HIP sur',
+    social: 'Suivre HEALTH IS PRICELESS sur',
   },
   calc: {
     tabsLabel: 'Choisir un calculateur',
@@ -588,7 +588,7 @@ export const fr = {
     title1: 'Le fitness',
     title2: 'sans détour',
     intro:
-      'HIP est né d’une idée simple : rendre l’entraînement structuré accessible à tous, quel que soit le point de départ.',
+      'HEALTH IS PRICELESS est né d’une idée simple : rendre l’entraînement structuré accessible à tous, quel que soit le point de départ.',
     missionEyebrow: 'Notre mission',
     missionTitle: 'Des méthodes claires, des progrès mesurables',
     missionText:
@@ -621,7 +621,7 @@ export const fr = {
     legalEyebrow: 'Légal',
     legalTitle: 'Confidentialité & CGU',
     legal: [
-      'HIP collecte uniquement les données nécessaires au fonctionnement du service (profil, progression, préférences). Elles ne sont jamais revendues.',
+      'HEALTH IS PRICELESS collecte uniquement les données nécessaires au fonctionnement du service (profil, progression, préférences). Elles ne sont jamais revendues.',
       'Tu peux accéder à tes données, les modifier ou les supprimer à tout moment depuis tes paramètres ou en nous contactant.',
       'Les contenus proposés sont informatifs et ne remplacent pas l’avis d’un professionnel de santé. Consulte un médecin avant de commencer un programme si tu as un doute.',
     ],
@@ -859,7 +859,7 @@ export const fr = {
   admin: {
     eyebrow: 'Back-office',
     title: 'Administration',
-    subtitle: 'Membres, commandes, programmes et contenus : tout le pilotage de HIP au même endroit.',
+    subtitle: 'Membres, commandes, programmes et contenus : tout le pilotage de HEALTH IS PRICELESS au même endroit.',
     role: 'Admin',
     navLabel: 'Navigation admin',
     nav: { overview: 'Vue d’ensemble', members: 'Membres', orders: 'Commandes', programs: 'Programmes', content: 'Contenus' },

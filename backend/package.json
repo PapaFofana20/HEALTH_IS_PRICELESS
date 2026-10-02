@@ -1,7 +1,7 @@
 {
   "name": "hip-backend",
   "version": "1.0.0",
-  "description": "Backend API for HIP - Health Is Pristine fitness platform",
+  "description": "Backend API for HEALTH IS PRICELESS fitness platform",
   "main": "src/server.js",
   "type": "module",
   "scripts": {

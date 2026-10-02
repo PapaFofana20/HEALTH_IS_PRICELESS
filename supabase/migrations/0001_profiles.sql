@@ -1,4 +1,4 @@
--- HIP profiles (1 row per auth.users row).
+-- HEALTH IS PRICELESS profiles (1 row per auth.users row).
 -- Run once in: Supabase Dashboard → SQL Editor → New query → Paste → Run.
 
 create table if not exists public.profiles (

@@ -149,7 +149,7 @@ export default function AboutPage() {
                   />
                   <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                     <ButtonLink
-                      to="https://wa.me/2250700000000?text=Bonjour%20HIP%2C%20j%27ai%20une%20question."
+                      to="https://wa.me/2250700000000?text=Bonjour%20HEALTH%20IS%20PRICELESS%2C%20j%27ai%20une%20question."
                       target="_blank"
                       rel="noopener noreferrer"
                       size="lg"
@@ -182,7 +182,7 @@ export default function AboutPage() {
                     </li>
                     <li>
                       <a
-                        href="https://wa.me/2250700000000?text=Bonjour%20HIP%2C%20j%27ai%20une%20question."
+                        href="https://wa.me/2250700000000?text=Bonjour%20HEALTH%20IS%20PRICELESS%2C%20j%27ai%20une%20question."
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group flex items-center gap-4 rounded-xl p-2 transition-colors hover:bg-night-800"

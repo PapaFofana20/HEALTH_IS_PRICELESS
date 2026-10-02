@@ -28,8 +28,8 @@ export const cgu: LegalDoc = {
       heading: L('1. Objet', '1. Purpose'),
       paragraphs: [
         L(
-          'HIP (« Health Is Pristine ») propose des programmes d’entraînement, des outils nutritionnels et un suivi de progression. Les présentes CGU encadrent l’accès et l’utilisation de la plateforme.',
-          'HIP ("Health Is Pristine") provides training programs, nutrition tools and progress tracking. These Terms govern access to and use of the platform.',
+          'HEALTH IS PRICELESS propose des programmes d’entraînement, des outils nutritionnels et un suivi de progression. Les présentes CGU encadrent l’accès et l’utilisation de la plateforme.',
+          'HEALTH IS PRICELESS provides training programs, nutrition tools and progress tracking. These Terms govern access to and use of the platform.',
         ),
       ],
     },
@@ -72,8 +72,8 @@ export const cgu: LegalDoc = {
       heading: L('5. Propriété intellectuelle', '5. Intellectual property'),
       paragraphs: [
         L(
-          'Textes, programmes, visuels et marques HIP restent notre propriété exclusive. Toute reproduction sans autorisation écrite est interdite.',
-          'HIP texts, programs, visuals and trademarks remain our exclusive property. Reproduction without written permission is prohibited.',
+          'Textes, programmes, visuels et marques HEALTH IS PRICELESS restent notre propriété exclusive. Toute reproduction sans autorisation écrite est interdite.',
+          'HEALTH IS PRICELESS texts, programs, visuals and trademarks remain our exclusive property. Reproduction without written permission is prohibited.',
         ),
       ],
     },

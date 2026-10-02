@@ -130,7 +130,7 @@ export function Footer() {
         <div className="mt-14 flex flex-col gap-6 border-t border-edge pt-8 md:flex-row md:items-center md:justify-between">
           <div className="space-y-2">
             <p className="text-xs text-muted">
-              © {year} HIP. {t.footer.rights}
+              © {year} HEALTH IS PRICELESS. {t.footer.rights}
             </p>
             <p className="max-w-xl text-xs text-muted/80">{t.footer.disclaimer}</p>
           </div>
@@ -141,7 +141,7 @@ export function Footer() {
         aria-hidden
         className="pointer-events-none select-none whitespace-nowrap px-4 text-center font-display text-[12vw] leading-[0.78] tracking-tight txt-outline-volt opacity-60"
       >
-        HIP
+        HEALTH IS PRICELESS
       </p>
     </footer>
   );

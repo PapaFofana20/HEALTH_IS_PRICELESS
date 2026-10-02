@@ -1,6 +1,6 @@
-# HIP Backend
+# HEALTH IS PRICELESS Backend
 
-Backend API pour la plateforme HIP - Health Is Pristine.
+Backend API pour la plateforme HEALTH IS PRICELESS.
 
 ## Démarrage
 

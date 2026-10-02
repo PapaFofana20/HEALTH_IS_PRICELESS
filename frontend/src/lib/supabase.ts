@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 /* ==========================================================
-   Supabase client (projet HIP).
+   Supabase client (projet HEALTH IS PRICELESS).
    Configure via variables d'environnement (voir .env.example
    à la racine) : VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY.
    Tant que la clé est absente, `supabase` vaut null et l'app

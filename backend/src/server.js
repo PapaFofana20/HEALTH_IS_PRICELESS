@@ -45,5 +45,5 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`HIP Backend running on port ${PORT}`);
+  console.log(`HEALTH IS PRICELESS Backend running on port ${PORT}`);
 });

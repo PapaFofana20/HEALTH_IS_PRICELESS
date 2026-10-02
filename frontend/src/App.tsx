@@ -42,7 +42,7 @@ function BootScreen() {
 const CATALOG_SYNC_TIMEOUT = 5000;
 
 /**
- * HIP — fitness coaching platform.
+ * HEALTH IS PRICELESS — fitness coaching platform.
  * HashRouter keeps deep links working when the app is served as a single static file.
  * Pages are code-split: each route loads its own chunk on demand.
  */
