@@ -16,7 +16,7 @@ export function Hero() {
   ];
 
   return (
-    <section className="relative isolate overflow-hidden bg-night-900 pt-24 sm:pt-28 lg:pt-28">
+    <section className="relative isolate overflow-hidden bg-night-900 pt-24 sm:pt-28 lg:pt-16">
       {/* Background: grid + soft navy glow */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
       <div aria-hidden className="pointer-events-none absolute -right-40 -top-24 -z-10 h-[46rem] w-[46rem] rounded-full bg-night-700/60 blur-3xl" />
@@ -25,7 +25,7 @@ export function Hero() {
         {/* Copy — centered on mobile, left-aligned from lg */}
         <div className="flex flex-col items-center text-center lg:col-span-6 lg:items-start lg:text-left">
           <Eyebrow className="animate-fade-up">{t.hero.eyebrow}</Eyebrow>
-          <h1 className="mt-5 animate-fade-up font-display text-[4.5rem] uppercase leading-[0.88] tracking-tight [animation-delay:80ms] min-[360px]:text-[5rem] sm:text-[5.4rem] lg:text-[6.2rem] xl:text-[7.6rem]">
+          <h1 className="mt-5 lg:mt-0 animate-fade-up font-display text-[4.5rem] uppercase leading-[0.88] tracking-tight [animation-delay:80ms] min-[360px]:text-[5rem] sm:text-[5.4rem] lg:text-[6.2rem] xl:text-[7.6rem]">
             <span className="block">{t.hero.line1}</span>{' '}
             <span className="block">
               {t.hero.line2} <span className="text-volt">{t.hero.line2Accent}</span>
