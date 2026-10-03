@@ -4,16 +4,16 @@ import { authMiddleware } from '../middleware/auth.js';
 
 const router = Router();
 
-router.get('/:userId', authMiddleware, (req, res) => {
+router.get('/:userId', authMiddleware, async (req, res) => {
   if (req.userId !== req.params.userId) {
     return res.status(403).json({ error: 'FORBIDDEN' });
   }
-  const user = findUserById(req.params.userId);
+  const user = await findUserById(req.params.userId);
   if (!user) return res.status(404).json({ error: 'USER_NOT_FOUND' });
   res.json({ user: getPublicUser(user) });
 });
 
-router.patch('/:userId', authMiddleware, (req, res) => {
+router.patch('/:userId', authMiddleware, async (req, res) => {
   if (req.userId !== req.params.userId) {
     return res.status(403).json({ error: 'FORBIDDEN' });
   }
@@ -25,16 +25,16 @@ router.patch('/:userId', authMiddleware, (req, res) => {
   if (typeof weightGoal === 'number' && weightGoal >= 30 && weightGoal <= 300) updates.weightGoal = weightGoal;
   if (typeof firstName === 'string' && firstName.trim()) updates.firstName = firstName.trim();
   if (typeof lastName === 'string') updates.lastName = lastName.trim();
-  const user = updateUser(req.params.userId, updates);
+  const user = await updateUser(req.params.userId, updates);
   if (!user) return res.status(404).json({ error: 'USER_NOT_FOUND' });
   res.json({ user: getPublicUser(user) });
 });
 
-router.post('/:userId/favorites/:programId', authMiddleware, (req, res) => {
+router.post('/:userId/favorites/:programId', authMiddleware, async (req, res) => {
   if (req.userId !== req.params.userId) {
     return res.status(403).json({ error: 'FORBIDDEN' });
   }
-  const user = findUserById(req.params.userId);
+  const user = await findUserById(req.params.userId);
   if (!user) return res.status(404).json({ error: 'USER_NOT_FOUND' });
   const { programId } = req.params;
   const index = user.favorites.indexOf(programId);
@@ -43,31 +43,32 @@ router.post('/:userId/favorites/:programId', authMiddleware, (req, res) => {
   } else {
     user.favorites.push(programId);
   }
+  await updateUser(req.params.userId, { favorites: user.favorites });
   res.json({ favorites: user.favorites });
 });
 
-router.get('/:userId/favorites', authMiddleware, (req, res) => {
+router.get('/:userId/favorites', authMiddleware, async (req, res) => {
   if (req.userId !== req.params.userId) {
     return res.status(403).json({ error: 'FORBIDDEN' });
   }
-  const user = findUserById(req.params.userId);
+  const user = await findUserById(req.params.userId);
   if (!user) return res.status(404).json({ error: 'USER_NOT_FOUND' });
   res.json({ favorites: user.favorites });
 });
 
-router.post('/:userId/start-program', authMiddleware, (req, res) => {
+router.post('/:userId/start-program', authMiddleware, async (req, res) => {
   if (req.userId !== req.params.userId) {
     return res.status(403).json({ error: 'FORBIDDEN' });
   }
-  const user = findUserById(req.params.userId);
+  const user = await findUserById(req.params.userId);
   if (!user) return res.status(404).json({ error: 'USER_NOT_FOUND' });
   const { programId } = req.body ?? {};
   if (typeof programId !== 'string' || !programId) {
     return res.status(400).json({ error: 'INVALID_INPUT', message: 'programId requis' });
   }
-  user.currentProgramId = programId;
-  user.currentWeek = 1;
-  res.json({ user: getPublicUser(user) });
+  const updated = await updateUser(req.params.userId, { currentProgramId: programId, currentWeek: 1 });
+  if (!updated) return res.status(404).json({ error: 'USER_NOT_FOUND' });
+  res.json({ user: getPublicUser(updated) });
 });
 
 export { router as usersRouter };
