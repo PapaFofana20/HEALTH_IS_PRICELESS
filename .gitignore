@@ -26,3 +26,11 @@ backend/dist/
 Thumbs.db
 .vscode/
 .idea/
+
+# Tests Playwright (traces, rapports, artefacts)
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+frontend/test-results/
+frontend/playwright-report/

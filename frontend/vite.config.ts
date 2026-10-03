@@ -5,9 +5,8 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  root: 'frontend',
   // Le .env reste à la racine du projet (par défaut Vite le chercherait dans root/).
-  envDir: __dirname,
+  envDir: '..',
   build: {
     rollupOptions: {
       output: {
@@ -21,7 +20,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './frontend/src'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   server: {
