@@ -27,8 +27,8 @@ export default function PaymentPage() {
     try {
       const { checkoutUrl } = await createInvoice(plan, goal);
       window.location.assign(checkoutUrl);
-    } catch {
-      setError("Le service de paiement est indisponible pour le moment. Réessaie plus tard.");
+    } catch (err) {
+      setError(`Le service de paiement est indisponible pour le moment. Réessaie plus tard. (${err instanceof Error ? err.message : 'erreur réseau'})`);
       setLoading(false);
     }
   };
