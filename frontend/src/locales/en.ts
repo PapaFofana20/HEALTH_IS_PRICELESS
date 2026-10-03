@@ -135,6 +135,7 @@ export const en: Translations = {
     subtitle: 'Start with the essentials or unlock the full experience. No commitment, cancel anytime.',
     goalLabel: 'Your goal',
     perMonth: '/ month',
+    perYear: '/ year',
     recommended: 'Recommended',
     currentPlan: 'Your current plan',
     activated: (plan: string) => `${plan} plan activated. Enjoy your training!`,

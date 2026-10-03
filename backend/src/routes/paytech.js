@@ -34,7 +34,7 @@ const paytechHeaders = () => ({
 function resolvePlan(plan, goal) {
   if (plan !== 'standard' && plan !== 'premium') return null;
   if (goal !== 'weight-loss' && goal !== 'muscle-gain') return null;
-  const amount = planPricing[goal]?.[plan]?.monthly;
+  const amount = planPricing[goal]?.[plan]?.annual;
   if (!Number.isFinite(amount)) return null;
   return { plan, goal, amount };
 }

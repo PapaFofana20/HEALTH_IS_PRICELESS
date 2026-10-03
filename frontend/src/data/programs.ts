@@ -693,17 +693,17 @@ export async function deleteAllPrograms(): Promise<void> {
   rebuildCatalog();
 }
 
-/* ---------- Plans & pricing ---------- */
-const FCFA_PER_EUR = 656;
-
+/* ---------- Plans & pricing ----------
+   Facturation annuelle unique. monthlyEquivalent = annual / 12 arrondi,
+   affichage seul (jamais prélevé). */
 export const planPricing: Record<Goal, Record<Plan, PlanPrice>> = {
   'muscle-gain': {
-    standard: { monthly: Math.round(12.99 * FCFA_PER_EUR), yearlyMonthly: Math.round(9.99 * FCFA_PER_EUR) },
-    premium: { monthly: Math.round(24.99 * FCFA_PER_EUR), yearlyMonthly: Math.round(19.99 * FCFA_PER_EUR) },
+    standard: { annual: 11750, monthlyEquivalent: 979 },
+    premium: { annual: 27900, monthlyEquivalent: 2325 },
   },
   'weight-loss': {
-    standard: { monthly: Math.round(9.99 * FCFA_PER_EUR), yearlyMonthly: Math.round(7.99 * FCFA_PER_EUR) },
-    premium: { monthly: Math.round(19.99 * FCFA_PER_EUR), yearlyMonthly: Math.round(15.99 * FCFA_PER_EUR) },
+    standard: { annual: 12750, monthlyEquivalent: 1063 },
+    premium: { annual: 29900, monthlyEquivalent: 2492 },
   },
 };
 

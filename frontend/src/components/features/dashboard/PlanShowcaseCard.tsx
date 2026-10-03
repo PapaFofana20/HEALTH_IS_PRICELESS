@@ -31,7 +31,7 @@ export function PlanShowcaseCard({ plan, variant = 'compact' }: PlanShowcaseCard
   const copy = t.dashboard.coaching[plan];
   const isPremium = plan === 'premium';
   const goal = user?.goal ?? 'muscle-gain';
-  const price = planPricing[goal][plan].monthly;
+  const price = planPricing[goal][plan];
 
   const closeModal = () => {
     setOpen(false);
@@ -115,9 +115,12 @@ export function PlanShowcaseCard({ plan, variant = 'compact' }: PlanShowcaseCard
           </ul>
 
           <div className="mt-6 flex items-baseline gap-2 border-t border-volt/20 pt-6">
-            <span className="font-display text-4xl leading-none sm:text-5xl">{fmtPrice(price)}</span>
-            <span className="text-sm font-semibold text-muted">{t.plans.perMonth}</span>
+            <span className="font-display text-4xl leading-none sm:text-5xl">{fmtPrice(price.annual)}</span>
+            <span className="text-sm font-semibold text-muted">{t.plans.perYear}</span>
           </div>
+          <p className="mt-1 text-sm font-semibold text-muted">
+            ≈ {fmtPrice(price.monthlyEquivalent)} {t.plans.perMonth}
+          </p>
 
           <Button fullWidth className="mt-6" onClick={() => setOpen(true)}>
             {t.dashboard.coaching.discover}
@@ -172,8 +175,11 @@ export function PlanShowcaseCard({ plan, variant = 'compact' }: PlanShowcaseCard
 
           <div className="flex flex-col gap-4 border-t border-volt/20 pt-6 sm:flex-row sm:items-center sm:justify-between">
             <p className="flex items-baseline gap-2">
-              <span className="font-display text-4xl leading-none">{fmtPrice(price)}</span>
-              <span className="text-sm font-semibold text-muted">{t.plans.perMonth}</span>
+              <span className="font-display text-4xl leading-none">{fmtPrice(price.annual)}</span>
+              <span className="text-sm font-semibold text-muted">{t.plans.perYear}</span>
+            </p>
+            <p className="mt-1 text-sm font-semibold text-muted">
+              ≈ {fmtPrice(price.monthlyEquivalent)} {t.plans.perMonth}
             </p>
             <Button onClick={() => setPending(true)}>{t.dashboard.coaching.start}</Button>
           </div>

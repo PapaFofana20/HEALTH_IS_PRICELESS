@@ -84,8 +84,10 @@ export interface PricingFeature {
 }
 
 export interface PlanPrice {
-  monthly: number;
-  yearlyMonthly: number;
+  /** Montant annuel prélevé (FCFA). La facturation est annuelle uniquement. */
+  annual: number;
+  /** Équivalent mensuel indicatif (annual / 12), affichage seul — jamais facturé. */
+  monthlyEquivalent: number;
 }
 
 /* ---------- Exercises ---------- */

@@ -108,7 +108,7 @@ app.post('/api/paytech/ipn', ipnLimiter, express.json({ limit: '100kb' }), async
       const targetUserId = known.userId;
       const paidAmount = Number(body.final_item_price ?? body.item_price);
 
-      const expectedAmount = planPricing[targetGoal]?.[targetPlan]?.monthly;
+      const expectedAmount = planPricing[targetGoal]?.[targetPlan]?.annual;
       // expectedAmount doit exister ET le montant payé être connu : sinon la
       // comparaison est sans effet et l'activation passe sans vérification.
       if (!Number.isFinite(expectedAmount) || !Number.isFinite(paidAmount) || paidAmount < expectedAmount) {

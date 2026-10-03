@@ -53,7 +53,7 @@ export function OverviewView() {
 
   const activeMembers = members.filter((member) => member.status === 'active');
   const monthly = (member: AdminMember) =>
-    member.tier === 'free' ? 0 : (planPricing[member.goal][member.tier]?.monthly ?? 0);
+    member.tier === 'free' ? 0 : (planPricing[member.goal][member.tier]?.monthlyEquivalent ?? 0);
   const mrr = activeMembers.reduce((sum, member) => sum + monthly(member), 0);
   const paidOrders = orders.filter((order) => order.status === 'paid');
   const collected = paidOrders.reduce((sum, order) => sum + order.amount, 0);

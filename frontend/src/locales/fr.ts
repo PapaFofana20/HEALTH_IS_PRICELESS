@@ -136,6 +136,7 @@ export const fr = {
       'Commence avec l’essentiel ou accède à l’expérience complète. Sans engagement, résiliable à tout moment.',
     goalLabel: 'Ton objectif',
     perMonth: '/ mois',
+    perYear: '/ an',
     recommended: 'Recommandé',
     currentPlan: 'Ton plan actuel',
     activated: (plan: string) => `Formule ${plan} activée. Bon entraînement !`,

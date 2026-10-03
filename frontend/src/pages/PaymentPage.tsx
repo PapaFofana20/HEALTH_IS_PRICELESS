@@ -25,7 +25,7 @@ export default function PaymentPage() {
   const goal: Goal = rawGoal === 'muscle-gain' ? 'muscle-gain' : rawGoal === 'weight-loss' ? 'weight-loss' : 'weight-loss';
   const hasInvalidParams = (params.get('plan') !== null && rawPlan !== 'standard' && rawPlan !== 'premium') ||
     (params.get('goal') !== null && rawGoal !== 'weight-loss' && rawGoal !== 'muscle-gain');
-  const price = planPricing[goal]?.[plan]?.monthly;
+  const price = planPricing[goal]?.[plan];
 
   const pay = async () => {
     if (hasInvalidParams || price === undefined) {
@@ -64,9 +64,14 @@ export default function PaymentPage() {
           {plan === 'premium' && <Crown className="inline h-4 w-4 text-volt" />} {goal === 'weight-loss' ? t.goals['weight-loss'] : t.goals['muscle-gain']}
         </p>
         {price !== undefined && (
-          <p className="mt-6 font-display text-5xl">
-            {fmtPrice(price)} <span className="text-base text-muted">{t.plans.perMonth}</span>
-          </p>
+          <>
+            <p className="mt-6 font-display text-5xl">
+              {fmtPrice(price.annual)} <span className="text-base text-muted">{t.plans.perYear}</span>
+            </p>
+            <p className="mt-1 text-sm font-semibold text-muted">
+              ≈ {fmtPrice(price.monthlyEquivalent)} {t.plans.perMonth}
+            </p>
+          </>
         )}
         {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
         <Button size="lg" fullWidth className="mt-8" onClick={pay} disabled={loading}>

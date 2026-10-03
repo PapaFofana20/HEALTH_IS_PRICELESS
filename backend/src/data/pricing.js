@@ -1,11 +1,12 @@
+/* Facturation annuelle unique (FCFA). monthlyEquivalent = affichage seul. */
 export const planPricing = {
   'muscle-gain': {
-    standard: { monthly: 8528, yearlyMonthly: 6556 },
-    premium: { monthly: 16384, yearlyMonthly: 12464 },
+    standard: { annual: 11750, monthlyEquivalent: 979 },
+    premium: { annual: 27900, monthlyEquivalent: 2325 },
   },
   'weight-loss': {
-    standard: { monthly: 6556, yearlyMonthly: 5248 },
-    premium: { monthly: 13112, yearlyMonthly: 10496 },
+    standard: { annual: 12750, monthlyEquivalent: 1063 },
+    premium: { annual: 29900, monthlyEquivalent: 2492 },
   },
 };
 

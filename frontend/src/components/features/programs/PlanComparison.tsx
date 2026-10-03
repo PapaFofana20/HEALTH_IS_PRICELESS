@@ -12,11 +12,15 @@ import type { Goal, Plan } from '../../../types';
 
 function PriceBlock({ plan, goal }: { plan: Plan; goal: Goal }) {
   const { t, fmtPrice } = useLanguage();
+  const price = planPricing[goal][plan];
   return (
     <div className="relative mt-8">
       <p className="flex items-baseline gap-2">
-        <span className="font-display text-5xl leading-none sm:text-6xl">{fmtPrice(planPricing[goal][plan].monthly)}</span>
-        <span className="text-sm font-semibold text-muted">{t.plans.perMonth}</span>
+        <span className="font-display text-5xl leading-none sm:text-6xl">{fmtPrice(price.annual)}</span>
+        <span className="text-sm font-semibold text-muted">{t.plans.perYear}</span>
+      </p>
+      <p className="mt-1 text-sm font-semibold text-muted">
+        ≈ {fmtPrice(price.monthlyEquivalent)} {t.plans.perMonth}
       </p>
     </div>
   );
