@@ -21,6 +21,8 @@ const AuthPage = lazy(() => import('./pages/AuthPage'));
 const EspacePage = lazy(() => import('./pages/EspacePage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const PaymentPage = lazy(() => import('./pages/PaymentPage'));
+const PaymentReturnPage = lazy(() => import('./pages/PaymentReturnPage'));
 
 function PageLoader() {
   return (
@@ -85,6 +87,8 @@ export default function App() {
                   <Route path="espace/:spaceId" element={<EspacePage />} />
                   <Route path="a-propos" element={<AboutPage />} />
                   <Route path="connexion" element={<AuthPage />} />
+                  <Route path="paiement" element={<PaymentPage />} />
+                  <Route path="paiement/retour" element={<PaymentReturnPage />} />
                   <Route path="*" element={<NotFoundState />} />
                 </Route>
                 <Route path="dashboard" element={<DashboardPage />} />

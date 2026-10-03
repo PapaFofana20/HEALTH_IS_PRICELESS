@@ -11,6 +11,7 @@ import { usersRouter } from './routes/users.js';
 import { nutritionRouter } from './routes/nutrition.js';
 import { communityRouter } from './routes/community.js';
 import { pricingRouter } from './routes/pricing.js';
+import { paytechRouter } from './routes/paytech.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/nutrition', nutritionRouter);
 app.use('/api/community', communityRouter);
 app.use('/api/pricing', pricingRouter);
+app.use('/api/paytech', paytechRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
