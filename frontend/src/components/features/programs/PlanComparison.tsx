@@ -5,6 +5,8 @@ import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { useAuth } from '../../../hooks/useAuth';
 import { planPricing } from '../../../data/programs';
+import { createInvoice } from '../../../services/payments';
+import { storePendingPayment } from '../../../pages/PaymentReturnPage';
 import { spaceSlug } from '../../../data/spaces';
 import { Button, ButtonLink } from '../../ui/Button';
 import { Reveal } from '../../ui/Reveal';
@@ -30,13 +32,22 @@ export function PlanComparison() {
   const navigate = useNavigate();
   const [goal, setGoal] = useState<Goal>('muscle-gain');
 
-  const choose = (plan: Plan) => {
-    // L'achat (tier + objectif du programme choisi) ouvre la page dédiée.
-    if (user) {
+  const choose = async (plan: Plan) => {
+    // Sans compte : on demande la connexion avant le paiement.
+    if (!user) {
+      navigate('/connexion');
+      return;
+    }
+    storePendingPayment(plan, goal);
+    try {
+      const { checkoutUrl } = await createInvoice(plan, goal);
+      window.location.assign(checkoutUrl);
+    } catch {
+      // Fallback : activer le plan localement si le backend de paiement est indisponible.
       setTier(plan);
       updateUser({ goal });
+      navigate(`/espace/${spaceSlug(plan, goal)}`);
     }
-    navigate(`/espace/${spaceSlug(plan, goal)}`);
   };
 
   return (
