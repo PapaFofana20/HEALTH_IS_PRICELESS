@@ -96,13 +96,20 @@ export default function QuizPage() {
     [answers],
   );
 
-  const matches = useMemo(() => (isResult ? recommendPrograms(quizAnswers, programs, 3) : []), [isResult, quizAnswers]);
+  // Résultat : on ne propose QUE les programmes de l'objectif choisi
+  // (prise de masse → tous les muscle-gain, perte de poids → tous les weight-loss),
+  // triés par affinité avec le reste des réponses (niveau, séances, lieu, durée).
+  const goalPrograms = useMemo(
+    () => (quizAnswers.goal ? programs.filter((program) => program.goal === quizAnswers.goal) : programs),
+    [quizAnswers.goal],
+  );
 
-  const topPick = useMemo(() => {
-    if (!isResult || !quizAnswers.goal) return null;
-    const goalMatches = matches.filter((m) => m.program.goal === quizAnswers.goal);
-    return goalMatches.length > 0 ? goalMatches[0] : matches[0] ?? null;
-  }, [isResult, matches, quizAnswers.goal]);
+  const matches = useMemo(
+    () => (isResult ? recommendPrograms(quizAnswers, goalPrograms, Math.max(goalPrograms.length, 1)) : []),
+    [isResult, quizAnswers, goalPrograms],
+  );
+
+  const topPick = useMemo(() => (isResult ? matches[0] ?? null : null), [isResult, matches]);
 
   const restart = () => {
     window.clearTimeout(timer.current);
