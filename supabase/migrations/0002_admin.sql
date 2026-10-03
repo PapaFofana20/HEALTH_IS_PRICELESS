@@ -49,7 +49,7 @@ create policy "profiles_select_admin"
   using (public.is_admin());
 
 -- ==========================================================
--- 4) Commandes (paiements : Softpay / PayDunya plus tard).
+-- 4) Commandes (paiements : intégration de paiement future).
 --    Le backend / le webhook de paiement insÃ©rera les lignes ;
 --    le client lit uniquement les siennes + l'admin lit tout.
 -- ==========================================================

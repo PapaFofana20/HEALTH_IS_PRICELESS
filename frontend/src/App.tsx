@@ -1,4 +1,4 @@
-﻿import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { LanguageProvider } from './hooks/useLanguage';
 import { AuthProvider } from './hooks/useAuth';
@@ -21,8 +21,6 @@ const AuthPage = lazy(() => import('./pages/AuthPage'));
 const EspacePage = lazy(() => import('./pages/EspacePage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
-const PaymentReturnPage = lazy(() => import('./pages/PaymentReturnPage'));
-const PaymentPage = lazy(() => import('./pages/PaymentPage'));
 
 function PageLoader() {
   return (
@@ -44,7 +42,7 @@ function BootScreen() {
 const CATALOG_SYNC_TIMEOUT = 5000;
 
 /**
- * HEALTH IS PRICELESS — fitness coaching platform.
+ * HEALTH IS PRICELESS � fitness coaching platform.
  * HashRouter keeps deep links working when the app is served as a single static file.
  * Pages are code-split: each route loads its own chunk on demand.
  */
@@ -87,8 +85,6 @@ export default function App() {
                   <Route path="espace/:spaceId" element={<EspacePage />} />
                   <Route path="a-propos" element={<AboutPage />} />
                   <Route path="connexion" element={<AuthPage />} />
-                  <Route path="paiement/retour" element={<PaymentReturnPage />} />
-                  <Route path="paiement" element={<PaymentPage />} />
                   <Route path="*" element={<NotFoundState />} />
                 </Route>
                 <Route path="dashboard" element={<DashboardPage />} />

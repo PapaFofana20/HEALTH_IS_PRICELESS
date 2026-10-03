@@ -5,7 +5,7 @@ import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { useAuth } from '../../../hooks/useAuth';
 import { planPricing } from '../../../data/programs';
-import { storePendingPayment } from '../../../pages/PaymentReturnPage';
+import { spaceSlug } from '../../../data/spaces';
 import { Button, ButtonLink } from '../../ui/Button';
 import { Reveal } from '../../ui/Reveal';
 import { SectionHeading, container } from '../../ui/SectionHeading';
@@ -26,7 +26,7 @@ function PriceBlock({ plan, goal }: { plan: Plan; goal: Goal }) {
 /** Standard vs Premium cards with goal toggle. Reused on Home and Pricing. */
 export function PlanComparison() {
   const { t } = useLanguage();
-  const { user, tier } = useAuth();
+  const { user, tier, setTier, updateUser } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [goal, setGoal] = useState<Goal>(() => (searchParams.get('goal') === 'weight-loss' ? 'weight-loss' : 'muscle-gain'));
@@ -37,14 +37,14 @@ export function PlanComparison() {
     if (param === 'weight-loss' || param === 'muscle-gain') setGoal(param);
   }, [searchParams]);
 
-  const choose = async (plan: Plan) => {
-    // Affiche la page de paiement (récap + bouton PayDunya) pour le plan choisi.
+  const choose = (plan: Plan) => {
     if (!user) {
       navigate('/connexion');
       return;
     }
-    storePendingPayment(plan, goal);
-    navigate(`/paiement?plan=${plan}&goal=${goal}`);
+    setTier(plan);
+    updateUser({ goal });
+    navigate(`/espace/${spaceSlug(plan, goal)}`);
   };
 
   return (

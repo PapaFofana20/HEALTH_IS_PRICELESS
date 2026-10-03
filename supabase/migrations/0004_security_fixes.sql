@@ -6,7 +6,7 @@
 drop policy if exists "orders_insert_own" on public.orders;
 
 -- 2) Un client ne peut plus modifier son propre tier : seul un admin
---    ou le service-role (backend, après vérification PayDunya) le peut.
+--    ou le service-role (backend, après vérification du paiement) le peut.
 create or replace function public.lock_profile_tier()
 returns trigger
 language plpgsql

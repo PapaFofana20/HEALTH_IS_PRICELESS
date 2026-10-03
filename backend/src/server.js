@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import { authRouter } from './routes/auth.js';
 import { programsRouter } from './routes/programs.js';
@@ -12,7 +11,6 @@ import { usersRouter } from './routes/users.js';
 import { nutritionRouter } from './routes/nutrition.js';
 import { communityRouter } from './routes/community.js';
 import { pricingRouter } from './routes/pricing.js';
-import { paymentsRouter } from './routes/payments.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -29,9 +27,6 @@ app.use(helmet());
 app.use(cors({ origin: allowedOrigins }));
 app.use(express.json({ limit: '100kb' }));
 
-const paymentsLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 50, standardHeaders: true, legacyHeaders: false });
-app.use('/api/payments', paymentsLimiter);
-
 app.use('/api/auth', authRouter);
 app.use('/api/programs', programsRouter);
 app.use('/api/exercises', exercisesRouter);
@@ -41,7 +36,6 @@ app.use('/api/users', usersRouter);
 app.use('/api/nutrition', nutritionRouter);
 app.use('/api/community', communityRouter);
 app.use('/api/pricing', pricingRouter);
-app.use('/api/payments', paymentsRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
