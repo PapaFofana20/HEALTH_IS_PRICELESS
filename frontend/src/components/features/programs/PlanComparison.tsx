@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowRight, Check, Crown } from 'lucide-react';
 import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
@@ -28,7 +28,14 @@ export function PlanComparison() {
   const { t } = useLanguage();
   const { user, tier } = useAuth();
   const navigate = useNavigate();
-  const [goal, setGoal] = useState<Goal>('muscle-gain');
+  const [searchParams] = useSearchParams();
+  const [goal, setGoal] = useState<Goal>(() => (searchParams.get('goal') === 'weight-loss' ? 'weight-loss' : 'muscle-gain'));
+
+  // Les liens du footer (/programmes?goal=...) mettent à jour l'objectif affiché.
+  useEffect(() => {
+    const param = searchParams.get('goal');
+    if (param === 'weight-loss' || param === 'muscle-gain') setGoal(param);
+  }, [searchParams]);
 
   const choose = async (plan: Plan) => {
     // Affiche la page de paiement (récap + bouton PayDunya) pour le plan choisi.
