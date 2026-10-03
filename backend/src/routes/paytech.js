@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import cookie from 'cookie';
 import { planPricing } from '../data/pricing.js';
-import { authMiddleware } from '../middleware/auth.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 
 const router = Router();
@@ -150,8 +150,10 @@ async function activatePlan({ userId, plan, amount, reference }) {
 }
 
 // POST /api/paytech/create-payment — initie un paiement PayTech (redirection).
-// Auth requise : le userId vient du JWT (cookie ou Bearer), jamais du body seul.
-router.post('/create-payment', authMiddleware, paymentLimiter, async (req, res, next) => {
+// Auth optionnelle : si une session backend existe (cookie/Bearer), elle fait
+// foi et le body ne peut pas imposer un autre userId. Sinon (Supabase/mock
+// côté front, sans session backend), on accepte le userId du body validé.
+router.post('/create-payment', paymentLimiter, async (req, res, next) => {
   try {
     if (!API_KEY || !API_SECRET) {
       return res.status(503).json({ error: 'NOT_CONFIGURED', message: 'Clés PayTech manquantes' });
@@ -160,26 +162,35 @@ router.post('/create-payment', authMiddleware, paymentLimiter, async (req, res, 
     if (!resolved) return res.status(400).json({ error: 'INVALID_INPUT', message: 'plan/goal invalides' });
     const { plan, goal, amount } = resolved;
 
-    // Source de vérité : JWT vérifié par authMiddleware.
-    let userId = req.userId ?? null;
-    // Rétro-compat : si un Bearer est fourni explicitement, il doit correspondre.
-    if (req.headers.authorization?.startsWith('Bearer ')) {
+    // Session backend si présente (ne bloque pas si absente).
+    let sessionUserId = req.userId ?? null;
+    if (!sessionUserId && req.headers.cookie) {
+      try {
+        const cookies = cookie.parse(req.headers.cookie);
+        if (cookies.auth_token) {
+          const decoded = jwt.verify(cookies.auth_token, getJwtSecret());
+          if (decoded?.userId) sessionUserId = decoded.userId;
+        }
+      } catch {
+        /* cookie invalide : on continue sans session, le body fera foi */
+      }
+    }
+    if (!sessionUserId && req.headers.authorization?.startsWith('Bearer ')) {
       try {
         const decoded = jwt.verify(req.headers.authorization.slice(7), getJwtSecret());
-        if (decoded?.userId) {
-          if (userId && decoded.userId !== userId) {
-            return res.status(403).json({ error: 'FORBIDDEN', message: 'Token incohérent' });
-          }
-          userId = decoded.userId;
-        }
+        if (decoded?.userId) sessionUserId = decoded.userId;
       } catch {
         return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Token invalide ou expiré' });
       }
     }
-    // Le body ne peut pas imposer un autre userId (anti-spoof).
-    if (typeof req.body?.userId === 'string' && req.body.userId.trim() && req.body.userId.trim() !== userId) {
+    const bodyUserId =
+      typeof req.body?.userId === 'string' && req.body.userId.trim() ? req.body.userId.trim() : null;
+
+    // Si les deux sont présents, ils doivent correspondre (anti-spoof).
+    if (sessionUserId && bodyUserId && bodyUserId !== sessionUserId) {
       return res.status(403).json({ error: 'FORBIDDEN', message: 'Identifiant utilisateur incohérent' });
     }
+    const userId = sessionUserId ?? bodyUserId;
 
     if (!userId || !USER_ID_RE.test(userId)) {
       return res.status(400).json({ error: 'INVALID_INPUT', message: 'Identifiant utilisateur invalide' });
