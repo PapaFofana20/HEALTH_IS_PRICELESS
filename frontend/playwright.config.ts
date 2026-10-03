@@ -38,7 +38,11 @@ export default defineConfig({
     // alors que Playwright interroge baseURL en IPv4.
     command: 'npm run dev -- --port 5173 --strictPort --host 127.0.0.1',
     url: 'http://127.0.0.1:5173',
-    reuseExistingServer: !process.env.CI,
+    // false et non !process.env.CI : avec reuseExistingServer, un serveur de
+    // dev déjà lancé (avec de vraies variables VITE_SUPABASE_*) était réutilisé
+    // et le env{} ci-dessous n'était jamais appliqué. La suite passait alors
+    // contre un serveur en mode Supabase réel au lieu du mode mock.
+    reuseExistingServer: false,
     timeout: 120_000,
     env: {
       VITE_SUPABASE_URL: '',
