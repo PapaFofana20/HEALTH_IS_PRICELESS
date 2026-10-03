@@ -23,6 +23,14 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // Pré-bundle les dépendances lourdes au démarrage. Sans cela, le premier
+  // chargement de /#/admin ou /#/dashboard déclenche l'optimisation de
+  // recharts pendant l'exécution : Vite invalide le graphe de modules et les
+  // requêtes concurrentes de ces pages restent bloquées sur le fallback
+  // Suspense (vu sous forme de tests qui passent seuls et échouent en parallèle).
+  optimizeDeps: {
+    include: ['recharts', 'react-router-dom', '@supabase/supabase-js'],
+  },
   server: {
     port: 5173,
     proxy: {

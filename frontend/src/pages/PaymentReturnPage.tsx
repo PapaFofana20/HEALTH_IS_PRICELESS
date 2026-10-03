@@ -19,14 +19,10 @@ export default function PaymentReturnPage() {
 
   useEffect(() => {
     let token: string | null = null;
-    let plan: Plan | null = null;
-    let goal: Goal | null = null;
     try {
       const raw = localStorage.getItem(PENDING_KEY);
       if (raw) {
         const pending = JSON.parse(raw) as { plan: Plan; goal: Goal; token?: string };
-        plan = pending.plan;
-        goal = pending.goal;
         token = pending.token ?? null;
       }
     } catch {
@@ -42,8 +38,11 @@ export default function PaymentReturnPage() {
         if (result.success !== 1 && status !== 'success' && status !== 'sale_complete' && status !== 'completed') {
           throw new Error('not-confirmed');
         }
-        const finalPlan = (result.plan ?? plan) as Plan;
-        const finalGoal = (result.goal ?? goal) as Goal;
+        // Le plan doit venir du backend : un repli sur localStorage ferait de
+        // l'entrée 'pending-payment' une source de droit auto-servie.
+        if (!result.plan || !result.goal) throw new Error('not-confirmed');
+        const finalPlan = result.plan as Plan;
+        const finalGoal = result.goal as Goal;
         setTier(finalPlan);
         updateUser({ goal: finalGoal });
         localStorage.removeItem(PENDING_KEY);

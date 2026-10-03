@@ -18,7 +18,6 @@ interface RegisterInput {
   email: string;
   password: string;
   goal: Goal;
-  tier: Tier;
 }
 
 interface AuthContextValue {
@@ -266,7 +265,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email: input.email.trim(),
         role: 'user',
         goal: input.goal,
-        tier: input.tier,
+        tier: 'free',
         currentProgramId: null,
         currentWeek: 1,
         weightGoal: input.goal === 'weight-loss' ? 72 : 80,
@@ -287,7 +286,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: input.email.trim(),
       role: 'user',
       goal: input.goal,
-      tier: input.tier,
+      tier: 'free',
       currentProgramId: null,
       currentWeek: 1,
       weightGoal: input.goal === 'weight-loss' ? 72 : 80,

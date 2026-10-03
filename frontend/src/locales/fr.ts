@@ -767,6 +767,8 @@ export const fr = {
       language: 'Langue',
       subscription: 'Abonnement',
       subscriptionText: 'Mode démo : change de formule pour tester les différents états de l’application.',
+      subscriptionLive: 'Ta formule active. Changer de formule passe par le paiement.',
+      manageSubscription: 'Changer de formule',
       tierChanged: (plan: string) => `Formule ${plan} activée.`,
       session: 'Session',
       logoutText: 'Tu pourras te reconnecter à tout moment.',

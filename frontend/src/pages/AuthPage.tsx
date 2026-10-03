@@ -66,7 +66,7 @@ function AuthField({ id, label, value, onChange, icon, error, type = 'text', aut
 
 export default function AuthPage() {
   const { t, loc } = useLanguage();
-  const { user, login, register, logout, setTier } = useAuth();
+  const { user, login, register, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [params, setParams] = useSearchParams();
@@ -119,15 +119,20 @@ export default function AuthPage() {
       let landed: { role: string } | null = null;
       if (mode === 'login') {
         landed = await login(form.email, form.password);
-        if (plan) setTier(plan);
       } else {
-        landed = await register({ firstName: form.firstName, email: form.email, password: form.password, goal: form.goal, tier: plan ?? 'free' });
+        landed = await register({ firstName: form.firstName, email: form.email, password: form.password, goal: form.goal });
+      }
+      // Un plan dans l'URL exprime une intention d'achat, jamais un droit :
+      // on redirige vers le tunnel de paiement au lieu d'accorder la formule.
+      if (plan) {
+        navigate(`/paiement?plan=${plan}`);
+        return;
       }
       // Return to where the user came from (e.g. the admin gate), else the
       // admin console for admin accounts, else the dashboard.
       const from = (location.state as { from?: string } | null)?.from;
       const target = from && from !== '/connexion' ? from : landed?.role === 'admin' ? '/admin' : '/dashboard';
-      navigate(target, { state: plan ? { notice: t.plans.activated(t.tiers[plan]) } : null });
+      navigate(target);
     } catch (thrown) {
       const code = thrown instanceof Error ? thrown.message : '';
       setErrors({ form: code === 'confirm-email' ? t.auth.errors.confirmEmail : t.auth.errors.generic });

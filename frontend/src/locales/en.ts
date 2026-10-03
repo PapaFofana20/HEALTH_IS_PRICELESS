@@ -763,6 +763,8 @@ export const en: Translations = {
       language: 'Language',
       subscription: 'Membership',
       subscriptionText: 'Demo mode: switch plans to test the different app states.',
+      subscriptionLive: 'Your active plan. Changing plan goes through payment.',
+      manageSubscription: 'Change plan',
       tierChanged: (plan: string) => `${plan} plan activated.`,
       session: 'Session',
       logoutText: 'You can log back in at any time.',

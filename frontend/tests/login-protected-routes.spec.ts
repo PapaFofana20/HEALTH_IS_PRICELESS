@@ -81,6 +81,20 @@ test.describe('login -> routes protégées', () => {
     await expect(page.locator('nav').first()).toBeVisible();
   });
 
+  test('un ?plan=premium en URL n’accorde pas la formule, il redirige vers le paiement', async ({ page }) => {
+    await seedSession(page, null);
+
+    await page.goto('/#/connexion?plan=premium');
+    await page.locator('#auth-email').fill('membre@hip.app');
+    await page.locator('#auth-password').fill('motdepasse123');
+    await page.locator('button[type="submit"]').click();
+
+    // Redirection vers le tunnel de paiement, pas vers un espace déjà premium.
+    await expect(page).toHaveURL(/#\/paiement\?plan=premium/);
+    const stored = await page.evaluate(() => JSON.parse(window.localStorage.getItem('forge-user') ?? '{}'));
+    expect(stored.tier).not.toBe('premium');
+  });
+
   test('un admin ne peut pas ouvrir l\'espace client', async ({ page }) => {
     await seedSession(page, { ...memberUser, email: 'admin@hip.app', role: 'admin' });
 
