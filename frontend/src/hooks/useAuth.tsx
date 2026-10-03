@@ -73,13 +73,10 @@ export async function refreshAdminEmails(): Promise<void> {
 
 export const isAdminEmail = (email: string): boolean => {
   const normalized = email.trim().toLowerCase();
+  // La table admin_emails complète la liste déclarative, elle ne la remplace pas :
+  // en prod avec table vide, le bootstrap VITE_ADMIN_EMAILS reste admin.
   if (runtimeAdminEmails.has(normalized)) return true;
-  // Hors Supabase (dev, tests) la table admin_emails est inaccessible :
-  // refreshAdminEmails() sort aussitôt et l'ensemble runtime resterait vide,
-  // donc plus aucun compte ne serait admin et /admin deviendrait inatteignable.
-  // On retombe alors sur la liste déclarative, jamais l'inverse : en
-  // production isSupabaseConfigured est vrai et seule la table fait foi.
-  return !isSupabaseConfigured && ADMIN_EMAILS.includes(normalized);
+  return ADMIN_EMAILS.includes(normalized);
 };
 
 /**

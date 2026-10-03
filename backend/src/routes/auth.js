@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import cookie from 'cookie';
-import { createToken, findUserByEmail, findUserById, createUser, getPublicUser } from '../services/userService.js';
+import { createToken, findUserByEmail, findUserById, createUser, getPublicUser, PASSWORD_RE } from '../services/userService.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 
@@ -9,7 +9,6 @@ const router = Router();
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30 });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,128}$/;
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -44,7 +43,7 @@ function setAuthCookie(res, token) {
   res.setHeader('Set-Cookie', cookie.serialize('auth_token', token, {
     httpOnly: true,
     secure: isProduction,
-    sameSite: 'lax',
+    sameSite: isProduction ? 'none' : 'lax',
     maxAge: 60 * 60 * 24 * 7, // 7 days
     path: '/',
   }));
@@ -54,16 +53,23 @@ function clearAuthCookie(res) {
   res.setHeader('Set-Cookie', cookie.serialize('auth_token', '', {
     httpOnly: true,
     secure: isProduction,
-    sameSite: 'lax',
+    sameSite: isProduction ? 'none' : 'lax',
     maxAge: 0,
     path: '/',
   }));
 }
 
+function getAdminEmails() {
+  const fromEnv = (process.env.ADMIN_EMAILS ?? '')
+    .split(',')
+    .map((v) => v.trim().toLowerCase())
+    .filter(Boolean);
+  return fromEnv.length > 0 ? fromEnv : ['admin@hip.app', 'papafofana200@gmail.com'];
+}
+
 async function isAdminEmail(email) {
   if (!USE_SUPABASE) {
-    const adminEmails = ['admin@hip.app', 'papafofana200@gmail.com'];
-    return adminEmails.includes(email.trim().toLowerCase());
+    return getAdminEmails().includes(email.trim().toLowerCase());
   }
   try {
     const res = await fetch(
@@ -99,7 +105,7 @@ router.post('/register', authLimiter, async (req, res, next) => {
     const user = await createUser({ firstName: firstName.trim(), email: cleanEmail, password, goal: cleanGoal, tier: 'free' });
     const token = createToken(user);
     setAuthCookie(res, token);
-    res.status(201).json({ user: getPublicUser(user) });
+    res.status(201).json({ user: getPublicUser(user), token });
   } catch (err) {
     next(err);
   }
@@ -125,7 +131,7 @@ router.post('/login', authLimiter, async (req, res, next) => {
     loginAttempts.delete(cleanEmail);
     const token = createToken(user);
     setAuthCookie(res, token);
-    res.json({ user: getPublicUser(user) });
+    res.json({ user: getPublicUser(user), token });
   } catch (err) {
     next(err);
   }
@@ -136,17 +142,25 @@ router.post('/logout', authMiddleware, (req, res) => {
   res.json({ message: 'Déconnexion réussie' });
 });
 
-router.get('/me', authMiddleware, async (req, res) => {
-  const user = await findUserById(req.userId);
-  if (!user) return res.status(404).json({ error: 'USER_NOT_FOUND' });
-  res.json({ user: getPublicUser(user) });
+router.get('/me', authMiddleware, async (req, res, next) => {
+  try {
+    const user = await findUserById(req.userId);
+    if (!user) return res.status(404).json({ error: 'USER_NOT_FOUND' });
+    res.json({ user: getPublicUser(user) });
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.get('/verify-admin', authMiddleware, async (req, res) => {
-  const user = await findUserById(req.userId);
-  if (!user) return res.status(404).json({ error: 'USER_NOT_FOUND' });
-  const admin = await isAdminEmail(user.email);
-  res.json({ admin });
+router.get('/verify-admin', authMiddleware, async (req, res, next) => {
+  try {
+    const user = await findUserById(req.userId);
+    if (!user) return res.status(404).json({ error: 'USER_NOT_FOUND' });
+    const admin = await isAdminEmail(user.email);
+    res.json({ admin });
+  } catch (err) {
+    next(err);
+  }
 });
 
 export { router as authRouter };

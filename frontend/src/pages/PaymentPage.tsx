@@ -19,11 +19,23 @@ export default function PaymentPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const plan = (params.get('plan') ?? 'standard') as Plan;
-  const goal = (params.get('goal') ?? 'weight-loss') as Goal;
+  const rawPlan = params.get('plan') ?? 'standard';
+  const rawGoal = params.get('goal') ?? 'weight-loss';
+  const plan: Plan = rawPlan === 'premium' ? 'premium' : rawPlan === 'standard' ? 'standard' : 'standard';
+  const goal: Goal = rawGoal === 'muscle-gain' ? 'muscle-gain' : rawGoal === 'weight-loss' ? 'weight-loss' : 'weight-loss';
+  const hasInvalidParams = (params.get('plan') !== null && rawPlan !== 'standard' && rawPlan !== 'premium') ||
+    (params.get('goal') !== null && rawGoal !== 'weight-loss' && rawGoal !== 'muscle-gain');
   const price = planPricing[goal]?.[plan]?.monthly;
 
   const pay = async () => {
+    if (hasInvalidParams || price === undefined) {
+      setError('Formule invalide. Retourne aux tarifs pour choisir une offre.');
+      return;
+    }
+    if (!user) {
+      navigate(`/connexion?mode=register&plan=${plan}&goal=${goal}`);
+      return;
+    }
     setError(null);
     setLoading(true);
     try {

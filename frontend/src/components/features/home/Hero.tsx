@@ -1,5 +1,5 @@
 import { ArrowRight, Flame } from 'lucide-react';
-import heroImg from '../../../assets/hero-athlete 2.png';
+import heroImg from '../../../assets/hero-athlete-2.png';
 import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { communityMembers } from '../../../data/community';

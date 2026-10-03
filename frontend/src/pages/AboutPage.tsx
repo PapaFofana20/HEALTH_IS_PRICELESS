@@ -13,6 +13,12 @@ import { Eyebrow, PageHero, SectionHeading, container } from '../components/ui/S
 
 const valueIcons: LucideIcon[] = [TrendingUp, Eye, Users, HeartHandshake];
 
+const CONTACT_EMAIL = (import.meta.env.VITE_CONTACT_EMAIL as string | undefined) ?? 'contact@hip.app';
+// Numéro WhatsApp en format international sans "+" (défini via VITE_WHATSAPP_NUMBER en prod).
+const WHATSAPP_NUMBER = (import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined) ?? '2250700000000';
+const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=Bonjour%20HEALTH%20IS%20PRICELESS%2C%20j%27ai%20une%20question.`;
+const waDisplay = '+225 07 00 00 00 00';
+
 export default function AboutPage() {
   const { t, loc } = useLanguage();
   usePageTitle(t.nav.about);
@@ -149,7 +155,7 @@ export default function AboutPage() {
                   />
                   <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                     <ButtonLink
-                      to="https://wa.me/2250700000000?text=Bonjour%20HEALTH%20IS%20PRICELESS%2C%20j%27ai%20une%20question."
+                      to={waLink}
                       target="_blank"
                       rel="noopener noreferrer"
                       size="lg"
@@ -159,30 +165,30 @@ export default function AboutPage() {
                       {t.about.contactCta}
                     </ButtonLink>
                     <a
-                      href="mailto:contact@forge.app"
+                      href={`mailto:${CONTACT_EMAIL}`}
                       className="group inline-flex h-13 items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-night-900/20 px-7 text-[13px] font-extrabold uppercase tracking-[0.12em] transition-all duration-200 hover:border-night-900 active:scale-[0.98]"
                     >
                       <Mail className="h-4 w-4" aria-hidden />
-                      contact@forge.app
+                      {CONTACT_EMAIL}
                     </a>
                   </div>
                 </div>
                 <div className="lg:col-span-5">
                   <ul className="flex h-full flex-col justify-center gap-2 rounded-2xl bg-night-900 p-6 text-ink sm:p-7">
                     <li>
-                      <a href="mailto:contact@forge.app" className="group flex items-center gap-4 rounded-xl p-2 transition-colors hover:bg-night-800">
+                      <a href={`mailto:${CONTACT_EMAIL}`} className="group flex items-center gap-4 rounded-xl p-2 transition-colors hover:bg-night-800">
                         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-volt text-night-900">
                           <Mail className="h-5 w-5" aria-hidden />
                         </span>
                         <span className="min-w-0">
                           <span className="block text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">Email</span>
-                          <span className="block truncate font-bold group-hover:text-volt">contact@forge.app</span>
+                          <span className="block truncate font-bold group-hover:text-volt">{CONTACT_EMAIL}</span>
                         </span>
                       </a>
                     </li>
                     <li>
                       <a
-                        href="https://wa.me/2250700000000?text=Bonjour%20HEALTH%20IS%20PRICELESS%2C%20j%27ai%20une%20question."
+                        href={waLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group flex items-center gap-4 rounded-xl p-2 transition-colors hover:bg-night-800"
@@ -192,7 +198,7 @@ export default function AboutPage() {
                         </span>
                         <span className="min-w-0">
                           <span className="block text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">WhatsApp</span>
-                          <span className="block font-bold group-hover:text-volt">+225 07 00 00 00 00</span>
+                          <span className="block font-bold group-hover:text-volt">{waDisplay}</span>
                         </span>
                       </a>
                     </li>

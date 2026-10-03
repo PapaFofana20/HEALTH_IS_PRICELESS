@@ -15,7 +15,7 @@ export const isSupabaseConfigured = Boolean(url && anonKey);
 
 export const supabase = isSupabaseConfigured ? createClient(url as string, anonKey as string) : null;
 
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && import.meta.env.DEV) {
   // eslint-disable-next-line no-console
   console.info(`[auth] mode: ${isSupabaseConfigured ? 'supabase' : 'mock (VITE_SUPABASE_* manquantes — redémarre le serveur dev)'}`);
   if (isSupabaseConfigured) {

@@ -6,7 +6,12 @@ import { authMiddleware } from '../middleware/auth.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET;
+
+function getJwtSecret() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error('JWT_SECRET manquant');
+  return secret;
+}
 
 const paymentLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10 });
 const statusLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30 });
@@ -48,7 +53,60 @@ setInterval(() => {
 }, 15 * 60 * 1000).unref();
 
 const USER_ID_RE = /^[a-zA-Z0-9_-]{3,64}$/;
-const TOKEN_RE = /^[a-zA-Z0-9_-]{8,128}$/;
+const TOKEN_RE = /^[A-Za-z0-9_.-]{6,256}$/;
+
+function supabaseHeaders(serviceKey) {
+  return {
+    apikey: serviceKey,
+    Authorization: `Bearer ${serviceKey}`,
+    'Content-Type': 'application/json',
+  };
+}
+
+/* Persiste le paiement en attente (résilience au redémarrage).
+   Fire-and-forget : un échec n'empêche pas la redirection PayTech,
+   la Map mémoire reste la source primaire. */
+async function savePendingOrder({ userId, plan, goal, amount, reference, token }) {
+  const url = process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceKey || serviceKey.startsWith('colle-')) return;
+  try {
+    await fetch(`${url}/rest/v1/orders`, {
+      method: 'POST',
+      headers: { ...supabaseHeaders(serviceKey), Prefer: 'resolution=ignore-duplicates,return=minimal' },
+      body: JSON.stringify({
+        user_id: userId ?? null,
+        reference,
+        plan,
+        goal,
+        amount,
+        method: 'card',
+        status: 'pending',
+        paytech_token: token,
+      }),
+    });
+  } catch (err) {
+    console.error('savePendingOrder failed:', err);
+  }
+}
+
+/* Repli IPN : retrouve un paiement perdu après redémarrage via Supabase. */
+async function findPendingOrderByReference(reference) {
+  const url = process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceKey || serviceKey.startsWith('colle-') || !reference) return null;
+  try {
+    const res = await fetch(
+      `${url}/rest/v1/orders?reference=eq.${encodeURIComponent(reference)}&select=user_id,plan,goal,amount,status`,
+      { headers: supabaseHeaders(serviceKey) },
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data[0] ?? null;
+  } catch {
+    return null;
+  }
+}
 
 async function activatePlan({ userId, plan, amount, reference }) {
   const url = process.env.SUPABASE_URL;
@@ -92,7 +150,8 @@ async function activatePlan({ userId, plan, amount, reference }) {
 }
 
 // POST /api/paytech/create-payment — initie un paiement PayTech (redirection).
-router.post('/create-payment', paymentLimiter, async (req, res, next) => {
+// Auth requise : le userId vient du JWT (cookie ou Bearer), jamais du body seul.
+router.post('/create-payment', authMiddleware, paymentLimiter, async (req, res, next) => {
   try {
     if (!API_KEY || !API_SECRET) {
       return res.status(503).json({ error: 'NOT_CONFIGURED', message: 'Clés PayTech manquantes' });
@@ -101,26 +160,32 @@ router.post('/create-payment', paymentLimiter, async (req, res, next) => {
     if (!resolved) return res.status(400).json({ error: 'INVALID_INPUT', message: 'plan/goal invalides' });
     const { plan, goal, amount } = resolved;
 
-    // Récupère userId depuis le corps de requête ou token Bearer si présent
-    let userId = typeof req.body?.userId === 'string' && req.body.userId.trim() ? req.body.userId.trim() : null;
+    // Source de vérité : JWT vérifié par authMiddleware.
+    let userId = req.userId ?? null;
+    // Rétro-compat : si un Bearer est fourni explicitement, il doit correspondre.
     if (req.headers.authorization?.startsWith('Bearer ')) {
-      const token = req.headers.authorization.slice(7);
-      // Vérifie le token JWT correctement (signature + expiration)
       try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(req.headers.authorization.slice(7), getJwtSecret());
         if (decoded?.userId) {
+          if (userId && decoded.userId !== userId) {
+            return res.status(403).json({ error: 'FORBIDDEN', message: 'Token incohérent' });
+          }
           userId = decoded.userId;
         }
       } catch {
-        /* token invalide ou expiré - on ignore et on utilise userId du body si présent */
+        return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Token invalide ou expiré' });
       }
     }
+    // Le body ne peut pas imposer un autre userId (anti-spoof).
+    if (typeof req.body?.userId === 'string' && req.body.userId.trim() && req.body.userId.trim() !== userId) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Identifiant utilisateur incohérent' });
+    }
 
-    if (userId && !USER_ID_RE.test(userId)) {
+    if (!userId || !USER_ID_RE.test(userId)) {
       return res.status(400).json({ error: 'INVALID_INPUT', message: 'Identifiant utilisateur invalide' });
     }
 
-    const refCommand = `HIP-${plan.toUpperCase()}-${Date.now()}`;
+    const refCommand = `HIP-${plan.toUpperCase()}-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
 
     const response = await fetch(`${API_BASE}/payment/request-payment`, {
       method: 'POST',
@@ -143,6 +208,7 @@ router.post('/create-payment', paymentLimiter, async (req, res, next) => {
       return res.status(502).json({ error: 'PAYTECH_ERROR', message: data.message ?? 'Erreur PayTech' });
     }
     pendingPayments.set(data.token, { plan, goal, amount, userId, refCommand, createdAt: Date.now() });
+    void savePendingOrder({ userId, plan, goal, amount, reference: refCommand, token: data.token });
     const redirectUrl = safeRedirectUrl(data.redirect_url ?? data.redirectUrl);
     if (!redirectUrl) {
       pendingPayments.delete(data.token);
@@ -206,4 +272,4 @@ function safeRedirectUrl(value) {
   }
 }
 
-export { router as paytechRouter, verifyIpn, activatePlan, planPricing, pendingPayments };
+export { router as paytechRouter, verifyIpn, activatePlan, findPendingOrderByReference, planPricing, pendingPayments };

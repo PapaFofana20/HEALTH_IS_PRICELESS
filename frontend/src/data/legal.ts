@@ -151,8 +151,8 @@ export const privacy: LegalDoc = {
       heading: L('6. Tes droits', '6. Your rights'),
       paragraphs: [
         L(
-          'Droit d’accès, de rectification, de suppression, d’opposition et de portabilité : écris à contact@forge.app, réponse sous 30 jours. Tu peux aussi déposer une plainte auprès de la CDP (Sénégal) ou de ton autorité locale.',
-          'Rights of access, rectification, erasure, objection and portability: write to contact@forge.app, answered within 30 days. You may also complain to the CDP (Senegal) or your local authority.',
+          'Droit d’accès, de rectification, de suppression, d’opposition et de portabilité : écris à contact@hip.app, réponse sous 30 jours. Tu peux aussi déposer une plainte auprès de la CDP (Sénégal) ou de ton autorité locale.',
+          'Rights of access, rectification, erasure, objection and portability: write to contact@hip.app, answered within 30 days. You may also complain to the CDP (Senegal) or your local authority.',
         ),
       ],
     },
@@ -160,8 +160,8 @@ export const privacy: LegalDoc = {
       heading: L('7. Sécurité', '7. Security'),
       paragraphs: [
         L(
-          'Mots de passe chiffrés, connexions sécurisées (HTTPS), accès internes limités. Aucun système n’est infaillible : signale toute anomalie à contact@forge.app.',
-          'Hashed passwords, secure connections (HTTPS), restricted internal access. No system is flawless: report anything suspicious to contact@forge.app.',
+          'Mots de passe chiffrés, connexions sécurisées (HTTPS), accès internes limités. Aucun système n’est infaillible : signale toute anomalie à contact@hip.app.',
+          'Hashed passwords, secure connections (HTTPS), restricted internal access. No system is flawless: report anything suspicious to contact@hip.app.',
         ),
       ],
     },

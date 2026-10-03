@@ -9,8 +9,12 @@ import crypto from 'crypto';
    Voir supabase/migrations/0001_profiles.sql pour le schéma. */
 
 const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET manquant : définis-le dans backend/.env');
+
+function getJwtSecret() {
+  if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET manquant : définis-le dans backend/.env');
+  }
+  return JWT_SECRET;
 }
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -73,12 +77,12 @@ function mapProfileToUser(profile) {
 }
 
 export function createToken(user) {
-  return jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign({ userId: user.id, email: user.email }, getJwtSecret(), { expiresIn: '7d' });
 }
 
 export function verifyToken(token) {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, getJwtSecret());
   } catch {
     return null;
   }
@@ -127,9 +131,9 @@ export async function findUserById(id) {
   }
 }
 
-const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,128}$/;
+export const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,128}$/;
 
-function validatePassword(password) {
+export function validatePassword(password) {
   if (!PASSWORD_RE.test(password)) {
     throw new Error('Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial');
   }
@@ -143,7 +147,7 @@ export async function createUser({ firstName, email, password, goal, tier }) {
   const cleanGoal = goal === 'muscle-gain' ? 'muscle-gain' : 'weight-loss';
   const cleanTier = tier || 'free';
   const passwordHash = await bcrypt.hash(password, 10);
-  const avatar = `https://randomuser.me/api/portraits/${secureRandomInt(2) === 0 ? 'men' : 'women'}/${secureRandomInt(99)}.jpg`;
+  const avatar = `https://randomuser.me/api/portraits/${secureRandomInt(2) === 0 ? 'men' : 'women'}/${secureRandomInt(100)}.jpg`;
   const memberSince = new Date().toISOString().slice(0, 10);
 
   if (!USE_SUPABASE) {

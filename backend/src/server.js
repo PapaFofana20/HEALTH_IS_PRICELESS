@@ -11,7 +11,7 @@ import { usersRouter } from './routes/users.js';
 import { nutritionRouter } from './routes/nutrition.js';
 import { communityRouter } from './routes/community.js';
 import { pricingRouter } from './routes/pricing.js';
-import { paytechRouter, verifyIpn, activatePlan, planPricing, pendingPayments } from './routes/paytech.js';
+import { paytechRouter, verifyIpn, activatePlan, findPendingOrderByReference, planPricing, pendingPayments } from './routes/paytech.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { rateLimit } from './middleware/rateLimit.js';
 
@@ -48,6 +48,10 @@ const paytechOrigin = 'https://paytech.sn';
 
 app.set('trust proxy', 1); // Render/Nginx devant Express : IP réelle pour le rate-limit
 
+// Rate-limit global (toutes les routes API) + limite stricte sur l'IPN.
+const globalLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 300 });
+const ipnLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 60 });
+
 // CSP via Helmet
 app.use(
   helmet({
@@ -72,7 +76,7 @@ app.use(
 );
 
 // Gérer le webhook PayTech IPN AVANT le CORS (appel serveur-à-serveur sans Origin)
-app.post('/api/paytech/ipn', express.json({ limit: '100kb' }), async (req, res) => {
+app.post('/api/paytech/ipn', ipnLimiter, express.json({ limit: '100kb' }), async (req, res) => {
   try {
     const body = req.body ?? {};
     if (!verifyIpn(body)) {
@@ -80,11 +84,20 @@ app.post('/api/paytech/ipn', express.json({ limit: '100kb' }), async (req, res) 
     }
     if (body.type_event === 'sale_complete') {
       // Le ref_command doit correspondre à un paiement que CE serveur a émis.
-      // Sans cette garantie, custom_field (corps de l'IPN) dicterait le plan,
-      // l'utilisateur et le montant : un IPN rejoué après redémarrage ou
-      // expiration accordait un accès premium sans paiement.
+      // Mémoire d'abord, Supabase (orders pending) en repli après redémarrage.
       const knownEntry = [...pendingPayments.entries()].find(([, v]) => v.refCommand === body.ref_command);
-      const known = knownEntry?.[1];
+      let known = knownEntry?.[1] ?? null;
+      if (!known && body.ref_command) {
+        const row = await findPendingOrderByReference(body.ref_command);
+        if (row) {
+          known = {
+            plan: row.plan ?? row.Plan,
+            goal: row.goal ?? row.Goal,
+            userId: row.user_id ?? row.userId,
+            refCommand: body.ref_command,
+          };
+        }
+      }
       if (!known) {
         console.error(`PayTech IPN: ref_command inconnu (${body.ref_command ?? 'absent'}) — activation refusée`);
         return res.status(409).json({ error: 'UNKNOWN_PAYMENT', message: 'Paiement non enregistré par ce serveur' });
@@ -127,20 +140,29 @@ app.use(
       // En production, exiger un Origin valide. En dev, autoriser les requêtes sans Origin (curl, tests).
       if (!origin) {
         if (isProduction) {
-          return callback(new Error('Origine requise en production'));
+          const err = new Error('Origine requise en production');
+          err.code = 'CORS_FORBIDDEN';
+          return callback(err);
         }
         return callback(null, true);
       }
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-      return callback(new Error('Origine non autorisée par CORS'));
+      const err = new Error('Origine non autorisée par CORS');
+      err.code = 'CORS_FORBIDDEN';
+      return callback(err);
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 204,
   }),
 );
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true, limit: '100kb' }));
+
+app.use('/api/', globalLimiter);
 
 app.use('/api/auth', authRouter);
 app.use('/api/programs', programsRouter);

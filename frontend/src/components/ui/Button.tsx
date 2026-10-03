@@ -68,9 +68,28 @@ export function Button({ variant, size, fullWidth, className, icon, iconRight, c
 
 type ButtonLinkProps = StyleOptions & ContentProps & Omit<LinkProps, 'className' | 'children'>;
 
-export function ButtonLink({ variant, size, fullWidth, className, icon, iconRight, children, ...rest }: ButtonLinkProps) {
+function isExternalTo(to: LinkProps['to']): boolean {
+  if (typeof to !== 'string') return false;
+  return to.startsWith('http://') || to.startsWith('https://') || to.startsWith('mailto:') || to.startsWith('tel:');
+}
+
+export function ButtonLink({ variant, size, fullWidth, className, icon, iconRight, children, to, target, rel, ...rest }: ButtonLinkProps) {
+  if (isExternalTo(to)) {
+    return (
+      <a
+        href={String(to)}
+        target={target}
+        rel={target === '_blank' ? [rel, 'noopener', 'noreferrer'].filter(Boolean).join(' ') : rel}
+        className={buttonClasses({ variant, size, fullWidth, className })}
+      >
+        <Content icon={icon} iconRight={iconRight}>
+          {children}
+        </Content>
+      </a>
+    );
+  }
   return (
-    <Link className={buttonClasses({ variant, size, fullWidth, className })} {...rest}>
+    <Link to={to} target={target} rel={rel} className={buttonClasses({ variant, size, fullWidth, className })} {...rest}>
       <Content icon={icon} iconRight={iconRight}>
         {children}
       </Content>
