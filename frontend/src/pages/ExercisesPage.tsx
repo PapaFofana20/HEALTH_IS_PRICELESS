@@ -3,6 +3,7 @@ import { SearchX, Sparkles } from 'lucide-react';
 import { useLanguage, usePageTitle } from '../hooks/useLanguage';
 import { useAsync } from '../hooks/useAsync';
 import { api } from '../services/api';
+import { media } from '../data/media';
 import { ExerciseCard, ExerciseDetail } from '../components/features/exercises/ExerciseCard';
 import { Tag } from '../components/ui/Badge';
 import { Modal } from '../components/ui/Modal';
@@ -28,6 +29,7 @@ export default function ExercisesPage() {
           </>
         }
         subtitle={t.exercisesPage.subtitle}
+        image={media.exercisesHero}
       >
         <Tag tone="volt" icon={<Sparkles className="h-3 w-3" aria-hidden />} className="px-3 py-1.5 text-[11px]">
           {t.exercisesPage.freeBadge}

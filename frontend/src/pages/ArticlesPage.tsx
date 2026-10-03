@@ -6,6 +6,7 @@ import { useLanguage, usePageTitle } from '../hooks/useLanguage';
 import { useAsync } from '../hooks/useAsync';
 import { api } from '../services/api';
 import { articles } from '../data/articles';
+import { media } from '../data/media';
 import { ArticleCard } from '../components/features/articles/ArticleCard';
 import { Chip, Tag } from '../components/ui/Badge';
 import { Reveal } from '../components/ui/Reveal';
@@ -48,6 +49,7 @@ export default function ArticlesPage() {
           </>
         }
         subtitle={t.articlesPage.subtitle}
+        image={media.articlesHero}
       />
       <section className="py-10 lg:py-14">
         <div className={container}>

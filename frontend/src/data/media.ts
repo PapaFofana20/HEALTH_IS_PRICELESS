@@ -64,6 +64,8 @@ export const media = {
   community: [px(6388379, 420, 420), px(18060117, 420, 420), px(7529022, 420, 420)],
   nutritionHero: px(7660437, 1600, 900),
   aboutHero: px(4853280, 1600, 900),
+  exercisesHero: px(5327472, 1600, 900),
+  articlesHero: px(6388450, 1600, 900),
   aboutMission: px(8173428, 1000, 1100),
   authSide: px(17898140, 1100, 1500),
 };
