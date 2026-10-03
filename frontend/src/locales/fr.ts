@@ -137,6 +137,7 @@ export const fr = {
     goalLabel: 'Ton objectif',
     perMonth: '/ mois',
     perYear: '/ an',
+    monthlyEquiv: (price: string) => `Soit ${price} par mois`,
     recommended: 'Recommandé',
     currentPlan: 'Ton plan actuel',
     activated: (plan: string) => `Formule ${plan} activée. Bon entraînement !`,

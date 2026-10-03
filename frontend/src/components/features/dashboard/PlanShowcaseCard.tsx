@@ -119,7 +119,7 @@ export function PlanShowcaseCard({ plan, variant = 'compact' }: PlanShowcaseCard
             <span className="text-sm font-semibold text-muted">{t.plans.perYear}</span>
           </div>
           <p className="mt-1 text-sm font-semibold text-muted">
-            ≈ {fmtPrice(price.monthlyEquivalent)} {t.plans.perMonth}
+            {t.plans.monthlyEquiv(fmtPrice(price.monthlyEquivalent))}
           </p>
 
           <Button fullWidth className="mt-6" onClick={() => setOpen(true)}>
@@ -179,7 +179,7 @@ export function PlanShowcaseCard({ plan, variant = 'compact' }: PlanShowcaseCard
               <span className="text-sm font-semibold text-muted">{t.plans.perYear}</span>
             </p>
             <p className="mt-1 text-sm font-semibold text-muted">
-              ≈ {fmtPrice(price.monthlyEquivalent)} {t.plans.perMonth}
+              {t.plans.monthlyEquiv(fmtPrice(price.monthlyEquivalent))}
             </p>
             <Button onClick={() => setPending(true)}>{t.dashboard.coaching.start}</Button>
           </div>

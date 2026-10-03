@@ -69,7 +69,7 @@ export default function PaymentPage() {
               {fmtPrice(price.annual)} <span className="text-base text-muted">{t.plans.perYear}</span>
             </p>
             <p className="mt-1 text-sm font-semibold text-muted">
-              ≈ {fmtPrice(price.monthlyEquivalent)} {t.plans.perMonth}
+              {t.plans.monthlyEquiv(fmtPrice(price.monthlyEquivalent))}
             </p>
           </>
         )}
