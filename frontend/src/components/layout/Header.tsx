@@ -121,10 +121,10 @@ export function Header() {
             )}
             {user ? (
               <Link
-                to="/dashboard"
+                to={user.role === 'admin' ? '/admin' : '/dashboard'}
                 className="flex items-center rounded-full border border-edge px-4 py-2 text-[12px] font-extrabold uppercase tracking-[0.12em] text-ink transition-colors hover:border-volt lg:inline-flex"
               >
-                {t.nav.dashboard}
+                {user.role === 'admin' ? t.nav.admin : t.nav.dashboard}
               </Link>
             ) : (
               <ButtonLink to="/connexion" size="sm" className="lg:hidden">
@@ -181,8 +181,8 @@ export function Header() {
             <ButtonLink to="/quiz" size="lg" fullWidth iconRight={<ArrowRight />}>
               {t.nav.start}
             </ButtonLink>
-            <ButtonLink to={user ? '/dashboard' : '/connexion'} variant="outline" size="lg" fullWidth>
-              {user ? t.nav.dashboard : t.nav.login}
+            <ButtonLink to={user ? (user.role === 'admin' ? '/admin' : '/dashboard') : '/connexion'} variant="outline" size="lg" fullWidth>
+              {user ? (user.role === 'admin' ? t.nav.admin : t.nav.dashboard) : t.nav.login}
             </ButtonLink>
           </div>
           <div className="mt-auto flex items-center justify-between pt-10">

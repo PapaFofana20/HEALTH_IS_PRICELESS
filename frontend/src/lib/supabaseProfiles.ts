@@ -51,23 +51,24 @@ export async function fetchProfile(userId: string, fallback: User): Promise<Part
 }
 
 /** Persist the app profile (fire-and-forget from callers). */
-export async function saveProfile(user: User): Promise<void> {
+export async function saveProfile(user: User, favorites?: string[]): Promise<void> {
   if (!isRemoteProfile(user) || !supabase) return;
-  const { error } = await supabase.from('profiles').upsert(
-    {
-      id: user.id,
-      email: user.email,
-      first_name: user.firstName,
-      last_name: user.lastName,
-      avatar: user.avatar,
-      tier: user.tier,
-      goal: user.goal,
-      current_program_id: user.currentProgramId,
-      current_week: user.currentWeek,
-      weight_goal: user.weightGoal,
-      member_since: user.memberSince,
-    },
-    { onConflict: 'id' },
-  );
+  const payload: Record<string, unknown> = {
+    id: user.id,
+    email: user.email,
+    first_name: user.firstName,
+    last_name: user.lastName,
+    avatar: user.avatar,
+    tier: user.tier,
+    goal: user.goal,
+    current_program_id: user.currentProgramId,
+    current_week: user.currentWeek,
+    weight_goal: user.weightGoal,
+    member_since: user.memberSince,
+  };
+  if (Array.isArray(favorites)) {
+    payload.favorites = favorites;
+  }
+  const { error } = await supabase.from('profiles').upsert(payload, { onConflict: 'id' });
   if (error) console.warn('[profiles] save failed:', error.message);
 }

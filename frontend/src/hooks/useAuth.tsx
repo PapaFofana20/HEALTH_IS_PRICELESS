@@ -4,6 +4,7 @@ import type { Goal, Tier, User } from '../types';
 import { demoUser } from '../data/user';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { fetchProfile, isRemoteProfile, saveProfile } from '../lib/supabaseProfiles';
+import { fetchSessionUser } from '../services/backendApi';
 
 /* ==========================================================
    Authentication: Supabase Auth when configured
@@ -51,7 +52,7 @@ const ADMIN_EMAILS = ((import.meta.env.VITE_ADMIN_EMAILS as string | undefined) 
 if (ADMIN_EMAILS.length === 0) ADMIN_EMAILS.push('admin@hip.app', 'papafofana200@gmail.com');
 
 /** Display string for the admin guest hint (never a credential). */
-export const ADMIN_EMAIL = ADMIN_EMAILS.join(' � ');
+export const ADMIN_EMAIL = 'admin@hip.app';
 
 /** Emails admin ajoutés depuis le back-office (table public.admin_emails). */
 const runtimeAdminEmails = new Set<string>();
@@ -73,7 +74,8 @@ export async function refreshAdminEmails(): Promise<void> {
 
 export const isAdminEmail = (email: string): boolean => {
   const normalized = email.trim().toLowerCase();
-  return ADMIN_EMAILS.includes(normalized) || runtimeAdminEmails.has(normalized);
+  // Only check runtime admin emails from database, not hardcoded defaults
+  return runtimeAdminEmails.has(normalized);
 };
 
 /**
@@ -134,7 +136,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     write(USER_KEY, user);
     if (user) write(profileKey(user.id), user);
     // Mirror the profile to Supabase Postgres (fire-and-forget).
-    if (isRemoteProfile(user)) void saveProfile(user).catch(() => {});
+    if (isRemoteProfile(user)) void saveProfile(user, favorites).catch(() => {});
   }, [user]);
   useEffect(() => write(FAV_KEY, favorites), [favorites]);
 
@@ -143,6 +145,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void refreshAdminEmails().then(() => {
       setUser((current) => (current ? enforceAdmin(current) : current));
     });
+  }, []);
+
+  // Réconcilie la session backend (cookie auth_token via GET /api/auth/me).
+  // Silencieux si 401 ou backend injoignable : le mode local/Supabase reste la référence.
+  useEffect(() => {
+    const stored = read<User | null>(USER_KEY, null);
+    if (!stored) return;
+    let alive = true;
+    void fetchSessionUser(stored).then((remote) => {
+      if (!alive || !remote) return;
+      setUser((current) => (current ? enforceAdmin(remote) : current));
+    });
+    return () => {
+      alive = false;
+    };
   }, []);
 
   // Restore a Supabase session on reload (mock mode already hydrates from USER_KEY).
@@ -185,7 +202,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    if (!isValidEmail(email) || password.length < 6) throw new Error('invalid-credentials');
+    if (!isValidEmail(email) || password.length < 8) throw new Error('invalid-credentials');
     const normalized = email.trim().toLowerCase();
     if (isSupabaseConfigured && supabase) {
       const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
@@ -224,7 +241,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const register = useCallback(async (input: RegisterInput) => {
-    if (!isValidEmail(input.email) || input.password.length < 6 || !input.firstName.trim()) {
+    if (!isValidEmail(input.email) || input.password.length < 8 || !input.firstName.trim()) {
       throw new Error('invalid-input');
     }
     if (isSupabaseConfigured && supabase) {

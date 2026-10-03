@@ -17,11 +17,15 @@ export interface AdminMember {
   id: string;
   name: string;
   email: string;
+  avatar: string;
   tier: Tier;
   goal: Goal;
   /** Derived from the plan until a subscription table exists. */
   status: MemberStatus;
   programId: string | null;
+  currentWeek: number;
+  weightGoal: number | null;
+  favorites: string[];
   joined: string; // ISO date
 }
 
@@ -54,17 +58,21 @@ export async function fetchAdminMembers(): Promise<AdminMember[]> {
   if (!isSupabaseConfigured || !supabase) return [];
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, email, first_name, last_name, tier, goal, current_program_id, member_since')
+    .select('id, email, first_name, last_name, avatar, tier, goal, current_program_id, current_week, weight_goal, favorites, member_since')
     .order('member_since', { ascending: false });
   if (error) throw new Error(error.message);
   return (data as Record<string, unknown>[] | null ?? []).map((row) => ({
     id: String(row.id ?? ''),
     name: displayName(row.first_name, row.last_name, row.email),
     email: typeof row.email === 'string' ? row.email : '',
+    avatar: typeof row.avatar === 'string' ? row.avatar : '',
     tier: toTier(row.tier),
     goal: toGoal(row.goal),
     status: toTier(row.tier) === 'free' ? 'trial' : 'active',
     programId: typeof row.current_program_id === 'string' && row.current_program_id ? row.current_program_id : null,
+    currentWeek: typeof row.current_week === 'number' ? row.current_week : 1,
+    weightGoal: typeof row.weight_goal === 'number' ? row.weight_goal : null,
+    favorites: Array.isArray(row.favorites) ? row.favorites.map(String) : [],
     joined: typeof row.member_since === 'string' && row.member_since ? row.member_since : '',
   }));
 }
@@ -141,13 +149,13 @@ export async function fetchAdminEmails(): Promise<string[]> {
 }
 
 export async function addAdminEmail(email: string): Promise<void> {
-  if (!isSupabaseConfigured || !supabase) throw new Error('Supabase non configuré');
+  if (!isSupabaseConfigured || !supabase) throw new Error('Supabase non configurÃ©');
   const { error } = await supabase.from('admin_emails').insert({ email: email.trim().toLowerCase() });
   if (error) throw new Error(error.message);
 }
 
 export async function removeAdminEmail(email: string): Promise<void> {
-  if (!isSupabaseConfigured || !supabase) throw new Error('Supabase non configuré');
+  if (!isSupabaseConfigured || !supabase) throw new Error('Supabase non configurÃ©');
   const { error } = await supabase.from('admin_emails').delete().eq('email', email);
   if (error) throw new Error(error.message);
 }

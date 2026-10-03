@@ -111,7 +111,7 @@ export function LockedContent({ children, title, text, ctaLabel, to = '/tarifs',
   const { t } = useLanguage();
   return (
     <div className={cn('relative overflow-hidden rounded-xl', className)}>
-      <div aria-hidden inert className="pointer-events-none select-none opacity-40 blur-[5px]">
+      <div aria-hidden inert={true} className="pointer-events-none select-none opacity-40 blur-[5px]">
         {children}
       </div>
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-linear-to-b from-night-900/30 via-night-900/75 to-night-900/95 p-6 text-center">

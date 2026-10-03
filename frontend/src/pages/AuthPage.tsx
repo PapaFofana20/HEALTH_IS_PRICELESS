@@ -96,7 +96,7 @@ export default function AuthPage() {
     const found: Errors = {};
     if (mode === 'register' && !form.firstName.trim()) found.firstName = t.auth.errors.firstName;
     if (!isValidEmail(form.email)) found.email = t.auth.errors.email;
-    if (form.password.length < 6) found.password = t.auth.errors.password;
+    if (form.password.length < 8) found.password = t.auth.errors.password;
     if (mode === 'register' && !acceptedLegal) found.legal = t.auth.legalError;
     return found;
   };

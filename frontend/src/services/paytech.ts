@@ -7,10 +7,20 @@ export interface PayTechInvoice {
   redirectUrl: string;
 }
 
+async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
+  return fetch(url, {
+    ...options,
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+}
+
 export async function createPayment(plan: Plan, goal: Goal, userId?: string): Promise<PayTechInvoice> {
-  const res = await fetch(`${API_URL}/api/paytech/create-payment`, {
+  const res = await fetchWithAuth(`${API_URL}/api/paytech/create-payment`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ plan, goal, userId }),
   });
   const data = await res.json().catch(() => ({}));
@@ -19,7 +29,7 @@ export async function createPayment(plan: Plan, goal: Goal, userId?: string): Pr
 }
 
 export async function checkPaymentStatus(token: string) {
-  const res = await fetch(`${API_URL}/api/paytech/status/${token}`);
+  const res = await fetchWithAuth(`${API_URL}/api/paytech/status/${encodeURIComponent(token)}`);
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.message ?? 'STATUS_ERROR');
   return data as { success?: number; status?: string; type?: string; plan?: Plan; goal?: Goal };

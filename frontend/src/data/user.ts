@@ -7,7 +7,7 @@ export const demoUser: User = {
   id: DEMO_USER_ID,
   firstName: 'Alex',
   lastName: 'Martin',
-  email: 'alex@forge.app',
+  email: 'alex@hip.app',
   avatar: avatar('men', 36),
   role: 'user',
   tier: 'standard',

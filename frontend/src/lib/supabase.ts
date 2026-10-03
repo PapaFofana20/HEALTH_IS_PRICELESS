@@ -18,4 +18,7 @@ export const supabase = isSupabaseConfigured ? createClient(url as string, anonK
 if (typeof window !== 'undefined') {
   // eslint-disable-next-line no-console
   console.info(`[auth] mode: ${isSupabaseConfigured ? 'supabase' : 'mock (VITE_SUPABASE_* manquantes — redémarre le serveur dev)'}`);
+  if (isSupabaseConfigured) {
+    console.warn('[auth] WARNING: Supabase anon key is exposed in client. Ensure RLS policies are properly configured!');
+  }
 }
