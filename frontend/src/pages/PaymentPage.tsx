@@ -53,8 +53,10 @@ export default function PaymentPage() {
   };
 
   return (
-    <main className="min-h-screen bg-night-900 px-4 py-24 grid place-items-center">
-      <div className="w-full max-w-md rounded-2xl border border-edge bg-night-800 p-8 text-center">
+    <main className="relative isolate min-h-screen overflow-hidden bg-night-900 px-4 py-24 grid place-items-center">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
+      <div aria-hidden className="pointer-events-none absolute -right-40 -top-24 -z-10 h-[52rem] w-[52rem] rounded-full bg-night-700/70 blur-3xl" />
+      <div className="relative w-full max-w-md rounded-2xl border border-edge bg-night-800 p-8 text-center">
         <p className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-volt">Récapitulatif</p>
         <h1 className="mt-3 font-display text-4xl uppercase">
           {plan === 'premium' ? t.plans.premium.name : t.plans.standard.name}

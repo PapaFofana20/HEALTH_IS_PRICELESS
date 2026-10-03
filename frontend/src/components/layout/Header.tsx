@@ -66,22 +66,6 @@ export function Header() {
 
           <nav aria-label={t.nav.main} className="hidden lg:block">
             <ul className="flex items-center gap-1">
-              {user?.role === 'admin' && (
-                <li key="/admin">
-                  <NavLink
-                    to="/admin"
-                    className={({ isActive }) =>
-                      cn(
-                        'group relative block px-3 py-2 text-[12px] font-extrabold uppercase tracking-[0.14em] transition-colors duration-200',
-                        isActive ? 'text-volt' : 'text-volt/70 hover:text-volt',
-                      )
-                    }
-                  >
-                    {t.nav.admin}
-                    <span aria-hidden className="absolute inset-x-3 -bottom-0.5 h-0.5 origin-left bg-volt transition-transform duration-300" />
-                  </NavLink>
-                </li>
-              )}
               {links.map((link) => (
                 <li key={link.to}>
                   <NavLink
