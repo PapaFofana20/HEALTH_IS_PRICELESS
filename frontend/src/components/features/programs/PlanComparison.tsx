@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Check, Crown, Sparkles } from 'lucide-react';
+import { ArrowRight, Check, Crown } from 'lucide-react';
 import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { useAuth } from '../../../hooks/useAuth';
@@ -89,10 +89,7 @@ export function PlanComparison() {
         {/* Premium */}
         <article className="relative flex flex-col overflow-hidden rounded-2xl border-2 border-volt bg-night-700 p-6 sm:p-8 lg:p-10">
           <div aria-hidden className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rotate-12 pattern-stripes opacity-[0.16]" />
-          <span className="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-sm bg-volt px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-night-900 sm:right-7 sm:top-7">
-            <Sparkles className="h-3 w-3" aria-hidden />
-            {t.plans.recommended}
-          </span>
+
           <p className="relative text-[11px] font-extrabold uppercase tracking-[0.24em] text-volt">02 — {t.tiers.premium}</p>
           <h3 className="relative mt-3 flex items-center gap-3 font-display text-4xl uppercase leading-none sm:text-5xl">
             {t.plans.premium.name}
