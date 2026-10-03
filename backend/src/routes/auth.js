@@ -9,7 +9,7 @@ const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30 });
 
 router.post('/register', authLimiter, async (req, res, next) => {
   try {
-    const { firstName, email, password, goal, tier } = req.body ?? {};
+    const { firstName, email, password, goal } = req.body ?? {};
     if (!firstName?.trim() || !email?.trim() || !password) {
       return res.status(400).json({ error: 'INVALID_INPUT', message: 'Prénom, email et mot de passe requis' });
     }
@@ -21,8 +21,7 @@ router.post('/register', authLimiter, async (req, res, next) => {
       return res.status(409).json({ error: 'EMAIL_EXISTS', message: 'Un compte existe déjà avec cet email' });
     }
     const cleanGoal = goal === 'muscle-gain' ? 'muscle-gain' : 'weight-loss';
-    const cleanTier = tier === 'standard' || tier === 'premium' ? tier : 'free';
-    const user = createUser({ firstName: firstName.trim(), email: cleanEmail, password, goal: cleanGoal, tier: cleanTier });
+    const user = createUser({ firstName: firstName.trim(), email: cleanEmail, password, goal: cleanGoal, tier: 'free' });
     const token = createToken(user);
     res.status(201).json({ token, user: getPublicUser(user) });
   } catch (err) {

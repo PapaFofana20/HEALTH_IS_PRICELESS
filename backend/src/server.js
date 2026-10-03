@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import { authRouter } from './routes/auth.js';
 import { programsRouter } from './routes/programs.js';
@@ -22,8 +24,13 @@ const allowedOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:5173,http:/
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
+app.set('trust proxy', 1); // Render/Nginx devant Express : IP réelle pour le rate-limit
+app.use(helmet());
 app.use(cors({ origin: allowedOrigins }));
-app.use(express.json());
+app.use(express.json({ limit: '100kb' }));
+
+const paymentsLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 50, standardHeaders: true, legacyHeaders: false });
+app.use('/api/payments', paymentsLimiter);
 
 app.use('/api/auth', authRouter);
 app.use('/api/programs', programsRouter);

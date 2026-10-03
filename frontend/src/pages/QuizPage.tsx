@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
-import { ArrowLeft, ArrowRight, Building2, Check, Dumbbell, Flame, House, Pencil, Repeat, RotateCcw, Ruler, Sprout, TrendingUp, Trophy, Weight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Building2, Check, Dumbbell, Flame, House, Pencil, Repeat, RotateCcw, Sprout, TrendingUp, Trophy } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { recommendPrograms } from '../utils/fitness';
 import { useLanguage, usePageTitle } from '../hooks/useLanguage';
@@ -44,8 +44,6 @@ const isLevel = (value: string | null | undefined): value is Level =>
   value === 'beginner' || value === 'intermediate' || value === 'advanced';
 const isLocation = (value: string | null | undefined): value is TrainingLocation =>
   value === 'home' || value === 'gym' || value === 'both';
-const isHeight = (value: string | null | undefined): boolean => value !== null && value !== undefined && value !== '';
-const isWeight = (value: string | null | undefined): boolean => value !== null && value !== undefined && value !== '';
 
 export default function QuizPage() {
   const { t } = useLanguage();
@@ -74,8 +72,10 @@ export default function QuizPage() {
   const currentKey = STEPS[Math.min(step, STEPS.length - 1)];
   const progress = Math.round((Math.min(step, STEPS.length) / STEPS.length) * 100);
 
-  const optionText = (key: StepKey, value: string) =>
-    (t.quiz.questions[key].options as Record<string, { label: string; desc: string }>)[value] ?? { label: value, desc: '' };
+  const optionText = (key: StepKey, value: string) => {
+    const question = t.quiz.questions[key] as { options?: Record<string, { label: string; desc: string }> };
+    return question.options?.[value] ?? { label: value, desc: '' };
+  };
 
   const select = (value: string) => {
     setAnswers((previous) => ({ ...previous, [currentKey]: value }));

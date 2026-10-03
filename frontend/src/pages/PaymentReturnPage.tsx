@@ -32,7 +32,7 @@ export default function PaymentReturnPage() {
       setState('error');
       return;
     }
-    verifyInvoice(token, plan, goal)
+    verifyInvoice(token)
       .then((result) => {
         if (result.status !== 'completed') throw new Error('not-completed');
         const finalPlan = (result.plan ?? plan) as Plan;

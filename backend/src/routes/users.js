@@ -17,9 +17,8 @@ router.patch('/:userId', authMiddleware, (req, res) => {
   if (req.userId !== req.params.userId) {
     return res.status(403).json({ error: 'FORBIDDEN' });
   }
-  const { tier, goal, currentProgramId, currentWeek, weightGoal, firstName, lastName } = req.body ?? {};
+  const { goal, currentProgramId, currentWeek, weightGoal, firstName, lastName } = req.body ?? {};
   const updates = {};
-  if (tier === 'free' || tier === 'standard' || tier === 'premium') updates.tier = tier;
   if (goal === 'weight-loss' || goal === 'muscle-gain') updates.goal = goal;
   if (typeof currentProgramId === 'string' || currentProgramId === null) updates.currentProgramId = currentProgramId;
   if (Number.isInteger(currentWeek) && currentWeek > 0 && currentWeek <= 52) updates.currentWeek = currentWeek;

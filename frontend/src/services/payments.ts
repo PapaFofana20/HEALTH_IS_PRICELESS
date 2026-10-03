@@ -7,22 +7,21 @@ export interface InvoiceResult {
   checkoutUrl: string;
 }
 
-export async function createInvoice(plan: Plan, goal: Goal): Promise<InvoiceResult> {
+export async function createInvoice(plan: Plan, goal: Goal, userId?: string): Promise<InvoiceResult> {
   const returnUrl = `${window.location.origin}${window.location.pathname}#/paiement/retour`;
   const res = await fetch(`${API_URL}/api/payments/create-invoice`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan, goal, returnUrl }),
+    body: JSON.stringify({ plan, goal, userId, returnUrl }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.message ?? 'PAYMENT_ERROR');
   return data as InvoiceResult;
 }
 
-export async function verifyInvoice(token: string, plan?: Plan | null, goal?: Goal | null) {
-  const query = plan && goal ? `?plan=${plan}&goal=${goal}` : '';
-  const res = await fetch(`${API_URL}/api/payments/verify/${token}${query}`);
+export async function verifyInvoice(token: string) {
+  const res = await fetch(`${API_URL}/api/payments/verify/${token}`);
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.message ?? 'VERIFY_ERROR');
-  return data as { status: string; plan?: Plan; goal?: Goal };
+  return data as { status: string; plan?: Plan; goal?: Goal; activated?: boolean };
 }

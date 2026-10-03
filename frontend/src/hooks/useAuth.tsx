@@ -1,4 +1,4 @@
-ï»¿import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Goal, Tier, User } from '../types';
 import { demoUser } from '../data/user';
@@ -8,7 +8,7 @@ import { fetchProfile, isRemoteProfile, saveProfile } from '../lib/supabaseProfi
 /* ==========================================================
    Authentication: Supabase Auth when configured
    (VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY), otherwise
-   local mock. App profile (tier, goal, programâ€¦) stays in
+   local mock. App profile (tier, goal, program…) stays in
    localStorage keyed by account id in both modes.
    ========================================================== */
 
@@ -51,18 +51,19 @@ const ADMIN_EMAILS = ((import.meta.env.VITE_ADMIN_EMAILS as string | undefined) 
 if (ADMIN_EMAILS.length === 0) ADMIN_EMAILS.push('admin@hip.app', 'papafofana200@gmail.com');
 
 /** Display string for the admin guest hint (never a credential). */
-export const ADMIN_EMAIL = ADMIN_EMAILS.join(' Â· ');
+export const ADMIN_EMAIL = ADMIN_EMAILS.join(' · ');
 
 export const isAdminEmail = (email: string): boolean => ADMIN_EMAILS.includes(email.trim().toLowerCase());
 
 /**
  * Admin access is decided by email ONLY. Stored/local and remote profiles
- * can carry a stale role 'user' (from an earlier registration) â€” they must
+ * can carry a stale role 'user' (from an earlier registration) — they must
  * never downgrade an admin email, otherwise /admin stays locked forever.
  */
 function enforceAdmin<T extends User>(user: T): T {
   if (!isAdminEmail(user.email)) return user;
-  return { ...user, role: 'admin', tier: 'premium' };
+  // On ne dérive pas le tier de l'email : le plan doit venir d'un paiement validé côté serveur.
+  return { ...user, role: 'admin' };
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -136,7 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         lastName: '',
         email: sbUser.email ?? '',
         role: isAdminEmail(normalized) ? 'admin' : 'user',
-        tier: isAdminEmail(normalized) ? 'premium' : 'free',
+        tier: 'free',
         goal: toGoal(sbUser.user_metadata?.goal),
         currentProgramId: null,
         currentWeek: 1,
@@ -169,7 +170,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         lastName: '',
         email: data.user.email ?? email.trim(),
         role: isAdminEmail(normalized) ? 'admin' : 'user',
-        tier: isAdminEmail(normalized) ? 'premium' : 'free',
+        tier: 'free',
         goal: toGoal(data.user.user_metadata?.goal),
         currentProgramId: null,
         currentWeek: 1,
@@ -188,7 +189,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       firstName: isDemo ? demoUser.firstName : capitalize(prefixOf(email)) || demoUser.firstName,
       lastName: isDemo ? demoUser.lastName : '',
       role: isAdminEmail(normalized) ? 'admin' : 'user',
-      tier: isAdminEmail(normalized) ? 'premium' : demoUser.tier,
+      tier: 'free',
     };
     setUser(next);
     return next;

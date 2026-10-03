@@ -28,7 +28,9 @@ const demoUser = {
   memberSince: '2025-11-03',
   favorites: ['muscle-builder', 'hiit-shred'],
 };
-users.set(demoUser.id, demoUser);
+if (process.env.NODE_ENV !== 'production') {
+  users.set(demoUser.id, demoUser);
+}
 
 export function createToken(user) {
   return jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
@@ -75,7 +77,8 @@ export function createUser({ firstName, email, password, goal, tier }) {
   return user;
 }
 
-const UPDATABLE = ['firstName', 'lastName', 'tier', 'goal', 'currentProgramId', 'currentWeek', 'weightGoal', 'favorites'];
+// 'tier' est volontairement exclu : seul le flux de paiement (service-role) le modifie.
+const UPDATABLE = ['firstName', 'lastName', 'goal', 'currentProgramId', 'currentWeek', 'weightGoal', 'favorites'];
 
 export function updateUser(id, updates) {
   const user = users.get(id);

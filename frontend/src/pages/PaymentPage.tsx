@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Crown } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../hooks/useLanguage';
 import { planPricing } from '../data/programs';
 import { createInvoice } from '../services/payments';
@@ -13,6 +14,7 @@ export default function PaymentPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const { t, fmtPrice } = useLanguage();
+  const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +27,7 @@ export default function PaymentPage() {
     setLoading(true);
     storePendingPayment(plan, goal);
     try {
-      const { checkoutUrl } = await createInvoice(plan, goal);
+      const { checkoutUrl } = await createInvoice(plan, goal, user?.id);
       window.location.assign(checkoutUrl);
     } catch (err) {
       setError(`Le service de paiement est indisponible pour le moment. Réessaie plus tard. (${err instanceof Error ? err.message : 'erreur réseau'})`);
