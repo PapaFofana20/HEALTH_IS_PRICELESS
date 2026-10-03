@@ -143,7 +143,13 @@ router.post('/create-payment', paymentLimiter, async (req, res, next) => {
       return res.status(502).json({ error: 'PAYTECH_ERROR', message: data.message ?? 'Erreur PayTech' });
     }
     pendingPayments.set(data.token, { plan, goal, amount, userId, refCommand, createdAt: Date.now() });
-    res.json({ token: data.token, redirectUrl: data.redirect_url ?? data.redirectUrl });
+    const redirectUrl = safeRedirectUrl(data.redirect_url ?? data.redirectUrl);
+    if (!redirectUrl) {
+      pendingPayments.delete(data.token);
+      console.error('create-payment: redirectUrl PayTech rejetée (protocole ou hôte non autorisé)');
+      return res.status(502).json({ error: 'PAYTECH_ERROR', message: 'URL de redirection rejetée' });
+    }
+    res.json({ token: data.token, redirectUrl });
   } catch (err) {
     next(err);
   }
@@ -169,32 +175,35 @@ router.get('/status/:token', statusLimiter, async (req, res) => {
 });
 
 function verifyIpn(body) {
-  // Méthode 1 (recommandée par la doc) : HMAC-SHA256 sur les données de transaction.
-  if (body.hmac_compute) {
-    const message = `${body.final_item_price || body.item_price}|${body.ref_command}|${API_KEY}`;
-    const expected = crypto.createHmac('sha256', API_SECRET).update(message).digest('hex');
-    const expectedBuf = Buffer.from(expected, 'utf-8');
-    const providedBuf = Buffer.from(String(body.hmac_compute), 'utf-8');
-    if (expectedBuf.length === providedBuf.length && crypto.timingSafeEqual(expectedBuf, providedBuf)) return true;
+  // HMAC-SHA256 sur les données de transaction (méthode de la doc PayTech).
+  // La méthode alternative par hachage des clés API est volontairement
+  // retirée : api_secret_sha256 est une valeur STATIQUE transmise dans chaque
+  // IPN, donc quiconque en intercepte une pourrait forger des IPN
+  // indéfiniment et reformerait la méthode 1.
+  if (!body.hmac_compute || !API_SECRET) return false;
+  const message = `${body.final_item_price || body.item_price}|${body.ref_command}|${API_KEY}`;
+  const expected = crypto.createHmac('sha256', API_SECRET).update(message).digest('hex');
+  const expectedBuf = Buffer.from(expected, 'utf-8');
+  const providedBuf = Buffer.from(String(body.hmac_compute), 'utf-8');
+  return expectedBuf.length === providedBuf.length && crypto.timingSafeEqual(expectedBuf, providedBuf);
+}
+
+/* La redirection est consommée par window.location.assign côté client : une
+   URL non validée ouvrirait une page de phishing au milieu du paiement. */
+function safeRedirectUrl(value) {
+  try {
+    const url = new URL(String(value ?? ''));
+    if (url.protocol !== 'https:') return null;
+    const host = url.hostname.toLowerCase();
+    const allowed = process.env.PAYTECH_ALLOWED_REDIRECT_HOSTS
+      ?.split(',')
+      .map((h) => h.trim().toLowerCase())
+      .filter(Boolean);
+    if (allowed?.length) return allowed.includes(host) ? url.toString() : null;
+    return /(^|\.)paytech\.sn$/.test(host) ? url.toString() : null;
+  } catch {
+    return null;
   }
-  // Méthode 2 (alternative) : SHA256 des clés API.
-  if (body.api_key_sha256 && body.api_secret_sha256) {
-    const keyHash = crypto.createHash('sha256').update(API_KEY).digest('hex');
-    const secretHash = crypto.createHash('sha256').update(API_SECRET).digest('hex');
-    const keyBuf = Buffer.from(keyHash, 'utf-8');
-    const providedKeyBuf = Buffer.from(String(body.api_key_sha256), 'utf-8');
-    const secretBuf = Buffer.from(secretHash, 'utf-8');
-    const providedSecretBuf = Buffer.from(String(body.api_secret_sha256), 'utf-8');
-    if (
-      keyBuf.length === providedKeyBuf.length &&
-      secretBuf.length === providedSecretBuf.length &&
-      crypto.timingSafeEqual(keyBuf, providedKeyBuf) &&
-      crypto.timingSafeEqual(secretBuf, providedSecretBuf)
-    ) {
-      return true;
-    }
-  }
-  return false;
 }
 
 export { router as paytechRouter, verifyIpn, activatePlan, planPricing, pendingPayments };

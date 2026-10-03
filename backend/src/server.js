@@ -78,23 +78,27 @@ app.post('/api/paytech/ipn', express.json({ limit: '100kb' }), async (req, res) 
     if (!verifyIpn(body)) {
       return res.status(403).json({ error: 'FORBIDDEN', message: 'IPN non authentifiée' });
     }
-    let custom = {};
-    try {
-      custom = JSON.parse(Buffer.from(body.custom_field ?? '', 'base64').toString('utf-8'));
-    } catch {
-      try { custom = JSON.parse(body.custom_field ?? '{}'); } catch { custom = {}; }
-    }
     if (body.type_event === 'sale_complete') {
+      // Le ref_command doit correspondre à un paiement que CE serveur a émis.
+      // Sans cette garantie, custom_field (corps de l'IPN) dicterait le plan,
+      // l'utilisateur et le montant : un IPN rejoué après redémarrage ou
+      // expiration accordait un accès premium sans paiement.
       const knownEntry = [...pendingPayments.entries()].find(([, v]) => v.refCommand === body.ref_command);
       const known = knownEntry?.[1];
+      if (!known) {
+        console.error(`PayTech IPN: ref_command inconnu (${body.ref_command ?? 'absent'}) — activation refusée`);
+        return res.status(409).json({ error: 'UNKNOWN_PAYMENT', message: 'Paiement non enregistré par ce serveur' });
+      }
 
-      const targetPlan = known?.plan ?? custom.plan;
-      const targetGoal = known?.goal ?? custom.goal;
-      const targetUserId = known?.userId ?? custom.userId;
-      const paidAmount = Number(body.final_item_price ?? body.item_price) || known?.amount;
+      const targetPlan = known.plan;
+      const targetGoal = known.goal;
+      const targetUserId = known.userId;
+      const paidAmount = Number(body.final_item_price ?? body.item_price);
 
       const expectedAmount = planPricing[targetGoal]?.[targetPlan]?.monthly;
-      if (expectedAmount && paidAmount < expectedAmount) {
+      // expectedAmount doit exister ET le montant payé être connu : sinon la
+      // comparaison est sans effet et l'activation passe sans vérification.
+      if (!Number.isFinite(expectedAmount) || !Number.isFinite(paidAmount) || paidAmount < expectedAmount) {
         console.error(`PayTech IPN: Montant payé ${paidAmount} inférieur au montant attendu ${expectedAmount}`);
         return res.status(400).json({ error: 'INVALID_AMOUNT' });
       }
