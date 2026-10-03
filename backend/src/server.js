@@ -13,7 +13,7 @@ import { communityRouter } from './routes/community.js';
 import { pricingRouter } from './routes/pricing.js';
 import { paytechRouter, verifyIpn, activatePlan, planPricing, pendingPayments } from './routes/paytech.js';
 import { errorHandler } from './middleware/errorHandler.js';
-import { initRateLimit, closeRateLimit } from './middleware/rateLimit.js';
+import { rateLimit } from './middleware/rateLimit.js';
 
 dotenv.config();
 
@@ -159,21 +159,9 @@ app.use((req, res) => {
 
 app.use(errorHandler);
 
-// Vérifie le store de rate-limit AVANT d'écouter : en prod on veut du Redis partagé.
-const { store: rateLimitStore, reason } = await initRateLimit();
-if (rateLimitStore === 'memory' && isProduction) {
-  console.error(`[server] CRITICAL: Rate limiting en mémoire (single-instance) en production : ${reason ?? 'REDIS_URL non défini'}`);
-  console.error('[server] Arrêt du serveur - Redis est requis en production pour le rate limiting distribué');
-  process.exit(1);
-}
-
 app.listen(PORT, () => {
   console.log(`HEALTH IS PRICELESS Backend running on port ${PORT}`);
-  console.log(`[server] Rate limit store: ${rateLimitStore}`);
+  if (isProduction) {
+    console.warn('[server] Rate limiting en mémoire : les compteurs ne sont pas partagés entre instances et sont remis à zéro au redémarrage.');
+  }
 });
-
-for (const signal of ['SIGINT', 'SIGTERM']) {
-  process.on(signal, () => {
-    closeRateLimit().finally(() => process.exit(0));
-  });
-}
