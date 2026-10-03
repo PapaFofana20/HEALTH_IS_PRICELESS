@@ -858,7 +858,7 @@ export const en: Translations = {
     subtitle: 'Members, orders, programs and content: everything to run HEALTH IS PRICELESS in one place.',
     role: 'Admin',
     navLabel: 'Admin navigation',
-    nav: { overview: 'Overview', members: 'Members', orders: 'Orders', programs: 'Programs', content: 'Content' },
+    nav: { overview: 'Overview', members: 'Members', orders: 'Orders', programs: 'Programs', content: 'Content', admins: 'Admins' },
     navGroups: { pilotage: 'Operations', catalog: 'Catalog' },
     guestTitle: 'Restricted area',
     guestText: 'Log in with an administrator account to open the back office.',

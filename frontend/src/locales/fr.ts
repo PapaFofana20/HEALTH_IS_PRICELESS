@@ -862,7 +862,7 @@ export const fr = {
     subtitle: 'Membres, commandes, programmes et contenus : tout le pilotage de HEALTH IS PRICELESS au même endroit.',
     role: 'Admin',
     navLabel: 'Navigation admin',
-    nav: { overview: 'Vue d’ensemble', members: 'Membres', orders: 'Commandes', programs: 'Programmes', content: 'Contenus' },
+    nav: { overview: 'Vue d’ensemble', members: 'Membres', orders: 'Commandes', programs: 'Programmes', content: 'Contenus', admins: 'Administrateurs' },
     navGroups: { pilotage: 'Pilotage', catalog: 'Catalogue' },
     guestTitle: 'Espace réservé',
     guestText: 'Connecte-toi avec un compte administrateur pour accéder au back-office.',

@@ -8,7 +8,7 @@ import { fetchProfile, isRemoteProfile, saveProfile } from '../lib/supabaseProfi
 /* ==========================================================
    Authentication: Supabase Auth when configured
    (VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY), otherwise
-   local mock. App profile (tier, goal, programÖ) stays in
+   local mock. App profile (tier, goal, programÔøΩ) stays in
    localStorage keyed by account id in both modes.
    ========================================================== */
 
@@ -51,18 +51,39 @@ const ADMIN_EMAILS = ((import.meta.env.VITE_ADMIN_EMAILS as string | undefined) 
 if (ADMIN_EMAILS.length === 0) ADMIN_EMAILS.push('admin@hip.app', 'papafofana200@gmail.com');
 
 /** Display string for the admin guest hint (never a credential). */
-export const ADMIN_EMAIL = ADMIN_EMAILS.join(' ∑ ');
+export const ADMIN_EMAIL = ADMIN_EMAILS.join(' ÔøΩ ');
 
-export const isAdminEmail = (email: string): boolean => ADMIN_EMAILS.includes(email.trim().toLowerCase());
+/** Emails admin ajout√©s depuis le back-office (table public.admin_emails). */
+const runtimeAdminEmails = new Set<string>();
+
+/** Recharge la whitelist admin depuis Supabase (appel√© au boot et apr√®s √©dition). */
+export async function refreshAdminEmails(): Promise<void> {
+  if (!isSupabaseConfigured || !supabase) return;
+  try {
+    const { data, error } = await supabase.from('admin_emails').select('email');
+    if (error) return;
+    runtimeAdminEmails.clear();
+    for (const row of (data as { email: string }[]) ?? []) {
+      if (row?.email) runtimeAdminEmails.add(row.email.trim().toLowerCase());
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
+export const isAdminEmail = (email: string): boolean => {
+  const normalized = email.trim().toLowerCase();
+  return ADMIN_EMAILS.includes(normalized) || runtimeAdminEmails.has(normalized);
+};
 
 /**
  * Admin access is decided by email ONLY. Stored/local and remote profiles
- * can carry a stale role 'user' (from an earlier registration) ó they must
+ * can carry a stale role 'user' (from an earlier registration) ÔøΩ they must
  * never downgrade an admin email, otherwise /admin stays locked forever.
  */
 function enforceAdmin<T extends User>(user: T): T {
   if (!isAdminEmail(user.email)) return user;
-  // On ne dÈrive pas le tier de l'email : le plan doit venir d'un paiement validÈ cÙtÈ serveur.
+  // On ne dÔøΩrive pas le tier de l'email : le plan doit venir d'un paiement validÔøΩ cÔøΩtÔøΩ serveur.
   return { ...user, role: 'admin' };
 }
 
@@ -116,6 +137,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isRemoteProfile(user)) void saveProfile(user).catch(() => {});
   }, [user]);
   useEffect(() => write(FAV_KEY, favorites), [favorites]);
+
+  // Charge les admins g√©r√©s en base, puis r√©-applique enforceAdmin sur l'utilisateur courant.
+  useEffect(() => {
+    void refreshAdminEmails().then(() => {
+      setUser((current) => (current ? enforceAdmin(current) : current));
+    });
+  }, []);
 
   // Restore a Supabase session on reload (mock mode already hydrates from USER_KEY).
   useEffect(() => {

@@ -127,3 +127,27 @@ export function monthlyBuckets(rows: { date: string; value: number }[], months =
   }
   return keys.map((key) => ({ key, value: totals.get(key) ?? 0 }));
 }
+
+/* ---------- Admin emails (whitelist back-office) ---------- */
+
+export async function fetchAdminEmails(): Promise<string[]> {
+  if (!isSupabaseConfigured || !supabase) return [];
+  const { data, error } = await supabase.from('admin_emails').select('email').order('email');
+  if (error) {
+    if (error.code === 'PGRST205') return [];
+    throw new Error(error.message);
+  }
+  return (data as Record<string, unknown>[] | null ?? []).map((row) => String(row.email ?? ''));
+}
+
+export async function addAdminEmail(email: string): Promise<void> {
+  if (!isSupabaseConfigured || !supabase) throw new Error('Supabase non configuré');
+  const { error } = await supabase.from('admin_emails').insert({ email: email.trim().toLowerCase() });
+  if (error) throw new Error(error.message);
+}
+
+export async function removeAdminEmail(email: string): Promise<void> {
+  if (!isSupabaseConfigured || !supabase) throw new Error('Supabase non configuré');
+  const { error } = await supabase.from('admin_emails').delete().eq('email', email);
+  if (error) throw new Error(error.message);
+}
