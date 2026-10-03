@@ -28,7 +28,6 @@ function PageLoader() {
   return (
     <div className="relative isolate min-h-screen flex items-center justify-center overflow-hidden bg-night-900 px-4">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
-      <div aria-hidden className="pointer-events-none absolute -right-40 -top-24 -z-10 h-[52rem] w-[52rem] rounded-full bg-night-700/70 blur-3xl" />
       <Spinner />
     </div>
   );
@@ -39,7 +38,6 @@ function BootScreen() {
   return (
     <div className="relative isolate min-h-screen bg-night-900 flex items-center justify-center overflow-hidden">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
-      <div aria-hidden className="pointer-events-none absolute -right-40 -top-24 -z-10 h-[52rem] w-[52rem] rounded-full bg-night-700/70 blur-3xl" />
       <Spinner />
     </div>
   );

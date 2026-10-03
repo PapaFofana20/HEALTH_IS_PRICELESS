@@ -54,7 +54,6 @@ export default function PaymentReturnPage() {
   return (
     <main className="relative isolate min-h-screen overflow-hidden grid place-items-center bg-night-900 px-4 text-center">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
-      <div aria-hidden className="pointer-events-none absolute -right-40 -top-24 -z-10 h-[52rem] w-[52rem] rounded-full bg-night-700/70 blur-3xl" />
       <div className="relative">
         {state === 'loading' ? (
           <p className="text-muted">Vérification du paiement…</p>
