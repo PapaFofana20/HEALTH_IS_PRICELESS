@@ -91,8 +91,8 @@ export function PageHero({ eyebrow, title, subtitle, image, children, className 
     <section className={cn('relative isolate overflow-hidden border-b border-edge bg-night-900 pb-14 pt-32 sm:pb-16 lg:pb-20 lg:pt-40', className)}>
       {image && (
         <>
-          <img src={image} alt="" aria-hidden className="absolute inset-0 -z-20 h-full w-full object-cover opacity-30" />
-          <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-r from-night-900 via-night-900/90 to-night-900/50" />
+          <img src={image} alt="" aria-hidden className="absolute inset-0 -z-20 h-full w-full object-cover opacity-50" />
+          <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-r from-night-900/95 via-night-900/60 to-night-900/20" />
         </>
       )}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
