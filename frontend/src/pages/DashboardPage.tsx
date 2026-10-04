@@ -5,7 +5,6 @@ import { useAuth } from '../hooks/useAuth';
 import { useAsync } from '../hooks/useAsync';
 import { api } from '../services/api';
 import { getProgramById } from '../data/programs';
-import { DEMO_USER_ID, demoStats, demoWeekStatus } from '../data/user';
 import { ALL_DASHBOARD_SECTIONS } from '../components/features/dashboard/Sidebar';
 import type { DashboardSection } from '../components/features/dashboard/Sidebar';
 import { DashboardLayout } from '../components/features/dashboard/DashboardLayout';
@@ -67,27 +66,20 @@ interface ShellProps {
 function DashboardShell({ user, section, notice, setNotice }: ShellProps) {
   const { t } = useLanguage();
   const { tier } = useAuth();
-  const isDemo = user.id === DEMO_USER_ID;
   const program = getProgramById(user.currentProgramId);
 
-  const [stats, setStats] = useState<DashboardStats>(() =>
-    isDemo
-      ? demoStats
-      : {
-          sessionsDone: 0,
-          sessionsTotal: program ? program.sessionsPerWeek * program.durationWeeks : 0,
-          streakDays: 0,
-          calories: 0,
-          currentWeek: user.currentWeek,
-          totalWeeks: program?.durationWeeks ?? 0,
-        },
-  );
+  const [stats, setStats] = useState<DashboardStats>(() => ({
+    sessionsDone: 0,
+    sessionsTotal: program ? program.sessionsPerWeek * program.durationWeeks : 0,
+    streakDays: 0,
+    calories: 0,
+    currentWeek: user.currentWeek,
+    totalWeeks: program?.durationWeeks ?? 0,
+  }));
   const [weekStatus, setWeekStatus] = useState<DayStatus[]>(() =>
-    isDemo
-      ? demoWeekStatus
-      : program
-        ? program.weekPlan.map((day, index): DayStatus => (day.type === 'rest' ? 'rest' : index === 0 ? 'today' : 'planned'))
-        : ['rest', 'rest', 'rest', 'rest', 'rest', 'rest', 'rest'],
+    program
+      ? program.weekPlan.map((day, index): DayStatus => (day.type === 'rest' ? 'rest' : index === 0 ? 'today' : 'planned'))
+      : ['rest', 'rest', 'rest', 'rest', 'rest', 'rest', 'rest'],
   );
 
   const progressQuery = useAsync(() => api.getWeeklyProgress(user.id), [user.id]);

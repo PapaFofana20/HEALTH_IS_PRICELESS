@@ -27,10 +27,10 @@ export interface TestUser {
 }
 
 export const memberUser: TestUser = {
-  id: 'demo-alex',
+  id: 'test-member',
   firstName: 'Alex',
   lastName: 'Martin',
-  email: 'alex@hip.app',
+  email: 'test-member@hip.app',
   avatar: '',
   role: 'user',
   tier: 'free',

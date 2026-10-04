@@ -24,27 +24,6 @@ const USE_SUPABASE = Boolean(SUPABASE_URL && SERVICE_KEY && !SERVICE_KEY.startsW
 
 const users = new Map();
 
-// Demo user only for local development (not test/staging)
-const isLocalDev = process.env.NODE_ENV === 'development' && !process.env.CI;
-if (isLocalDev) {
-  const demoUser = {
-    id: 'demo-alex',
-    firstName: 'Alex',
-    lastName: 'Martin',
-    email: 'alex@hip.app',
-    passwordHash: bcrypt.hashSync('demo123', 10),
-    avatar: 'https://randomuser.me/api/portraits/men/36.jpg',
-    tier: 'standard',
-    goal: 'weight-loss',
-    currentProgramId: 'lean-and-strong',
-    currentWeek: 6,
-    weightGoal: 76,
-    memberSince: '2025-11-03',
-    favorites: ['muscle-builder', 'hiit-shred'],
-  };
-  users.set(demoUser.id, demoUser);
-}
-
 function secureRandomInt(max) {
   const buf = crypto.randomBytes(4);
   return buf.readUInt32BE(0) % max;

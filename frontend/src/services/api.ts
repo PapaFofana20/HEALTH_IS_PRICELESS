@@ -2,7 +2,6 @@ import { getProgramById, programs } from '../data/programs';
 import { exercises } from '../data/exercises';
 import { recipes } from '../data/nutrition';
 import { articles } from '../data/articles';
-import { DEMO_USER_ID, muscleVolume, seedWeightEntries, weeklyProgress, workoutLogs } from '../data/user';
 import type { Article, Exercise, MuscleVolume, Program, Recipe, WeeklyProgress, WeightEntry, WorkoutLog } from '../types';
 
 /* ==========================================================
@@ -37,7 +36,7 @@ function readWeights(userId: string): WeightEntry[] {
   } catch {
     /* ignore */
   }
-  return userId === DEMO_USER_ID ? seedWeightEntries : [];
+  return [];
 }
 
 export const api = {
@@ -48,10 +47,10 @@ export const api = {
   getArticles: (): Promise<Article[]> => respond(articles),
   getArticle: (id: string): Promise<Article | null> => respond(articles.find((a) => a.id === id) ?? null),
 
-  getWeeklyProgress: (userId: string): Promise<WeeklyProgress[]> =>
-    respond(userId === DEMO_USER_ID ? weeklyProgress : [], 350),
-  getWorkoutLogs: (userId: string): Promise<WorkoutLog[]> => respond(userId === DEMO_USER_ID ? workoutLogs : [], 350),
-  getMuscleVolume: (userId: string): Promise<MuscleVolume[]> => respond(userId === DEMO_USER_ID ? muscleVolume : [], 350),
+  getWeeklyProgress: (_userId: string): Promise<WeeklyProgress[]> =>
+    respond([], 350),
+  getWorkoutLogs: (_userId: string): Promise<WorkoutLog[]> => respond([], 350),
+  getMuscleVolume: (_userId: string): Promise<MuscleVolume[]> => respond([], 350),
 
   getWeightEntries: (userId: string): Promise<WeightEntry[]> => respond(readWeights(userId), 300),
   addWeightEntry: (userId: string, entry: WeightEntry): Promise<WeightEntry[]> => {

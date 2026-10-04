@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Goal, Tier, User } from '../types';
-import { demoUser } from '../data/user';
+import { buildNewUser } from '../data/user';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { fetchProfile, isRemoteProfile, saveProfile } from '../lib/supabaseProfiles';
 import { fetchSessionUser } from '../services/backendApi';
@@ -176,20 +176,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
       const normalized = (sbUser.email ?? '').toLowerCase();
-      const base: User = {
-        ...demoUser,
+      const base: User = buildNewUser({
         id: sbUser.id,
-        firstName: capitalize((sbUser.user_metadata?.firstName as string) || prefixOf(sbUser.email ?? '')) || demoUser.firstName,
-        lastName: '',
+        firstName: capitalize((sbUser.user_metadata?.firstName as string) || prefixOf(sbUser.email ?? '')) || 'Membre',
         email: sbUser.email ?? '',
-        role: isAdminEmail(normalized) ? 'admin' : 'user',
-        tier: 'free',
         goal: toGoal(sbUser.user_metadata?.goal),
-        currentProgramId: null,
-        currentWeek: 1,
-        weightGoal: 76,
-        memberSince: new Date().toISOString().slice(0, 10),
-      };
+      });
+      base.role = isAdminEmail(normalized) ? 'admin' : 'user';
       if (!alive) return;
       setUser(enforceAdmin(await withRemoteProfile(base)));
     });
@@ -209,34 +202,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error || !data.user) throw new Error('invalid-credentials');
       const stored = read<User | null>(profileKey(data.user.id), null);
-      const base: User = stored ?? {
-        ...demoUser,
+      const base: User = stored ?? buildNewUser({
         id: data.user.id,
-        firstName: capitalize((data.user.user_metadata?.firstName as string) || prefixOf(email)) || demoUser.firstName,
-        lastName: '',
+        firstName: capitalize((data.user.user_metadata?.firstName as string) || prefixOf(email)) || 'Membre',
         email: data.user.email ?? email.trim(),
-        role: isAdminEmail(normalized) ? 'admin' : 'user',
-        tier: 'free',
         goal: toGoal(data.user.user_metadata?.goal),
-        currentProgramId: null,
-        currentWeek: 1,
-        weightGoal: 76,
-        memberSince: new Date().toISOString().slice(0, 10),
-      };
+      });
+      base.role = isAdminEmail(normalized) ? 'admin' : 'user';
       const next = enforceAdmin(await withRemoteProfile(base));
       setUser(next);
       return next;
     }
     await wait(700);
-    const isDemo = normalized === demoUser.email;
-    const next: User = {
-      ...demoUser,
+    const next: User = buildNewUser({
+      id: `user-${Date.now()}`,
+      firstName: capitalize(prefixOf(email)) || 'Membre',
       email: email.trim(),
-      firstName: isDemo ? demoUser.firstName : capitalize(prefixOf(email)) || demoUser.firstName,
-      lastName: isDemo ? demoUser.lastName : '',
-      role: isAdminEmail(normalized) ? 'admin' : 'user',
-      tier: 'free',
-    };
+      goal: 'weight-loss',
+    });
+    next.role = isAdminEmail(normalized) ? 'admin' : 'user';
     setUser(next);
     return next;
   }, []);
@@ -254,20 +238,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) throw new Error('invalid-input');
       if (!data.session) throw new Error('confirm-email');
       const sbUser = data.user;
-      const base: User = {
-        ...demoUser,
+      const base: User = buildNewUser({
         id: sbUser?.id ?? `user-${Date.now()}`,
         firstName: capitalize(input.firstName.trim()),
-        lastName: '',
         email: input.email.trim(),
-        role: 'user',
         goal: input.goal,
-        tier: 'free',
-        currentProgramId: null,
-        currentWeek: 1,
-        weightGoal: input.goal === 'weight-loss' ? 72 : 80,
-        memberSince: new Date().toISOString().slice(0, 10),
-      };
+      });
       // Signup intent wins over the trigger-created empty row: persist first.
       const created = enforceAdmin(base);
       setUser(created);
@@ -275,20 +251,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return created;
     }
     await wait(800);
-    const next: User = {
-      ...demoUser,
+    const next: User = buildNewUser({
       id: `user-${Date.now()}`,
       firstName: capitalize(input.firstName.trim()),
-      lastName: '',
       email: input.email.trim(),
-      role: 'user',
       goal: input.goal,
-      tier: 'free',
-      currentProgramId: null,
-      currentWeek: 1,
-      weightGoal: input.goal === 'weight-loss' ? 72 : 80,
-      memberSince: new Date().toISOString().slice(0, 10),
-    };
+    });
     const created = enforceAdmin(next);
     setUser(created);
     return created;
