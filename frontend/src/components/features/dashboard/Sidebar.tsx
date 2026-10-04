@@ -25,6 +25,7 @@ import { useLanguage } from '../../../hooks/useLanguage';
 import { useAuth } from '../../../hooks/useAuth';
 import { Logo } from '../../ui/Logo';
 import { ButtonLink } from '../../ui/Button';
+import { ConfirmDialog } from '../../ui/ConfirmDialog';
 import { LanguageSwitcher } from '../../layout/LanguageSwitcher';
 
 export type DashboardSection =
@@ -87,10 +88,12 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
   const { user, tier, logout } = useAuth();
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
   if (!user) return null;
 
   const handleLogout = () => {
+    setConfirmLogout(false);
     logout();
     navigate('/');
   };
@@ -262,7 +265,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
             </div>
             <button
               type="button"
-              onClick={handleLogout}
+              onClick={() => setConfirmLogout(true)}
               className="flex w-full items-center gap-2 px-3 py-2.5 text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted transition-colors hover:text-danger"
             >
               <LogOut className="h-4 w-4" aria-hidden />
@@ -288,7 +291,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
             </Link>
             <button
               type="button"
-              onClick={handleLogout}
+              onClick={() => setConfirmLogout(true)}
               aria-label={t.dashboard.logout}
               className="grid h-11 w-11 place-items-center rounded-full border border-edge text-muted transition-colors hover:text-danger"
             >
@@ -327,6 +330,13 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
           </ul>
         </nav>
       </div>
+      <ConfirmDialog
+        open={confirmLogout}
+        title={t.dashboard.logoutConfirmTitle}
+        text={t.dashboard.logoutConfirmText}
+        onConfirm={handleLogout}
+        onClose={() => setConfirmLogout(false)}
+      />
     </>
   );
 }

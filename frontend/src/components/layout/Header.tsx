@@ -137,7 +137,6 @@ export function Header() {
           open ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-3 opacity-0',
         )}
       >
-        <div aria-hidden className="pointer-events-none absolute inset-0 pattern-grid fade-mask-radial" />
         <nav aria-label={t.nav.mobile} className="relative mx-auto flex min-h-full max-w-7xl flex-col px-4 pb-10 pt-6 sm:px-6">
           <ul className="divide-y divide-edge border-y border-edge">
             {[...links, { to: '/tarifs', label: t.nav.pricing, end: false }, ...(user?.role === 'admin' ? [{ to: '/admin', label: t.nav.admin, end: false }] : [])].map((link, index) => (
