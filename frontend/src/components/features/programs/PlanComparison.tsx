@@ -17,9 +17,9 @@ function PriceBlock({ plan, goal }: { plan: Plan; goal: Goal }) {
     <div className="relative mt-8">
       <p className="flex items-baseline gap-2">
         <span className="font-display text-5xl leading-none sm:text-6xl">{fmtPrice(price.annual)}</span>
-        <span className="text-sm font-semibold text-muted">{t.plans.perYear}</span>
+        <span className="text-xl font-bold text-muted">{t.plans.perYear}</span>
       </p>
-      <p className="mt-1 text-sm font-semibold text-muted">
+      <p className="mt-1 text-base font-bold text-muted">
         {t.plans.monthlyEquiv(fmtPrice(price.monthlyEquivalent))}
       </p>
     </div>

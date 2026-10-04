@@ -116,9 +116,9 @@ export function PlanShowcaseCard({ plan, variant = 'compact' }: PlanShowcaseCard
 
           <div className="mt-6 flex items-baseline gap-2 border-t border-volt/20 pt-6">
             <span className="font-display text-4xl leading-none sm:text-5xl">{fmtPrice(price.annual)}</span>
-            <span className="text-sm font-semibold text-muted">{t.plans.perYear}</span>
+            <span className="text-lg font-bold text-muted">{t.plans.perYear}</span>
           </div>
-          <p className="mt-1 text-sm font-semibold text-muted">
+          <p className="mt-1 text-base font-bold text-muted">
             {t.plans.monthlyEquiv(fmtPrice(price.monthlyEquivalent))}
           </p>
 
@@ -176,9 +176,9 @@ export function PlanShowcaseCard({ plan, variant = 'compact' }: PlanShowcaseCard
           <div className="flex flex-col gap-4 border-t border-volt/20 pt-6 sm:flex-row sm:items-center sm:justify-between">
             <p className="flex items-baseline gap-2">
               <span className="font-display text-4xl leading-none">{fmtPrice(price.annual)}</span>
-              <span className="text-sm font-semibold text-muted">{t.plans.perYear}</span>
+              <span className="text-lg font-bold text-muted">{t.plans.perYear}</span>
             </p>
-            <p className="mt-1 text-sm font-semibold text-muted">
+            <p className="mt-1 text-base font-bold text-muted">
               {t.plans.monthlyEquiv(fmtPrice(price.monthlyEquivalent))}
             </p>
             <Button onClick={() => setPending(true)}>{t.dashboard.coaching.start}</Button>

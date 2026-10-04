@@ -66,9 +66,9 @@ export default function PaymentPage() {
         {price !== undefined && (
           <>
             <p className="mt-6 font-display text-5xl">
-              {fmtPrice(price.annual)} <span className="text-base text-muted">{t.plans.perYear}</span>
+              {fmtPrice(price.annual)} <span className="text-xl font-bold text-muted">{t.plans.perYear}</span>
             </p>
-            <p className="mt-1 text-sm font-semibold text-muted">
+            <p className="mt-1 text-base font-bold text-muted">
               {t.plans.monthlyEquiv(fmtPrice(price.monthlyEquivalent))}
             </p>
           </>
