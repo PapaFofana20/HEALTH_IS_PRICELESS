@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -85,6 +86,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
   const { t } = useLanguage();
   const { user, tier, logout } = useAuth();
   const navigate = useNavigate();
+  const [expanded, setExpanded] = useState(false);
 
   if (!user) return null;
 
@@ -106,51 +108,83 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
 
   return (
     <>
-      {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col overflow-hidden border-r border-edge/70 bg-night-950 shadow-2xl shadow-black/30 lg:flex">
+      {/* Desktop sidebar : rail replié, déplié au survol (overlay, le contenu ne bouge pas) */}
+      <aside
+        onMouseEnter={() => setExpanded(true)}
+        onMouseLeave={() => setExpanded(false)}
+        className={cn(
+          'fixed inset-y-0 left-0 z-40 hidden flex-col overflow-hidden border-r border-edge/70 bg-night-950 shadow-2xl shadow-black/30 transition-[width] duration-300 ease-out lg:flex',
+          expanded ? 'w-72' : 'w-20',
+        )}
+      >
         <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-volt/10 blur-3xl" />
-        <div className="relative flex h-20 items-center border-b border-edge/70 px-5">
-          <Logo />
+        <div className="relative flex h-20 shrink-0 items-center justify-center border-b border-edge/70 px-2">
+          {expanded ? (
+            <Logo />
+          ) : (
+            <Link
+              to="/dashboard"
+              aria-label={t.dashboard.nav.accueil}
+              title={t.dashboard.nav.accueil}
+              className="grid h-11 w-11 place-items-center rounded-2xl bg-volt font-display text-lg leading-none text-night-900 transition-transform duration-200 hover:scale-105"
+            >
+              HIP
+            </Link>
+          )}
         </div>
 
         {/* User card */}
-        <div className="relative border-b border-edge/70 p-3">
-          <div className="flex items-center gap-3 rounded-2xl border border-edge/70 bg-night-800/70 p-3 shadow-lg shadow-black/20">
-            <img src={user.avatar} alt="" className="h-10 w-10 shrink-0 rounded-xl object-cover ring-1 ring-volt/40" />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold leading-tight">
-                {user.firstName} {user.lastName}
-              </p>
-              <p className="mt-1 truncate text-[10px] font-extrabold uppercase tracking-[0.16em] text-muted">
-                {t.dashboard.tierLabel} ·{' '}
-                <span className={tier === 'premium' ? 'text-volt' : 'text-ink'}>{t.tiers[tier]}</span>
-              </p>
+        <div className={cn('relative shrink-0 border-b border-edge/70', expanded ? 'p-3' : 'flex justify-center p-3')}>
+          {expanded ? (
+            <div className="flex items-center gap-3 rounded-2xl border border-edge/70 bg-night-800/70 p-3 shadow-lg shadow-black/20">
+              <img src={user.avatar} alt="" className="h-10 w-10 shrink-0 rounded-xl object-cover ring-1 ring-volt/40" />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold leading-tight">
+                  {user.firstName} {user.lastName}
+                </p>
+                <p className="mt-1 truncate text-[10px] font-extrabold uppercase tracking-[0.16em] text-muted">
+                  {t.dashboard.tierLabel} ·{' '}
+                  <span className={tier === 'premium' ? 'text-volt' : 'text-ink'}>{t.tiers[tier]}</span>
+                </p>
+              </div>
+              <Link
+                to="/dashboard/profil"
+                aria-label={t.dashboard.nav.profil}
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-edge/70 bg-night-900/60 text-muted transition-colors hover:border-volt/50 hover:text-volt"
+              >
+                <ChevronRight className="h-4 w-4" aria-hidden />
+              </Link>
             </div>
+          ) : (
             <Link
               to="/dashboard/profil"
               aria-label={t.dashboard.nav.profil}
-              className="grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-edge/70 bg-night-900/60 text-muted transition-colors hover:border-volt/50 hover:text-volt"
+              title={t.dashboard.nav.profil}
+              className="transition-transform duration-200 hover:scale-105"
             >
-              <ChevronRight className="h-4 w-4" aria-hidden />
+              <img src={user.avatar} alt="" className="h-10 w-10 rounded-xl object-cover ring-1 ring-volt/40" />
             </Link>
-          </div>
+          )}
         </div>
 
         {/* Grouped navigation */}
-        <nav aria-label={t.dashboard.navLabel} className="scrollbar-slim relative flex-1 overflow-y-auto px-3 py-4">
+        <nav aria-label={t.dashboard.navLabel} className={cn('scrollbar-slim relative flex-1 overflow-y-auto py-4', expanded ? 'px-3' : 'px-2')}>
           {groups.map((group) => (
             <div key={group.label} className="mb-5 last:mb-0">
-              <p className={NAV_GROUP_LABEL}>{t.dashboard.navGroups[group.label]}</p>
+              {expanded && <p className={NAV_GROUP_LABEL}>{t.dashboard.navGroups[group.label]}</p>}
               <ul className="space-y-1">
                 {group.items.map(({ key, to, icon: Icon }) => {
                   const isActive = active === key;
+                  const label = t.dashboard.nav[key];
                   return (
                     <li key={key}>
                       <Link
                         to={to}
                         aria-current={isActive ? 'page' : undefined}
+                        title={expanded ? undefined : label}
                         className={cn(
-                          'group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-all duration-150',
+                          'group relative flex items-center whitespace-nowrap rounded-lg py-2 text-sm font-semibold transition-all duration-150',
+                          expanded ? 'gap-3 px-3' : 'justify-center px-0',
                           isActive ? 'bg-volt/10 text-ink' : 'text-muted hover:bg-night-800/60 hover:text-ink',
                         )}
                       >
@@ -164,7 +198,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
                           )}
                           aria-hidden
                         />
-                        <span className="truncate">{t.dashboard.nav[key]}</span>
+                        <span className={expanded ? 'truncate' : 'sr-only'}>{label}</span>
                       </Link>
                     </li>
                   );
@@ -174,15 +208,19 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
           ))}
           {user.role === 'admin' && (
             <div>
-              <p className={NAV_GROUP_LABEL}>{t.dashboard.navGroups.admin}</p>
+              {expanded && <p className={NAV_GROUP_LABEL}>{t.dashboard.navGroups.admin}</p>}
               <ul>
                 <li>
                   <Link
                     to="/admin"
-                    className="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-muted transition-colors duration-150 hover:bg-night-800/60 hover:text-ink"
+                    title={expanded ? undefined : t.nav.admin}
+                    className={cn(
+                      'group flex items-center whitespace-nowrap rounded-lg py-2 text-sm font-semibold text-muted transition-colors duration-150 hover:bg-night-800/60 hover:text-ink',
+                      expanded ? 'gap-3 px-3' : 'justify-center px-0',
+                    )}
                   >
                     <ShieldCheck className="h-[18px] w-[18px] shrink-0 text-muted transition-colors group-hover:text-volt" aria-hidden />
-                    <span className="truncate">{t.nav.admin}</span>
+                    <span className={expanded ? 'truncate' : 'sr-only'}>{t.nav.admin}</span>
                   </Link>
                 </li>
               </ul>
@@ -191,6 +229,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
         </nav>
 
         {/* Footer */}
+        {expanded && (
         <div className="relative space-y-3 border-t border-edge/70 p-3">
           {tier !== 'premium' ? (
             <div className="relative overflow-hidden rounded-2xl border border-volt/20 bg-gradient-to-b from-night-800/80 to-night-900 p-4 shadow-lg shadow-black/20">
@@ -231,6 +270,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
             </button>
           </div>
         </div>
+        )}
       </aside>
 
       {/* Mobile / tablet top bar */}

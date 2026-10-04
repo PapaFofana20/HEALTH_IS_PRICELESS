@@ -16,7 +16,8 @@ export function AdminShell({ section, view }: AdminShellProps) {
   return (
     <div className="min-h-screen bg-night-900">
       <AdminSidebar active={section} />
-      <div className="lg:pl-72">
+      <div className="relative isolate lg:pl-20">
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
         <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12">
           <div>
             <p className={cn(labelClass, 'flex items-center gap-3')}>
