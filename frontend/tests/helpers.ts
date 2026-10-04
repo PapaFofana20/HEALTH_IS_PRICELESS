@@ -64,7 +64,7 @@ export async function seedSession(page: Page, user: TestUser | null): Promise<vo
 /** Dépose un paiement en attente, consommé par /#/paiement/retour. */
 export async function seedPendingPayment(
   page: Page,
-  payment: { plan: string; goal: string; token: string },
+  payment: { plan: string; goal: string; sessionId: string },
 ): Promise<void> {
   await page.addInitScript(
     ([key, value]) => {
@@ -89,13 +89,13 @@ export async function mockAuthMe(page: Page, handler?: (route: Route) => Promise
   });
 }
 
-/** GET /api/paytech/status/:token — interception du statut de paiement. */
+/** GET /api/saspay/status/:sessionId — interception du statut de paiement. */
 export async function mockPaymentStatus(
   page: Page,
   body: Record<string, unknown>,
   status = 200,
 ): Promise<void> {
-  await page.route('**/api/paytech/status/**', async (route) => {
+  await page.route('**/api/saspay/status/**', async (route) => {
     await route.fulfill({
       status,
       contentType: 'application/json',

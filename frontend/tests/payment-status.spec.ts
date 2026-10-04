@@ -9,9 +9,9 @@ import {
 } from './helpers';
 
 /**
- * Retour de paiement PayTech : /#/paiement/retour lit le token dans
- * localStorage puis appelle GET /api/paytech/status/:token.
- * Succès -> redirection vers l'espace correspondant au plan payé.
+ * Retour de paiement SasPay : /#/paiement/retour lit le sessionId dans
+ * localStorage puis appelle GET /api/saspay/status/:sessionId.
+ * Succès (PAID / SUCCESS) -> redirection vers l'espace du plan payé.
  * Échec  -> écran « Paiement non confirmé ».
  */
 test.describe('statut de paiement', () => {
@@ -22,10 +22,10 @@ test.describe('statut de paiement', () => {
 
   test('un paiement confirmé redirige vers l\'espace payé et met le plan à jour', async ({ page }) => {
     await seedSession(page, { ...memberUser, tier: 'free' });
-    await seedPendingPayment(page, { plan: 'premium', goal: 'weight-loss', token: 'tok_ok' });
+    await seedPendingPayment(page, { plan: 'premium', goal: 'weight-loss', sessionId: 'sess_ok' });
     await mockPaymentStatus(page, {
-      success: 1,
-      status: 'sale_complete',
+      status: 'PAID',
+      transactionStatus: 'SUCCESS',
       plan: 'premium',
       goal: 'weight-loss',
     });
@@ -42,10 +42,10 @@ test.describe('statut de paiement', () => {
       .toBeNull();
   });
 
-  test('le type "sale_complete" seul suffit à valider le paiement', async ({ page }) => {
+  test('le statut transaction SUCCESS seul suffit à valider le paiement', async ({ page }) => {
     await seedSession(page, { ...memberUser, tier: 'free' });
-    await seedPendingPayment(page, { plan: 'standard', goal: 'muscle-gain', token: 'tok_type' });
-    await mockPaymentStatus(page, { type: 'sale_complete', plan: 'standard', goal: 'muscle-gain' });
+    await seedPendingPayment(page, { plan: 'standard', goal: 'muscle-gain', sessionId: 'sess_tx' });
+    await mockPaymentStatus(page, { status: 'PENDING', transactionStatus: 'SUCCESS', plan: 'standard', goal: 'muscle-gain' });
 
     await page.goto('/#/paiement/retour');
 
@@ -54,8 +54,8 @@ test.describe('statut de paiement', () => {
 
   test('un paiement non confirmé affiche l\'écran d\'erreur', async ({ page }) => {
     await seedSession(page, { ...memberUser, tier: 'free' });
-    await seedPendingPayment(page, { plan: 'premium', goal: 'weight-loss', token: 'tok_pending' });
-    await mockPaymentStatus(page, { status: 'pending' });
+    await seedPendingPayment(page, { plan: 'premium', goal: 'weight-loss', sessionId: 'sess_pending' });
+    await mockPaymentStatus(page, { status: 'PENDING' });
 
     await page.goto('/#/paiement/retour');
 
@@ -67,10 +67,10 @@ test.describe('statut de paiement', () => {
       .toBe('free');
   });
 
-  test('un statut "completed" valide aussi le paiement', async ({ page }) => {
+  test('un statut PAID sans transactionStatus valide aussi le paiement', async ({ page }) => {
     await seedSession(page, { ...memberUser, tier: 'free' });
-    await seedPendingPayment(page, { plan: 'premium', goal: 'muscle-gain', token: 'tok_done' });
-    await mockPaymentStatus(page, { status: 'completed', plan: 'premium', goal: 'muscle-gain' });
+    await seedPendingPayment(page, { plan: 'premium', goal: 'muscle-gain', sessionId: 'sess_paid' });
+    await mockPaymentStatus(page, { status: 'PAID', plan: 'premium', goal: 'muscle-gain' });
 
     await page.goto('/#/paiement/retour');
 
@@ -79,7 +79,7 @@ test.describe('statut de paiement', () => {
 
   test('une erreur HTTP du backend affiche l\'écran d\'erreur', async ({ page }) => {
     await seedSession(page, { ...memberUser, tier: 'free' });
-    await seedPendingPayment(page, { plan: 'premium', goal: 'weight-loss', token: 'tok_500' });
+    await seedPendingPayment(page, { plan: 'premium', goal: 'weight-loss', sessionId: 'sess_500' });
     await mockPaymentStatus(page, { message: 'INTERNAL_ERROR' }, 500);
 
     await page.goto('/#/paiement/retour');
@@ -90,7 +90,7 @@ test.describe('statut de paiement', () => {
   test('sans paiement en attente, l\'écran d\'erreur s\'affiche sans appel API', async ({ page }) => {
     await seedSession(page, memberUser);
     let called = false;
-    await page.route('**/api/paytech/status/**', async (route) => {
+    await page.route('**/api/saspay/status/**', async (route) => {
       called = true;
       await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
     });

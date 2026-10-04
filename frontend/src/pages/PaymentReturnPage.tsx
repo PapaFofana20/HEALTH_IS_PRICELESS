@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { checkPaymentStatus } from '../services/paytech';
+import { checkPaymentStatus } from '../services/saspay';
 import { spaceSlug } from '../data/spaces';
 import type { Goal, Plan } from '../types';
 
 const PENDING_KEY = 'pending-payment';
 
 /**
- * Retour PayTech (success_url) : vérifie le statut auprès de PayTech
+ * Retour SasPay (return_url) : vérifie le statut auprès de SasPay
  * via notre backend. L'activation serveur (orders + profile.tier) est
- * assurée par l'IPN ; ici on met à jour l'UI locale.
+ * assurée par le webhook ; ici on met à jour l'UI locale.
  */
 export default function PaymentReturnPage() {
   const navigate = useNavigate();
@@ -18,24 +18,25 @@ export default function PaymentReturnPage() {
   const [state, setState] = useState<'loading' | 'error'>('loading');
 
   useEffect(() => {
-    let token: string | null = null;
+    let sessionId: string | null = null;
     try {
       const raw = localStorage.getItem(PENDING_KEY);
       if (raw) {
-        const pending = JSON.parse(raw) as { plan: Plan; goal: Goal; token?: string };
-        token = pending.token ?? null;
+        const pending = JSON.parse(raw) as { plan: Plan; goal: Goal; sessionId?: string };
+        sessionId = pending.sessionId ?? null;
       }
     } catch {
       /* ignore */
     }
-    if (!token) {
+    if (!sessionId) {
       setState('error');
       return;
     }
-    checkPaymentStatus(token)
+    checkPaymentStatus(sessionId)
       .then((result) => {
-        const status = (result.status ?? result.type ?? '').toLowerCase();
-        if (result.success !== 1 && status !== 'success' && status !== 'sale_complete' && status !== 'completed') {
+        const status = (result.status ?? '').toUpperCase();
+        const txStatus = (result.transactionStatus ?? '').toUpperCase();
+        if (status !== 'PAID' && txStatus !== 'SUCCESS') {
           throw new Error('not-confirmed');
         }
         // Le plan doit venir du backend : un repli sur localStorage ferait de

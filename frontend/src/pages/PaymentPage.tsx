@@ -4,13 +4,13 @@ import { Crown } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 import { useAuth } from '../hooks/useAuth';
 import { planPricing } from '../data/programs';
-import { createPayment } from '../services/paytech';
+import { createPayment } from '../services/saspay';
 import { Button } from '../components/ui/Button';
 import type { Goal, Plan } from '../types';
 
 const PENDING_KEY = 'pending-payment';
 
-/** Récapitulatif avant redirection vers PayTech. */
+/** Récapitulatif avant redirection vers SasPay. */
 export default function PaymentPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
@@ -39,9 +39,9 @@ export default function PaymentPage() {
     setError(null);
     setLoading(true);
     try {
-      const { token, redirectUrl } = await createPayment(plan, goal, user?.id);
+      const { sessionId, redirectUrl } = await createPayment(plan, goal, user?.id);
       try {
-        localStorage.setItem(PENDING_KEY, JSON.stringify({ plan, goal, token }));
+        localStorage.setItem(PENDING_KEY, JSON.stringify({ plan, goal, sessionId }));
       } catch {
         /* ignore */
       }

@@ -11,7 +11,7 @@ import { usersRouter } from './routes/users.js';
 import { nutritionRouter } from './routes/nutrition.js';
 import { communityRouter } from './routes/community.js';
 import { pricingRouter } from './routes/pricing.js';
-import { paytechRouter, verifyIpn, activatePlan, findPendingOrderByReference, planPricing, pendingPayments } from './routes/paytech.js';
+import { saspayRouter, verifyWebhookSignature, processTransactionSuccess } from './routes/saspay.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { rateLimit } from './middleware/rateLimit.js';
 
@@ -44,13 +44,12 @@ if (isProduction) {
 }
 
 const apiOrigin = process.env.PUBLIC_API_URL ?? 'http://localhost:3001';
-const paytechOrigin = 'https://paytech.sn';
 
 app.set('trust proxy', 1); // Render/Nginx devant Express : IP réelle pour le rate-limit
 
-// Rate-limit global (toutes les routes API) + limite stricte sur l'IPN.
+// Rate-limit global (toutes les routes API) + limite stricte sur le webhook.
 const globalLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 300 });
-const ipnLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 60 });
+const webhookLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 60 });
 
 // CSP via Helmet
 app.use(
@@ -62,11 +61,10 @@ app.use(
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
         imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
-        connectSrc: ["'self'", apiOrigin, paytechOrigin, 'https://*.supabase.co', 'wss://*.supabase.co'],
-        frameSrc: [paytechOrigin],
+        connectSrc: ["'self'", apiOrigin, 'https://*.supabase.co', 'wss://*.supabase.co'],
         objectSrc: ["'none'"],
         baseUri: ["'self'"],
-        formAction: ["'self'", paytechOrigin],
+        formAction: ["'self'"],
         upgradeInsecureRequests: isProduction ? [] : null,
       },
     },
@@ -75,61 +73,29 @@ app.use(
   })
 );
 
-// Gérer le webhook PayTech IPN AVANT le CORS (appel serveur-à-serveur sans Origin)
-app.post('/api/paytech/ipn', ipnLimiter, express.json({ limit: '100kb' }), async (req, res) => {
+// Webhook SasPay AVANT le CORS (appel serveur-à-serveur sans Origin).
+// Corps brut requis : la signature HMAC couvre le JSON exact reçu.
+app.post('/api/saspay/webhook', webhookLimiter, express.raw({ type: 'application/json', limit: '100kb' }), async (req, res) => {
   try {
-    const body = req.body ?? {};
-    if (!verifyIpn(body)) {
-      return res.status(403).json({ error: 'FORBIDDEN', message: 'IPN non authentifiée' });
+    const raw = Buffer.isBuffer(req.body) ? req.body.toString('utf8') : '';
+    const signature = req.headers['x-webhook-signature'];
+    const timestamp = req.headers['x-webhook-timestamp'];
+    if (!verifyWebhookSignature(raw, signature, timestamp)) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Webhook non authentifié' });
     }
-    if (body.type_event === 'sale_complete') {
-      // Le ref_command doit correspondre à un paiement que CE serveur a émis.
-      // Mémoire d'abord, Supabase (orders pending) en repli après redémarrage.
-      const knownEntry = [...pendingPayments.entries()].find(([, v]) => v.refCommand === body.ref_command);
-      let known = knownEntry?.[1] ?? null;
-      if (!known && body.ref_command) {
-        const row = await findPendingOrderByReference(body.ref_command);
-        if (row) {
-          known = {
-            plan: row.plan ?? row.Plan,
-            goal: row.goal ?? row.Goal,
-            userId: row.user_id ?? row.userId,
-            refCommand: body.ref_command,
-          };
-        }
-      }
-      if (!known) {
-        console.error(`PayTech IPN: ref_command inconnu (${body.ref_command ?? 'absent'}) — activation refusée`);
-        return res.status(409).json({ error: 'UNKNOWN_PAYMENT', message: 'Paiement non enregistré par ce serveur' });
-      }
-
-      const targetPlan = known.plan;
-      const targetGoal = known.goal;
-      const targetUserId = known.userId;
-      const paidAmount = Number(body.final_item_price ?? body.item_price);
-
-      const expectedAmount = planPricing[targetGoal]?.[targetPlan]?.annual;
-      // expectedAmount doit exister ET le montant payé être connu : sinon la
-      // comparaison est sans effet et l'activation passe sans vérification.
-      if (!Number.isFinite(expectedAmount) || !Number.isFinite(paidAmount) || paidAmount < expectedAmount) {
-        console.error(`PayTech IPN: Montant payé ${paidAmount} inférieur au montant attendu ${expectedAmount}`);
-        return res.status(400).json({ error: 'INVALID_AMOUNT' });
-      }
-
-      await activatePlan({
-        userId: targetUserId,
-        plan: targetPlan,
-        amount: paidAmount,
-        reference: body.ref_command ?? known?.refCommand,
-      });
-
-      if (knownEntry) {
-        pendingPayments.delete(knownEntry[0]);
-      }
+    let body = null;
+    try {
+      body = JSON.parse(raw);
+    } catch {
+      return res.status(400).json({ error: 'INVALID_JSON' });
+    }
+    if (body?.event === 'transaction.success' && body?.data) {
+      const ok = await processTransactionSuccess(body.data);
+      if (!ok) console.error('SasPay webhook: activation impossible pour', body.data?.id);
     }
     res.json({ received: true });
   } catch (err) {
-    console.error('Erreur traitement IPN PayTech:', err);
+    console.error('Erreur traitement webhook SasPay:', err);
     res.status(500).json({ error: 'INTERNAL_ERROR' });
   }
 });
@@ -173,7 +139,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/nutrition', nutritionRouter);
 app.use('/api/community', communityRouter);
 app.use('/api/pricing', pricingRouter);
-app.use('/api/paytech', paytechRouter);
+app.use('/api/saspay', saspayRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

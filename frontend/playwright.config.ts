@@ -5,7 +5,7 @@ import { defineConfig, devices } from '@playwright/test';
  *
  * Le backend n'est pas démarré : toutes les requêtes /api/* sont
  * interceptées (route mocking), donc la suite est déterministe et
- * ne requiert ni Supabase ni credentials PayTech.
+ * ne requiert ni Supabase ni credentials SasPay.
  *
  * VITE_SUPABASE_* est volontairement vidé : l'app bascule alors sur son
  * mode d'authentification local (useAuth), ce qui évite tout appel réseau

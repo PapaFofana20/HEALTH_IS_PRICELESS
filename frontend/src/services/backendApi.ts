@@ -2,7 +2,7 @@ import type { Goal, Tier, User } from '../types';
 
 /* ==========================================================
     Appels réels au backend Express (cookie httpOnly auth_token).
-    Le même mécanisme est utilisé par services/paytech.ts :
+    Le même mécanisme est utilisé par services/saspay.ts :
     on suit « credentials: 'include' » pour que le cookie de
     session accompagne la requête.
     ========================================================== */
@@ -37,7 +37,7 @@ export async function fetchSessionUser(fallback: User): Promise<User | null> {
       lastName: typeof row.lastName === 'string' ? row.lastName : fallback.lastName,
       email: typeof row.email === 'string' ? row.email : fallback.email,
       role: row.role === 'admin' ? 'admin' : fallback.role,
-      // Le serveur fait foi pour le plan : c'est lui qui active l'abonnement (IPN PayTech).
+      // Le serveur fait foi pour le plan : c'est lui qui active l'abonnement (webhook SasPay).
       tier: toTier(row.tier, fallback.tier),
       goal: toGoal(row.goal, fallback.goal),
       currentProgramId:
