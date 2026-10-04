@@ -6,8 +6,8 @@ import { useLanguage } from '../../../hooks/useLanguage';
 import { ACTIVITY_LEVELS, bmiGaugePosition, calculateCalories, calculateProtein } from '../../../utils/fitness';
 import type { ActivityLevel, CalorieGoal, Sex } from '../../../utils/fitness';
 import { useAuth } from '../../../hooks/useAuth';
-import { calculateBMI, convertHeightToCm, convertWeightToKg, generateBMIReport, validatePositiveNumber } from '../../../utils/bmi';
-import type { BmiClass, BmiFieldError, BmiReport, HeightUnit, WeightUnit } from '../../../utils/bmi';
+import { calculateBMI, generateBMIReport, validatePositiveNumber } from '../../../utils/bmi';
+import type { BmiClass, BmiFieldError, BmiReport } from '../../../utils/bmi';
 import { Button } from '../../ui/Button';
 
 /* ---------- Shared fields ---------- */
@@ -167,24 +167,20 @@ export function BmiCalculator() {
   const [step, setStep] = useState<BmiStep>(0);
   const [age, setAge] = useState('30');
   const [sex, setSex] = useState<Sex>('male');
-  const [weightUnit, setWeightUnit] = useState<WeightUnit>('kg');
   const [weight, setWeight] = useState('75');
-  const [heightUnit, setHeightUnit] = useState<HeightUnit>('cm');
   const [height, setHeight] = useState('175');
-  const [heightIn, setHeightIn] = useState('0');
   const [showErrors, setShowErrors] = useState(false);
   const [report, setReport] = useState<BmiReport | null>(null);
   const [snapshot, setSnapshot] = useState<BmiSnapshot | null>(null);
 
-  const wMin = weightUnit === 'kg' ? 20 : 44;
-  const wMax = weightUnit === 'kg' ? 350 : 772;
-  const hMin = heightUnit === 'cm' ? 100 : 3;
-  const hMax = heightUnit === 'cm' ? 250 : 8;
+  const wMin = 20;
+  const wMax = 350;
+  const hMin = 100;
+  const hMax = 250;
 
   const ageError = validatePositiveNumber(age, BMI_AGE_MIN, BMI_AGE_MAX);
   const weightError = validatePositiveNumber(weight, wMin, wMax);
   const heightError = validatePositiveNumber(height, hMin, hMax);
-  const heightInError = heightUnit === 'ft-in' ? validatePositiveNumber(heightIn, 0, 11.99) : null;
 
   const errorMessage = (code: BmiFieldError | null, rangeMessage: string): string | undefined => {
     if (!code) return undefined;
@@ -193,7 +189,7 @@ export function BmiCalculator() {
     return rangeMessage;
   };
 
-  const stepValid = [ageError === null, weightError === null && heightError === null && heightInError === null, true, true][step];
+  const stepValid = [ageError === null, weightError === null && heightError === null, true, true][step];
   const ageNumber = Number(age);
   const isMinor = ageError === null && ageNumber < 18;
 
@@ -211,17 +207,16 @@ export function BmiCalculator() {
   };
 
   const runCalculation = () => {
-    const weightKg = convertWeightToKg(Number(weight), weightUnit);
-    const heightCm = heightUnit === 'cm' ? Number(height) : convertHeightToCm(Number(height), 'ft-in', Number(heightIn));
+    const weightKg = Number(weight);
+    const heightCm = Number(height);
     const bmi = calculateBMI(weightKg, heightCm);
     const result = generateBMIReport({ bmi, heightCm, weightKg, age: ageNumber, weightGoal: user?.weightGoal ?? null });
     if (!result) return;
-    const weightLabel = weightUnit === 'kg' ? t.calc.bmi.unitKg : t.calc.bmi.unitLb;
     setSnapshot({
       age: ageNumber,
       sexLabel: sex === 'male' ? t.calc.male : t.calc.female,
-      weightDisplay: `${weight} ${weightLabel}`,
-      heightDisplay: heightUnit === 'cm' ? `${height} ${t.calc.bmi.unitCm}` : `${height} ${t.calc.bmi.feet} ${heightIn} ${t.calc.bmi.inches}`,
+      weightDisplay: `${weight} ${t.calc.weightUnit}`,
+      heightDisplay: `${height} ${t.calc.heightUnit}`,
       weightKg,
       heightCm,
     });
@@ -301,19 +296,10 @@ export function BmiCalculator() {
 
       {step === 1 && (
         <div className="mt-6 space-y-4">
-          <Segmented
-            label={t.calc.bmi.weightUnitLabel}
-            value={weightUnit}
-            onChange={setWeightUnit}
-            options={[
-              { value: 'kg', label: t.calc.bmi.unitKg },
-              { value: 'lb', label: t.calc.bmi.unitLb },
-            ]}
-          />
           <NumberField
             id="bmi-weight"
             label={t.calc.weight}
-            unit={weightUnit === 'kg' ? t.calc.bmi.unitKg : t.calc.bmi.unitLb}
+            unit={t.calc.weightUnit}
             value={weight}
             onChange={setWeight}
             min={wMin}
@@ -321,51 +307,16 @@ export function BmiCalculator() {
             step={0.1}
             error={showErrors ? errorMessage(weightError, t.calc.bmi.errors.weightRange) : undefined}
           />
-          <Segmented
-            label={t.calc.bmi.heightUnitLabel}
-            value={heightUnit}
-            onChange={setHeightUnit}
-            options={[
-              { value: 'cm', label: t.calc.bmi.unitCm },
-              { value: 'ft-in', label: t.calc.bmi.unitFtIn },
-            ]}
+          <NumberField
+            id="bmi-height"
+            label={t.calc.height}
+            unit={t.calc.heightUnit}
+            value={height}
+            onChange={setHeight}
+            min={hMin}
+            max={hMax}
+            error={showErrors ? errorMessage(heightError, t.calc.bmi.errors.heightRange) : undefined}
           />
-          {heightUnit === 'cm' ? (
-            <NumberField
-              id="bmi-height"
-              label={t.calc.height}
-              unit={t.calc.bmi.unitCm}
-              value={height}
-              onChange={setHeight}
-              min={hMin}
-              max={hMax}
-              error={showErrors ? errorMessage(heightError, t.calc.bmi.errors.heightRange) : undefined}
-            />
-          ) : (
-            <div className="grid grid-cols-2 gap-4">
-              <NumberField
-                id="bmi-height-ft"
-                label={t.calc.bmi.feet}
-                unit="ft"
-                value={height}
-                onChange={setHeight}
-                min={hMin}
-                max={hMax}
-                error={showErrors ? errorMessage(heightError, t.calc.bmi.errors.heightRange) : undefined}
-              />
-              <NumberField
-                id="bmi-height-in"
-                label={t.calc.bmi.inches}
-                unit="in"
-                value={heightIn}
-                onChange={setHeightIn}
-                min={0}
-                max={11.99}
-                step={0.5}
-                error={showErrors ? errorMessage(heightInError, t.calc.bmi.errors.heightRange) : undefined}
-              />
-            </div>
-          )}
         </div>
       )}
 
@@ -387,15 +338,13 @@ export function BmiCalculator() {
               <div className="flex items-center justify-between gap-4">
                 <dt className="text-muted">{t.calc.weight}</dt>
                 <dd className="font-bold">
-                  {weight} {weightUnit === 'kg' ? t.calc.bmi.unitKg : t.calc.bmi.unitLb}
+                  {weight} {t.calc.weightUnit}
                 </dd>
               </div>
               <div className="flex items-center justify-between gap-4">
                 <dt className="text-muted">{t.calc.height}</dt>
                 <dd className="font-bold">
-                  {heightUnit === 'cm'
-                    ? `${height} ${t.calc.bmi.unitCm}`
-                    : `${height} ${t.calc.bmi.feet} ${heightIn} ${t.calc.bmi.inches}`}
+                  {height} {t.calc.heightUnit}
                 </dd>
               </div>
             </dl>
