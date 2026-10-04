@@ -163,4 +163,127 @@ router.get('/verify-admin', authMiddleware, async (req, res, next) => {
   }
 });
 
+/* Crée un administrateur (email + mot de passe) sans déconnecter l'admin
+   courant : la création passe par l'API Admin Supabase (service_role).
+   Le demandeur prouve son rôle via son token d'accès Supabase. */
+router.post('/create-admin', authLimiter, async (req, res, next) => {
+  try {
+    if (!USE_SUPABASE) {
+      return res.status(503).json({ error: 'NOT_CONFIGURED', message: 'Supabase requis pour créer un administrateur' });
+    }
+    const bearer = req.headers.authorization?.startsWith('Bearer ')
+      ? req.headers.authorization.slice(7)
+      : null;
+    if (!bearer) {
+      return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session requise' });
+    }
+    let requesterEmail = null;
+    try {
+      const meRes = await fetch(SUPABASE_URL + '/auth/v1/user', {
+        headers: { apikey: SERVICE_KEY, Authorization: 'Bearer ' + bearer },
+      });
+      if (!meRes.ok) {
+        return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session invalide ou expirée' });
+      }
+      const me = await meRes.json();
+      requesterEmail = me?.email ?? null;
+    } catch {
+      return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session invalide ou expirée' });
+    }
+    if (!requesterEmail || !(await isAdminEmail(requesterEmail))) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Réservé aux administrateurs' });
+    }
+
+    const { firstName, email, password } = req.body ?? {};
+    if (!email?.trim() || !password || typeof password !== 'string') {
+      return res.status(400).json({ error: 'INVALID_INPUT', message: 'Email et mot de passe requis' });
+    }
+    if (!EMAIL_RE.test(email.trim())) {
+      return res.status(400).json({ error: 'INVALID_INPUT', message: 'Format email invalide' });
+    }
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      return res.status(400).json({ error: 'INVALID_INPUT', message: passwordError });
+    }
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanFirstName = typeof firstName === 'string' && firstName.trim() ? firstName.trim() : cleanEmail.split('@')[0];
+
+    // Compte déjà connu côté profils → simple promotion dans la whitelist.
+    const existing = await findUserByEmail(cleanEmail);
+    if (existing) {
+      await addAdminEmail(cleanEmail);
+      return res.json({ promoted: true, user: getPublicUser(existing) });
+    }
+
+    // 1. Compte Supabase Auth (email confirmé, pas de session créée pour l'admin courant).
+    const createRes = await fetch(SUPABASE_URL + '/auth/v1/admin/users', {
+      method: 'POST',
+      headers: getSupabaseHeaders(),
+      body: JSON.stringify({
+        email: cleanEmail,
+        password,
+        email_confirm: true,
+        user_metadata: { firstName: cleanFirstName },
+      }),
+    });
+    if (!createRes.ok) {
+      const errBody = await createRes.json().catch(() => ({}));
+      const errMsg = String(errBody?.msg ?? errBody?.message ?? '');
+      // Compte Auth existant sans profil : promotion dans la whitelist.
+      if (createRes.status === 422 || createRes.status === 409 || /already|existe|registered/i.test(errMsg)) {
+        await addAdminEmail(cleanEmail);
+        return res.json({ promoted: true, email: cleanEmail });
+      }
+      return res.status(502).json({ error: 'AUTH_PROVIDER_ERROR', message: errMsg || 'Création du compte impossible' });
+    }
+    const created = await createRes.json();
+    const authUserId = created?.id ?? created?.user?.id;
+    if (!authUserId) {
+      return res.status(502).json({ error: 'AUTH_PROVIDER_ERROR', message: 'Réponse inattendue du fournisseur' });
+    }
+
+    // 2. Ligne profil (même schéma que createUser, id = id Auth).
+    const passwordHash = await bcrypt.hash(password, 10);
+    const memberSince = new Date().toISOString().slice(0, 10);
+    await fetch(SUPABASE_URL + '/rest/v1/profiles', {
+      method: 'POST',
+      headers: { ...getSupabaseHeaders(), Prefer: 'resolution=ignore-duplicates,return=minimal' },
+      body: JSON.stringify({
+        id: authUserId,
+        email: cleanEmail,
+        first_name: cleanFirstName,
+        last_name: '',
+        password_hash: passwordHash,
+        avatar: '',
+        tier: 'free',
+        goal: 'weight-loss',
+        current_program_id: null,
+        current_week: 1,
+        weight_goal: 72,
+        member_since: memberSince,
+        favorites: [],
+      }),
+    });
+
+    // 3. Whitelist admin.
+    await addAdminEmail(cleanEmail);
+
+    res.status(201).json({ created: true, user: { id: authUserId, email: cleanEmail, firstName: cleanFirstName } });
+  } catch (err) {
+    next(err);
+  }
+});
+
+async function addAdminEmail(email) {
+  try {
+    await fetch(SUPABASE_URL + '/rest/v1/admin_emails', {
+      method: 'POST',
+      headers: { ...getSupabaseHeaders(), Prefer: 'resolution=ignore-duplicates,return=minimal' },
+      body: JSON.stringify({ email: email.trim().toLowerCase() }),
+    });
+  } catch {
+    /* non bloquant : la création du compte a réussi */
+  }
+}
+
 export { router as authRouter };

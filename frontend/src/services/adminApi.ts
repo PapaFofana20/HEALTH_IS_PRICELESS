@@ -159,3 +159,32 @@ export async function removeAdminEmail(email: string): Promise<void> {
   const { error } = await supabase.from('admin_emails').delete().eq('email', email);
   if (error) throw new Error(error.message);
 }
+
+const BACKEND_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? 'http://localhost:3001';
+
+export interface CreatedAdmin {
+  created?: boolean;
+  promoted?: boolean;
+  email?: string;
+}
+
+/**
+ * Crée un administrateur complet (compte Auth + profil + whitelist) via le
+ * backend (clé service-role). Le demandeur prouve son rôle avec son token
+ * d'accès Supabase : sa session n'est pas touchée.
+ */
+export async function createBackendAdmin(input: { email: string; password: string; firstName: string }): Promise<CreatedAdmin> {
+  if (!isSupabaseConfigured || !supabase) throw new Error('Supabase non configuré');
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) throw new Error('Session administrateur requise');
+  const res = await fetch(`${BACKEND_URL}/api/auth/create-admin`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(input),
+  });
+  const payload = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error((payload as { message?: string }).message ?? 'Création impossible');
+  return payload as CreatedAdmin;
+}
