@@ -788,6 +788,7 @@ export const fr = {
     contactTitle: 'Une question ?',
     contactCta: 'Nous contacter sur WhatsApp',
     legalEyebrow: 'Légal',
+    legalToc: 'Sommaire',
   },
   dashboard: {
     nav: {

@@ -784,6 +784,7 @@ export const en: Translations = {
     contactTitle: 'Got a question?',
     contactCta: 'Contact us on WhatsApp',
     legalEyebrow: 'Legal',
+    legalToc: 'Contents',
   },
   dashboard: {
     nav: {
