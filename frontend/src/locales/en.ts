@@ -136,7 +136,7 @@ export const en: Translations = {
     goalLabel: 'Your goal',
     perMonth: '/ month',
     perYear: '/ year',
-    monthlyEquiv: (price: string) => `That's ${price} per month`,
+    equivPrefix: "That's",
     recommended: 'Recommended',
     currentPlan: 'Your current plan',
     activated: (plan: string) => `${plan} plan activated. Enjoy your training!`,

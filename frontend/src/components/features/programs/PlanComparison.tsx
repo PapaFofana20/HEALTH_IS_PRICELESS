@@ -19,8 +19,9 @@ function PriceBlock({ plan, goal }: { plan: Plan; goal: Goal }) {
         <span className="font-display text-5xl leading-none sm:text-6xl">{fmtPrice(price.annual)}</span>
         <span className="text-xl font-bold text-muted">{t.plans.perYear}</span>
       </p>
-      <p className="mt-1 text-base font-bold text-muted">
-        {t.plans.monthlyEquiv(fmtPrice(price.monthlyEquivalent))}
+      <p className="mt-1 text-base text-muted">
+        {t.plans.equivPrefix} <span className="font-semibold text-volt">{fmtPrice(price.monthlyEquivalent)}</span>{' '}
+        {t.plans.perMonth}
       </p>
     </div>
   );
