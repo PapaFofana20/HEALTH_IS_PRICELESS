@@ -32,7 +32,7 @@ export function MainLayout() {
       <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
         <Outlet />
       </main>
-      {(pathname === '/' || pathname === '/a-propos') && <Footer />}
+      {(pathname === '/' || pathname === '/a-propos' || pathname === '/confidentialite' || pathname === '/cgu') && <Footer />}
     </div>
   );
 }

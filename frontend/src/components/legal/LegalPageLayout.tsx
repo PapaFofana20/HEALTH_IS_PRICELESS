@@ -23,6 +23,11 @@ const FEATURED: Record<LegalDocKey, { section: number; paragraph: number }> = {
 
 const SECTION_ICONS = [ShieldCheck, FileText, Scale, Info] as const;
 
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const scrollBehavior = (): ScrollBehavior => (prefersReducedMotion() ? 'auto' : 'smooth');
+
 /* Layout juridique partage : hero institutionnel, sommaire sticky,
    contenu hierarchise, CTA aide. Le fond juridique est inchange. */
 export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
@@ -30,14 +35,17 @@ export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
   const doc = DOCS[docKey];
   const [activeSection, setActiveSection] = useState(0);
   const [tocOpen, setTocOpen] = useState(false);
-  usePageTitle(doc ? loc(doc.title) : '');
-  if (!doc) return <NotFoundState />;
-
   const isPrivacy = docKey === 'confidentialite';
   const HeroIcon = DOC_ICONS[docKey];
   const featured = FEATURED[docKey];
 
+  usePageTitle(
+    doc ? loc(doc.title) : '',
+    doc ? (isPrivacy ? t.about.legalPrivacySubtitle : t.about.legalCguSubtitle) : undefined,
+  );
+
   useEffect(() => {
+    if (!doc) return;
     const hash = window.location.hash.replace('#', '');
     const match = /^legal-section-(\d+)$/.exec(hash);
     if (!match) return;
@@ -45,17 +53,19 @@ export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
     if (index < 0 || index >= doc.sections.length) return;
     setActiveSection(index);
     const id = window.setTimeout(
-      () => document.getElementById(`legal-section-${index}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+      () => document.getElementById(`legal-section-${index}`)?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' }),
       150,
     );
     return () => window.clearTimeout(id);
   }, [doc]);
 
+  if (!doc) return <NotFoundState />;
+
   const jump = (index: number) => {
     setActiveSection(index);
     setTocOpen(false);
     window.history.replaceState(null, '', `#legal-section-${index}`);
-    document.getElementById(`legal-section-${index}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById(`legal-section-${index}`)?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
   };
 
   return (
