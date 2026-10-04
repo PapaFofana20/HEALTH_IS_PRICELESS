@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
-import { ChevronDown, Info } from 'lucide-react';
+import { Check, ChevronDown, Info } from 'lucide-react';
 import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
-import { ACTIVITY_LEVELS, bmiGaugePosition, calculateCalories, calculateProtein } from '../../../utils/fitness';
+import { ACTIVITY_LEVELS, calculateCalories, calculateProtein, clamp } from '../../../utils/fitness';
 import type { ActivityLevel, CalorieGoal, Sex } from '../../../utils/fitness';
 import { useAuth } from '../../../hooks/useAuth';
-import { calculateBMI, generateBMIReport, validatePositiveNumber } from '../../../utils/bmi';
-import type { BmiClass, BmiFieldError, BmiReport } from '../../../utils/bmi';
-import { Button } from '../../ui/Button';
+import { analyzeBMI, BMI_THRESHOLDS, generateBMIReport, getBMIPlan, validatePositiveNumber } from '../../../utils/bmi';
+import type { BmiClass, BmiFieldError, BmiPlan, BmiPosition } from '../../../utils/bmi';
+import { Button, ButtonLink } from '../../ui/Button';
 
 /* ---------- Shared fields ---------- */
 const labelClass = 'text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted';
@@ -23,9 +23,10 @@ interface NumberFieldProps {
   max: number;
   step?: number;
   error?: string;
+  placeholder?: string;
 }
 
-function NumberField({ id, label, unit, value, onChange, min, max, step = 1, error }: NumberFieldProps) {
+function NumberField({ id, label, unit, value, onChange, min, max, step = 1, error, placeholder }: NumberFieldProps) {
   const num = Number(value);
   const invalid = value === '' || Number.isNaN(num) || num < min || num > max;
   return (
@@ -42,6 +43,7 @@ function NumberField({ id, label, unit, value, onChange, min, max, step = 1, err
           max={max}
           step={step}
           value={value}
+          placeholder={placeholder}
           onChange={(event) => onChange(event.target.value)}
           aria-invalid={invalid || undefined}
           aria-describedby={error ? `${id}-error` : undefined}
@@ -137,7 +139,7 @@ function Disclaimer() {
   );
 }
 
-/* ---------- BMI : parcours d'analyse corporelle en 4 étapes ---------- */
+/* ---------- BMI : bilan corporel personnalise ---------- */
 const bmiClassColors: Record<BmiClass, string> = {
   under: 'text-sky-300',
   normal: 'text-success',
@@ -147,406 +149,411 @@ const bmiClassColors: Record<BmiClass, string> = {
   obese3: 'text-red-300',
 };
 
-type BmiStep = 0 | 1 | 2 | 3;
-
 const BMI_AGE_MIN = 5;
 const BMI_AGE_MAX = 100;
+const BMI_WEIGHT_MIN = 20;
+const BMI_WEIGHT_MAX = 350;
+const BMI_HEIGHT_MIN = 100;
+const BMI_HEIGHT_MAX = 250;
 
-interface BmiSnapshot {
+/* Jauge 6 zones derivee de BMI_THRESHOLDS (echelle 14 -> 44). */
+const GAUGE_MIN = 14;
+const GAUGE_MAX = 44;
+
+const gaugeZoneColors: Record<BmiClass, string> = {
+  under: 'bg-sky-400/70',
+  normal: 'bg-success',
+  over: 'bg-amber-400',
+  obese1: 'bg-orange-400',
+  obese2: 'bg-red-400',
+  obese3: 'bg-red-600',
+};
+
+function gaugePosition(bmi: number): number {
+  return clamp(((bmi - GAUGE_MIN) / (GAUGE_MAX - GAUGE_MIN)) * 100, 0, 100);
+}
+
+/** Compteur anime vers la cible (instantane si prefers-reduced-motion). */
+function useAnimatedNumber(target: number, active: boolean): number {
+  const [display, setDisplay] = useState(active ? target : 0);
+  useEffect(() => {
+    if (!active) {
+      setDisplay(0);
+      return;
+    }
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setDisplay(target);
+      return;
+    }
+    let frame = 0;
+    const start = performance.now();
+    const duration = 900;
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      setDisplay(target * (1 - (1 - progress) ** 3));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [target, active]);
+  return display;
+}
+
+interface BmiAnalysis {
   age: number;
   sexLabel: string;
-  weightDisplay: string;
-  heightDisplay: string;
   weightKg: number;
   heightCm: number;
+  bmi: number;
+  rounded: number;
+  isMinor: boolean;
+  isSenior: boolean;
+  category: BmiClass | null;
+  plan: BmiPlan | null;
+  range: { min: number; max: number } | null;
+  position: BmiPosition | null;
+  goal: { current: number; target: number; diff: number } | null;
 }
 
 export function BmiCalculator() {
   const { t } = useLanguage();
   const { user } = useAuth();
-  const [step, setStep] = useState<BmiStep>(0);
-  const [age, setAge] = useState('30');
   const [sex, setSex] = useState<Sex>('male');
-  const [weight, setWeight] = useState('75');
-  const [height, setHeight] = useState('175');
+  const [age, setAge] = useState('');
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
   const [showErrors, setShowErrors] = useState(false);
-  const [report, setReport] = useState<BmiReport | null>(null);
-  const [snapshot, setSnapshot] = useState<BmiSnapshot | null>(null);
-
-  const wMin = 20;
-  const wMax = 350;
-  const hMin = 100;
-  const hMax = 250;
+  const [analysis, setAnalysis] = useState<BmiAnalysis | null>(null);
 
   const ageError = validatePositiveNumber(age, BMI_AGE_MIN, BMI_AGE_MAX);
-  const weightError = validatePositiveNumber(weight, wMin, wMax);
-  const heightError = validatePositiveNumber(height, hMin, hMax);
+  const weightError = validatePositiveNumber(weight, BMI_WEIGHT_MIN, BMI_WEIGHT_MAX);
+  const heightError = validatePositiveNumber(height, BMI_HEIGHT_MIN, BMI_HEIGHT_MAX);
 
-  const errorMessage = (code: BmiFieldError | null, rangeMessage: string): string | undefined => {
+  const fieldMessage = (code: BmiFieldError | null, emptyMessage: string, rangeMessage: string): string | undefined => {
     if (!code) return undefined;
-    if (code === 'empty') return t.calc.bmi.errors.required;
-    if (code === 'not-a-number') return t.calc.bmi.errors.notNumber;
+    if (code === 'empty') return emptyMessage;
     return rangeMessage;
   };
 
-  const stepValid = [ageError === null, weightError === null && heightError === null, true, true][step];
-  const ageNumber = Number(age);
-  const isMinor = ageError === null && ageNumber < 18;
+  const formValid = ageError === null && weightError === null && heightError === null;
 
-  const goNext = () => {
-    if (!stepValid) {
+
+  const analyze = () => {
+    if (!formValid) {
       setShowErrors(true);
       return;
     }
-    setShowErrors(false);
-    setStep((s) => (s < 3 ? ((s + 1) as BmiStep) : s));
-  };
-  const goBack = () => {
-    setShowErrors(false);
-    setStep((s) => (s > 0 ? ((s - 1) as BmiStep) : s));
-  };
-
-  const runCalculation = () => {
+    const ageN = Number(age);
     const weightKg = Number(weight);
     const heightCm = Number(height);
-    const bmi = calculateBMI(weightKg, heightCm);
-    const result = generateBMIReport({ bmi, heightCm, weightKg, age: ageNumber, weightGoal: user?.weightGoal ?? null });
+    const result = analyzeBMI(weightKg, heightCm);
     if (!result) return;
-    setSnapshot({
-      age: ageNumber,
+    const full = generateBMIReport({ bmi: result.bmi, heightCm, weightKg, age: ageN, weightGoal: user?.weightGoal ?? null });
+    setAnalysis({
+      age: ageN,
       sexLabel: sex === 'male' ? t.calc.male : t.calc.female,
-      weightDisplay: `${weight} ${t.calc.weightUnit}`,
-      heightDisplay: `${height} ${t.calc.heightUnit}`,
       weightKg,
       heightCm,
+      bmi: result.bmi,
+      rounded: result.rounded,
+      isMinor: ageN < 18,
+      isSenior: ageN >= 65,
+      category: result.category,
+      plan: getBMIPlan(result.category),
+      range: full?.range ?? null,
+      position: full?.position ?? null,
+      goal: full?.goal ?? null,
     });
-    setReport(result);
-    setStep(3);
   };
 
-  const recalculate = () => {
-    setReport(null);
-    setSnapshot(null);
-    setShowErrors(false);
-    setStep(0);
-  };
+  const reset = () => setAnalysis(null);
 
-  const stepLabels = [t.calc.bmi.steps.info, t.calc.bmi.steps.measures, t.calc.bmi.steps.review, t.calc.bmi.steps.report];
+  if (analysis) {
+    return <BmiResultView analysis={analysis} onReset={reset} />;
+  }
 
   return (
     <div>
-      <p className="text-sm leading-relaxed text-muted">{t.calc.bmi.intro}</p>
+      <h3 className="font-display text-3xl uppercase tracking-tight">{t.calc.bmi.formTitle}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted">{t.calc.bmi.formSubtitle}</p>
 
-      <ol aria-label={t.calc.bmi.steps.report} className="mt-5 grid grid-cols-4 gap-2">
-        {stepLabels.map((label, index) => {
-          const done = index < step;
-          const current = index === step;
-          return (
-            <li key={label} className="flex flex-col gap-1.5">
-              <span
-                aria-hidden
-                className={cn('h-1.5 rounded-full transition-colors', done || current ? 'bg-volt' : 'bg-night-700')}
-              />
-              <span
-                aria-current={current ? 'step' : undefined}
+      <div className="mt-6 space-y-5" role="group" aria-label={t.calc.bmi.formTitle}>
+        <fieldset>
+          <legend className={labelClass}>{t.calc.sex}</legend>
+          <div className="mt-2 grid grid-cols-2 gap-3">
+            {(['male', 'female'] as Sex[]).map((option) => (
+              <button
+                key={option}
+                type="button"
+                aria-pressed={sex === option}
+                onClick={() => setSex(option)}
                 className={cn(
-                  'text-[10px] font-extrabold uppercase tracking-[0.12em]',
-                  current ? 'text-volt' : done ? 'text-ink' : 'text-muted',
+                  'h-16 rounded-xl border text-sm font-extrabold uppercase tracking-[0.12em] transition-colors duration-200',
+                  sex === option ? 'border-volt bg-volt/10 text-volt' : 'border-edge text-muted hover:border-edge-strong hover:text-ink',
                 )}
               >
-                {label}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
-      <p className="sr-only" aria-live="polite">
-        {t.calc.bmi.stepOf(step + 1, stepLabels.length)}
-      </p>
+                {option === 'male' ? t.calc.male : t.calc.female}
+              </button>
+            ))}
+          </div>
+        </fieldset>
 
-      {step === 0 && (
-        <div className="mt-6 space-y-4">
-          <NumberField
-            id="bmi-age"
-            label={t.calc.age}
-            unit={t.calc.ageUnit}
-            value={age}
-            onChange={setAge}
-            min={BMI_AGE_MIN}
-            max={BMI_AGE_MAX}
-            error={showErrors ? errorMessage(ageError, t.calc.bmi.errors.ageRange) : undefined}
-          />
-          <Segmented
-            label={t.calc.sex}
-            value={sex}
-            onChange={setSex}
-            options={[
-              { value: 'male', label: t.calc.male },
-              { value: 'female', label: t.calc.female },
-            ]}
-          />
-          <p className="text-xs leading-relaxed text-muted">{t.calc.bmi.ageHint}</p>
-          {isMinor && (
-            <p role="note" className="rounded-lg border border-edge bg-night-900 p-3 text-xs leading-relaxed text-muted">
-              {t.calc.bmi.minorInfo}
-            </p>
-          )}
-        </div>
-      )}
+        <NumberField
+          id="bmi-age"
+          label={t.calc.age}
+          unit={t.calc.ageUnit}
+          value={age}
+          onChange={setAge}
+          min={BMI_AGE_MIN}
+          max={BMI_AGE_MAX}
+          placeholder="30"
+          error={showErrors ? fieldMessage(ageError, t.calc.bmi.validation.ageRequired, t.calc.bmi.validation.ageInvalid) : undefined}
+        />
+        <NumberField
+          id="bmi-height"
+          label={t.calc.height}
+          unit={t.calc.heightUnit}
+          value={height}
+          onChange={setHeight}
+          min={BMI_HEIGHT_MIN}
+          max={BMI_HEIGHT_MAX}
+          placeholder="175"
+          error={showErrors ? fieldMessage(heightError, t.calc.bmi.validation.heightRequired, t.calc.bmi.validation.heightRange) : undefined}
+        />
+        <NumberField
+          id="bmi-weight"
+          label={t.calc.weight}
+          unit={t.calc.weightUnit}
+          value={weight}
+          onChange={setWeight}
+          min={BMI_WEIGHT_MIN}
+          max={BMI_WEIGHT_MAX}
+          step={0.1}
+          placeholder="70"
+          error={showErrors ? fieldMessage(weightError, t.calc.bmi.validation.weightRequired, t.calc.bmi.validation.weightRange) : undefined}
+        />
 
-      {step === 1 && (
-        <div className="mt-6 space-y-4">
-          <NumberField
-            id="bmi-weight"
-            label={t.calc.weight}
-            unit={t.calc.weightUnit}
-            value={weight}
-            onChange={setWeight}
-            min={wMin}
-            max={wMax}
-            step={0.1}
-            error={showErrors ? errorMessage(weightError, t.calc.bmi.errors.weightRange) : undefined}
-          />
-          <NumberField
-            id="bmi-height"
-            label={t.calc.height}
-            unit={t.calc.heightUnit}
-            value={height}
-            onChange={setHeight}
-            min={hMin}
-            max={hMax}
-            error={showErrors ? errorMessage(heightError, t.calc.bmi.errors.heightRange) : undefined}
-          />
-        </div>
-      )}
-
-      {step === 2 && (
-        <div className="mt-6">
-          <ResultPanel>
-            <p className={labelClass}>{t.calc.bmi.reviewTitle}</p>
-            <dl className="mt-4 space-y-3 text-sm">
-              <div className="flex items-center justify-between gap-4">
-                <dt className="text-muted">{t.calc.age}</dt>
-                <dd className="font-bold">
-                  {age} {t.calc.ageUnit}
-                </dd>
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <dt className="text-muted">{t.calc.sex}</dt>
-                <dd className="font-bold">{sex === 'male' ? t.calc.male : t.calc.female}</dd>
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <dt className="text-muted">{t.calc.weight}</dt>
-                <dd className="font-bold">
-                  {weight} {t.calc.weightUnit}
-                </dd>
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <dt className="text-muted">{t.calc.height}</dt>
-                <dd className="font-bold">
-                  {height} {t.calc.heightUnit}
-                </dd>
-              </div>
-            </dl>
-            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <Button variant="ghost" onClick={goBack}>
-                {t.calc.bmi.edit}
-              </Button>
-              <Button onClick={runCalculation}>{t.calc.bmi.calculate}</Button>
-            </div>
-          </ResultPanel>
-        </div>
-      )}
-
-      {step === 3 && report && snapshot && (
-        <BmiReportView report={report} snapshot={snapshot} onRecalculate={recalculate} />
-      )}
-
-      {step < 2 && (
-        <div className="mt-6 flex items-center justify-between gap-4">
-          <Button variant="ghost" onClick={goBack} disabled={step === 0}>
-            {t.common.back}
-          </Button>
-          <Button onClick={goNext}>{t.common.next}</Button>
-        </div>
-      )}
-      <Disclaimer />
+        <Button size="lg" fullWidth onClick={analyze} disabled={!formValid}>
+          {t.calc.bmi.analyze}
+        </Button>
+      </div>
+      <div className="mt-6">
+        <Disclaimer />
+      </div>
     </div>
   );
+
 }
 
-/* ---------- Rapport IMC personnalisé ---------- */
-function BmiGauge({ value, currentLabel }: { value: number; currentLabel: string }) {
-  const { t, fmtNumber } = useLanguage();
-  const zones = [
-    { label: t.calc.bmi.scaleLabels.under, width: '14%', className: 'bg-sky-400/70' },
-    { label: t.calc.bmi.scaleLabels.normal, width: '26%', className: 'bg-success' },
-    { label: t.calc.bmi.scaleLabels.over, width: '20%', className: 'bg-amber-400' },
-    { label: t.calc.bmi.scaleLabels.obese, width: '40%', className: 'bg-red-400' },
-  ];
+/* ---------- Jauge 6 zones ---------- */
+function BmiGauge({ bmi, categoryLabel }: { bmi: number; categoryLabel: string }) {
+  const { t } = useLanguage();
+  const bounds = [GAUGE_MIN, ...BMI_THRESHOLDS.map((threshold) => (Number.isFinite(threshold.max) ? threshold.max : GAUGE_MAX))];
   return (
     <div>
-      <p className="sr-only">{t.calc.bmi.scale}</p>
-      <div className="relative h-2.5">
+      <div
+        role="img"
+        aria-label={`${t.calc.bmi.gaugeTitle} : ${categoryLabel}`}
+        className="relative h-3"
+      >
         <div className="flex h-full overflow-hidden rounded-full">
-          {zones.map((zone) => (
-            <span key={zone.label} className={cn('h-full', zone.className)} style={{ width: zone.width }} />
-          ))}
+          {BMI_THRESHOLDS.map((threshold, index) => {
+            const width = ((bounds[index + 1] - bounds[index]) / (GAUGE_MAX - GAUGE_MIN)) * 100;
+            return <span key={threshold.class} className={cn('h-full', gaugeZoneColors[threshold.class])} style={{ width: `${width}%` }} />;
+          })}
         </div>
         <span
           aria-hidden
-          className="absolute top-1/2 h-5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-ink ring-2 ring-night-900"
-          style={{ left: `${bmiGaugePosition(value)}%` }}
+          className="absolute top-1/2 h-6 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-ink ring-2 ring-night-900 transition-[left] duration-700 ease-out motion-reduce:transition-none"
+          style={{ left: `${gaugePosition(bmi)}%` }}
         />
       </div>
-      <div aria-hidden className="mt-2 grid grid-cols-4 text-[10px] font-bold uppercase tracking-wide text-muted">
-        {zones.map((zone) => (
-          <span key={zone.label} className="truncate">
-            {zone.label}
+      <div aria-hidden className="mt-2 grid grid-cols-6 gap-1 text-[9px] font-bold uppercase tracking-wide text-muted sm:text-[10px]">
+        {BMI_THRESHOLDS.map((threshold) => (
+          <span key={threshold.class} className="truncate">
+            {t.calc.bmi.gaugeClasses[threshold.class]}
           </span>
         ))}
       </div>
-      <p className="mt-2 text-sm font-bold">
-        {currentLabel} :{' '}
-        <span className="text-volt">{fmtNumber(value, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
-      </p>
     </div>
   );
 }
 
-function BmiReportView({ report, snapshot, onRecalculate }: { report: BmiReport; snapshot: BmiSnapshot; onRecalculate: () => void }) {
+/* ---------- Vue resultat : rapport personnalise ---------- */
+function BmiResultView({ analysis, onReset }: { analysis: BmiAnalysis; onReset: () => void }) {
   const { t, fmtNumber } = useLanguage();
+  const animated = useAnimatedNumber(analysis.rounded, true);
   const fmt1 = (value: number) => fmtNumber(value, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  const fmtMeters = (heightCm: number) =>
-    fmtNumber(heightCm / 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmtMeters = (heightCm: number) => fmtNumber(heightCm / 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const resultRef = useRef<HTMLHeadingElement>(null);
 
-  if (report.isMinor) {
-    return (
-      <div className="mt-6 space-y-4" aria-live="polite">
-        <ResultPanel>
-          <p className={labelClass}>{t.calc.bmi.minorTitle}</p>
-          <p className="mt-3 text-sm leading-relaxed text-muted">{t.calc.bmi.minorText}</p>
-          <p className={cn(labelClass, 'mt-6')}>{t.calc.bmi.minorValueLabel}</p>
-          <p className="mt-1 font-display text-7xl leading-none text-volt">{fmt1(report.rounded)}</p>
-        </ResultPanel>
-        <Button variant="outline" onClick={onRecalculate}>
-          {t.calc.bmi.recalculate}
-        </Button>
-        <Disclaimer />
-      </div>
-    );
-  }
+  useEffect(() => {
+    resultRef.current?.focus({ preventScroll: true });
+  }, []);
 
-  const category = report.category as BmiClass;
+  const planCtas: Record<BmiPlan, { to: string; label: string }[]> = {
+    lose: [
+      { to: '/nutrition', label: t.calc.bmi.ctaRecipes },
+      { to: '/exercices', label: t.calc.bmi.ctaExercises },
+      { to: '/dashboard/progression', label: t.calc.bmi.ctaProgress },
+    ],
+    gain: [
+      { to: '/nutrition', label: t.calc.bmi.ctaRecipes },
+      { to: '/programmes', label: t.calc.bmi.ctaPrograms },
+      { to: '/conseils', label: t.calc.bmi.ctaAdvice },
+    ],
+    maintain: [
+      { to: '/exercices', label: t.calc.bmi.ctaExercises },
+      { to: '/conseils', label: t.calc.bmi.ctaAdvice },
+      { to: '/dashboard/progression', label: t.calc.bmi.ctaProgress },
+    ],
+  };
+
+  const recKey = analysis.category === 'under' || analysis.category === 'normal' || analysis.category === 'over' ? analysis.category : 'obese';
+
   return (
-    <div className="mt-6 space-y-4" aria-live="polite">
-      <ResultPanel>
-        <p className={labelClass}>{t.calc.bmi.reportTitle}</p>
-        <p className="mt-4 font-display text-7xl leading-none text-volt">{fmt1(report.rounded)}</p>
-        <p className={cn('mt-2 text-sm font-extrabold uppercase tracking-wider', bmiClassColors[category])}>
-          {t.calc.bmi.classes[category]}
-        </p>
-        <div className="mt-7">
-          <BmiGauge value={report.bmi} currentLabel={t.calc.bmi.currentBmi} />
+    <div className="animate-fade-up motion-reduce:animate-none" aria-live="polite">
+      <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-volt">{t.calc.bmi.analysisDone}</p>
+
+      {analysis.isMinor || !analysis.category ? (
+        <div className="mt-4 space-y-4">
+          <ResultPanel>
+            <p className={labelClass}>{t.calc.bmi.minorTitle}</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted">{t.calc.bmi.minorText}</p>
+            <p className={cn(labelClass, 'mt-6')}>{t.calc.bmi.minorValueLabel}</p>
+            <p className="mt-1 font-display text-7xl leading-none tracking-tight text-volt">{fmt1(analysis.rounded)}</p>
+          </ResultPanel>
+          <Button variant="outline" onClick={onReset}>
+            {t.calc.bmi.recalculate}
+          </Button>
+          <Disclaimer />
         </div>
-      </ResultPanel>
+      ) : (
+        <div className="mt-4 space-y-4">
+          <ResultPanel>
+            <h3 ref={resultRef} tabIndex={-1} className="font-display text-2xl uppercase tracking-tight focus:outline-none">
+              {t.calc.bmi.result}
+            </h3>
+            <p className="mt-2 font-display text-7xl leading-none tracking-tight text-volt">
+              {fmt1(animated)} <span className="text-2xl text-muted">{t.calc.bmi.resultUnit}</span>
+            </p>
+            <p className={cn('mt-3 text-sm font-extrabold uppercase tracking-wider', bmiClassColors[analysis.category])}>
+              {t.calc.bmi.classes[analysis.category]}
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-muted">{t.calc.bmi.interpretations[analysis.category]}</p>
+            {analysis.isSenior && (
+              <p role="note" className="mt-4 rounded-lg border border-edge bg-night-800 p-3 text-xs leading-relaxed text-muted">
+                {t.calc.bmi.elderlyWarning}
+              </p>
+            )}
+          </ResultPanel>
 
-      <ResultPanel>
-        <p className={labelClass}>{t.calc.bmi.situationTitle}</p>
-        <p className="mt-3 text-sm leading-relaxed text-muted">{t.calc.bmi.situationText[category]}</p>
-      </ResultPanel>
-
-      {report.range && report.position && (
-        <ResultPanel>
-          <p className={labelClass}>{t.calc.bmi.rangeTitle}</p>
-          <p className="mt-3 text-sm leading-relaxed text-ink">
-            {t.calc.bmi.rangeText(fmt1(report.range.min), fmt1(report.range.max), fmtMeters(snapshot.heightCm))}
-          </p>
-          <p className="mt-2 text-xs leading-relaxed text-muted">{t.calc.bmi.rangeNote}</p>
-          <p className="mt-3 border-t border-edge pt-3 text-sm leading-relaxed text-muted">
-            {t.calc.bmi.position[report.position]}
-          </p>
-        </ResultPanel>
-      )}
-
-      {report.goal && (
-        <ResultPanel>
-          <p className={labelClass}>{t.calc.bmi.goalTitle}</p>
-          <dl className="mt-4 grid grid-cols-3 gap-3 text-center">
-            <div className="rounded-lg border border-edge p-3">
-              <dt className="text-[10px] font-bold uppercase tracking-wider text-muted">{t.calc.bmi.goalCurrent}</dt>
-              <dd className="mt-1 font-display text-2xl">{fmt1(report.goal.current)}</dd>
+          <ResultPanel>
+            <p className={labelClass}>{t.calc.bmi.gaugeTitle}</p>
+            <div className="mt-4">
+              <BmiGauge bmi={analysis.bmi} categoryLabel={t.calc.bmi.classes[analysis.category]} />
             </div>
-            <div className="rounded-lg border border-edge p-3">
-              <dt className="text-[10px] font-bold uppercase tracking-wider text-muted">{t.calc.bmi.goalTarget}</dt>
-              <dd className="mt-1 font-display text-2xl text-volt">{fmt1(report.goal.target)}</dd>
-            </div>
-            <div className="rounded-lg border border-edge p-3">
-              <dt className="text-[10px] font-bold uppercase tracking-wider text-muted">{t.calc.bmi.goalDiff}</dt>
-              <dd className="mt-1 font-display text-2xl">
-                {report.goal.diff > 0 ? '+' : ''}
-                {fmt1(report.goal.diff)}
-              </dd>
-            </div>
-          </dl>
-        </ResultPanel>
-      )}
+            <p className="mt-3 text-sm font-bold">
+              {t.calc.bmi.currentBmi} : <span className="text-volt">{fmt1(analysis.rounded)}</span>
+            </p>
+          </ResultPanel>
 
-      <ResultPanel>
-        <p className={labelClass}>{t.calc.bmi.tipsTitle}</p>
-        <p className="mt-3 text-sm leading-relaxed text-muted">{t.calc.bmi.tipsText[category]}</p>
-      </ResultPanel>
-
-      <ResultPanel>
-        <p className={labelClass}>{t.calc.bmi.limitsTitle}</p>
-        <p className="mt-3 text-sm leading-relaxed text-muted">{t.calc.bmi.limitsText}</p>
-      </ResultPanel>
-
-      <ResultPanel>
-        <p className={labelClass}>{t.calc.bmi.finalTitle}</p>
-        <dl className="mt-4 space-y-3 text-sm">
-          <div className="flex items-center justify-between gap-4">
-            <dt className="text-muted">{t.calc.bmi.result}</dt>
-            <dd className="font-display text-2xl text-volt">{fmt1(report.rounded)}</dd>
-          </div>
-          <div className="flex items-center justify-between gap-4">
-            <dt className="text-muted">{t.calc.bmi.categoryLabel}</dt>
-            <dd className={cn('text-right font-bold', bmiClassColors[category])}>{t.calc.bmi.classes[category]}</dd>
-          </div>
-          <div className="flex items-center justify-between gap-4">
-            <dt className="text-muted">{t.calc.bmi.finalHeight}</dt>
-            <dd className="font-bold">
-              {fmtMeters(snapshot.heightCm)} m
-            </dd>
-          </div>
-          <div className="flex items-center justify-between gap-4">
-            <dt className="text-muted">{t.calc.bmi.finalWeight}</dt>
-            <dd className="font-bold">
-              {fmt1(snapshot.weightKg)} kg
-            </dd>
-          </div>
-          {report.range && (
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted">{t.calc.bmi.finalRange}</dt>
-              <dd className="text-right font-bold">
-                {fmt1(report.range.min)} – {fmt1(report.range.max)} kg
-              </dd>
-            </div>
+          {analysis.range && analysis.position && (
+            <ResultPanel>
+              <p className={labelClass}>{t.calc.bmi.rangeTitle}</p>
+              <p className="mt-3 text-sm font-bold leading-relaxed">{t.calc.bmi.rangeQuestion}</p>
+              <p className="mt-2 text-sm leading-relaxed text-ink">
+                {t.calc.bmi.rangeText(fmt1(analysis.range.min), fmt1(analysis.range.max), fmtMeters(analysis.heightCm))}
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-muted">{t.calc.bmi.rangeNote}</p>
+              <p className="mt-3 border-t border-edge pt-3 text-sm leading-relaxed text-muted">
+                {t.calc.bmi.position[analysis.position]}
+              </p>
+            </ResultPanel>
           )}
-        </dl>
-        <p className="mt-4 border-t border-edge pt-3 text-xs leading-relaxed text-muted">{t.calc.bmi.finalNote}</p>
-      </ResultPanel>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <Button variant="outline" onClick={onRecalculate}>
-          {t.calc.bmi.recalculate}
-        </Button>
-      </div>
-      <Disclaimer />
+          {analysis.goal && (
+            <ResultPanel>
+              <p className={labelClass}>{t.calc.bmi.goalTitle}</p>
+              <dl className="mt-4 grid grid-cols-3 gap-3 text-center">
+                <div className="rounded-lg border border-edge p-3">
+                  <dt className="text-[10px] font-bold uppercase tracking-wider text-muted">{t.calc.bmi.goalCurrent}</dt>
+                  <dd className="mt-1 font-display text-2xl">{fmt1(analysis.goal.current)}</dd>
+                </div>
+                <div className="rounded-lg border border-edge p-3">
+                  <dt className="text-[10px] font-bold uppercase tracking-wider text-muted">{t.calc.bmi.goalTarget}</dt>
+                  <dd className="mt-1 font-display text-2xl text-volt">{fmt1(analysis.goal.target)}</dd>
+                </div>
+                <div className="rounded-lg border border-edge p-3">
+                  <dt className="text-[10px] font-bold uppercase tracking-wider text-muted">{t.calc.bmi.goalDiff}</dt>
+                  <dd className="mt-1 font-display text-2xl">
+                    {analysis.goal.diff > 0 ? '+' : ''}
+                    {fmt1(analysis.goal.diff)}
+                  </dd>
+                </div>
+              </dl>
+            </ResultPanel>
+          )}
+
+          <ResultPanel>
+            <p className={labelClass}>{t.calc.bmi.recommendationsTitle}</p>
+            <ul className="mt-4 space-y-2.5">
+              {t.calc.bmi.recommendations[recKey].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-ink/90">
+                  <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-volt/15 text-volt">
+                    <Check className="h-3 w-3" aria-hidden />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </ResultPanel>
+
+          {analysis.plan && (
+            <ResultPanel>
+              <p className={labelClass}>{t.calc.bmi.nextTitle}</p>
+              <p className="mt-2 font-display text-2xl uppercase tracking-tight">{t.calc.bmi.planTitles[analysis.plan]}</p>
+              <div className="mt-4 flex flex-col gap-2.5">
+                {planCtas[analysis.plan].map((cta) => (
+                  <ButtonLink key={cta.to} to={cta.to} variant="outline" fullWidth>
+                    {cta.label}
+                  </ButtonLink>
+                ))}
+              </div>
+            </ResultPanel>
+          )}
+
+          <ResultPanel>
+            <p className={labelClass}>{t.calc.bmi.specialTitle}</p>
+            <ul className="mt-4 space-y-3">
+              {[
+                { title: t.calc.bmi.specialPregnancyTitle, text: t.calc.bmi.specialPregnancyText },
+                { title: t.calc.bmi.specialAthleteTitle, text: t.calc.bmi.specialAthleteText },
+                { title: t.calc.bmi.specialElderlyTitle, text: t.calc.bmi.specialElderlyText },
+                { title: t.calc.bmi.specialChangeTitle, text: t.calc.bmi.specialChangeText },
+              ].map((item) => (
+                <li key={item.title} className="rounded-lg border border-edge p-3">
+                  <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-ink">{item.title}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted">{item.text}</p>
+                </li>
+              ))}
+            </ul>
+          </ResultPanel>
+
+          <ResultPanel>
+            <p className={labelClass}>{t.calc.bmi.limitsTitle}</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted">{t.calc.bmi.limitsText}</p>
+          </ResultPanel>
+
+          <Button variant="outline" onClick={onReset}>
+            {t.calc.bmi.recalculate}
+          </Button>
+          <Disclaimer />
+        </div>
+      )}
     </div>
   );
 }
-
 /* ---------- Calories ---------- */
 export function CalorieCalculator() {
   const { t, fmtNumber } = useLanguage();

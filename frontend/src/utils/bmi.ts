@@ -14,8 +14,31 @@ export type BmiPosition = 'below' | 'inside' | 'above';
 export const LB_PER_KG = 2.20462;
 export const CM_PER_INCH = 2.54;
 export const ADULT_MIN_AGE = 18;
+export const SENIOR_AGE = 65;
 export const HEALTHY_BMI_MIN = 18.5;
 export const HEALTHY_BMI_MAX = 24.9;
+
+/**
+ * Seuils adultes — source unique (bornes supérieures exclusives).
+ * getBMICategory(), la jauge et les tests partagent cette config.
+ */
+export const BMI_THRESHOLDS: { max: number; class: BmiClass }[] = [
+  { max: 18.5, class: 'under' },
+  { max: 25, class: 'normal' },
+  { max: 30, class: 'over' },
+  { max: 35, class: 'obese1' },
+  { max: 40, class: 'obese2' },
+  { max: Number.POSITIVE_INFINITY, class: 'obese3' },
+];
+
+/** Plan d'accompagnement déduit de la catégorie (pour les CTA dynamiques). */
+export type BmiPlan = 'gain' | 'maintain' | 'lose';
+
+export function getBMIPlan(category: BmiClass): BmiPlan {
+  if (category === 'under') return 'gain';
+  if (category === 'normal') return 'maintain';
+  return 'lose';
+}
 
 export const round1 = (value: number): number => Math.round(value * 10) / 10;
 
@@ -47,15 +70,19 @@ export function calculateBMI(weightKg: number, heightCm: number): number {
   return weightKg / (meters * meters);
 }
 
-/** Classe adulte selon les seuils 18,5 / 25 / 30 / 35 / 40. null si invalide. */
+/** Classe adulte selon BMI_THRESHOLDS. null si invalide. */
 export function getBMICategory(bmi: number): BmiClass | null {
   if (!isValidNumber(bmi) || bmi <= 0) return null;
-  if (bmi < 18.5) return 'under';
-  if (bmi < 25) return 'normal';
-  if (bmi < 30) return 'over';
-  if (bmi < 35) return 'obese1';
-  if (bmi < 40) return 'obese2';
-  return 'obese3';
+  const hit = BMI_THRESHOLDS.find((threshold) => bmi < threshold.max);
+  return hit ? hit.class : null;
+}
+
+/** Analyse complète : IMC arrondi + catégorie. null si entrées invalides. */
+export function analyzeBMI(weightKg: number, heightCm: number): { bmi: number; rounded: number; category: BmiClass } | null {
+  const bmi = calculateBMI(weightKg, heightCm);
+  const category = getBMICategory(bmi);
+  if (!category) return null;
+  return { bmi, rounded: round1(bmi), category };
 }
 
 /** Plage de poids (kg) correspondant à un IMC 18,5–24,9 pour une taille donnée. */

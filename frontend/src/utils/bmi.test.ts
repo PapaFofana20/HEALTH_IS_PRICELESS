@@ -1,14 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
+  analyzeBMI,
+  BMI_THRESHOLDS,
   calculateBMI,
   calculateHealthyBMIRange,
   convertHeightToCm,
   convertWeightToKg,
   generateBMIReport,
   getBMICategory,
+  getBMIPlan,
   isValidNumber,
   validatePositiveNumber,
 } from './bmi';
+import type { BmiClass } from './bmi';
 
 describe('isValidNumber', () => {
   it('accepte les nombres finis', () => {
@@ -157,5 +161,67 @@ describe('validatePositiveNumber', () => {
     expect(validatePositiveNumber('Infinity', 5, 100)).toBe('not-a-number');
     expect(validatePositiveNumber('3', 5, 100)).toBe('out-of-range');
     expect(validatePositiveNumber('200', 5, 100)).toBe('out-of-range');
+  });
+});
+
+describe('BMI_THRESHOLDS', () => {
+  it('centralise les 6 classes adultes', () => {
+    expect(BMI_THRESHOLDS.map((threshold) => threshold.class)).toEqual([
+      'under',
+      'normal',
+      'over',
+      'obese1',
+      'obese2',
+      'obese3',
+    ]);
+  });
+  it('classe les frontières hautes 24.9 / 29.9 / 34.9 / 39.9', () => {
+    expect(getBMICategory(24.9)).toBe('normal');
+    expect(getBMICategory(29.9)).toBe('over');
+    expect(getBMICategory(34.9)).toBe('obese1');
+    expect(getBMICategory(39.9)).toBe('obese2');
+  });
+});
+
+describe('analyzeBMI', () => {
+  it('70 kg / 175 cm -> 22,9 normal', () => {
+    const result = analyzeBMI(70, 175);
+    expect(result?.rounded).toBe(22.9);
+    expect(result?.category).toBe('normal');
+  });
+  it('rejette taille et poids invalides', () => {
+    expect(analyzeBMI(0, 175)).toBeNull();
+    expect(analyzeBMI(70, 0)).toBeNull();
+    expect(analyzeBMI(NaN, 175)).toBeNull();
+    expect(analyzeBMI(70, NaN)).toBeNull();
+  });
+});
+
+describe('getBMIPlan', () => {
+  it('déduit le plan daccompagnement de la catégorie', () => {
+    const cases: [BmiClass, string][] = [
+      ['under', 'gain'],
+      ['normal', 'maintain'],
+      ['over', 'lose'],
+      ['obese1', 'lose'],
+      ['obese2', 'lose'],
+      ['obese3', 'lose'],
+    ];
+    for (const [category, plan] of cases) {
+      expect(getBMIPlan(category)).toBe(plan);
+    }
+  });
+});
+
+describe('generateBMIReport - âges limites', () => {
+  it('17 ans -> mineur, 18 ans -> adulte', () => {
+    const minor = generateBMIReport({ bmi: 22, heightCm: 170, weightKg: 63.6, age: 17 });
+    expect(minor?.isMinor).toBe(true);
+    const adult = generateBMIReport({ bmi: 22, heightCm: 170, weightKg: 63.6, age: 18 });
+    expect(adult?.isMinor).toBe(false);
+    expect(adult?.category).toBe('normal');
+  });
+  it('rejette un âge invalide', () => {
+    expect(generateBMIReport({ bmi: 22, heightCm: 170, weightKg: 63.6, age: NaN })).toBeNull();
   });
 });
