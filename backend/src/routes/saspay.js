@@ -207,8 +207,9 @@ export async function processTransactionSuccess(data) {
   if (!known && transactionId) {
     const detail = await findSessionByTransactionId(transactionId);
     const meta = detail?.metadata ?? {};
-    if (detail && typeof meta.userId === 'string' && (meta.plan === 'standard' || meta.plan === 'premium')) {
-      known = { plan: meta.plan, goal: meta.goal, userId: meta.userId, refCommand: meta.ref ?? detail.id };
+    const metaAmount = planPricing[meta.goal]?.[meta.plan]?.annual;
+    if (detail && typeof meta.userId === 'string' && (meta.plan === 'standard' || meta.plan === 'premium') && (meta.goal === 'weight-loss' || meta.goal === 'muscle-gain') && Number.isFinite(metaAmount)) {
+      known = { plan: meta.plan, goal: meta.goal, amount: metaAmount, userId: meta.userId, refCommand: meta.ref ?? detail.id };
       sessionId = detail.id;
     }
   }
@@ -352,8 +353,9 @@ router.get('/status/:sessionId', statusLimiter, async (req, res) => {
         if (detailRes.ok) {
           const detail = unwrap(await detailRes.json());
           const meta = detail?.metadata ?? {};
-          if (typeof meta.userId === 'string' && (meta.plan === 'standard' || meta.plan === 'premium')) {
-            known = { plan: meta.plan, goal: meta.goal, userId: meta.userId, refCommand: meta.ref ?? sessionId, transactionId: data?.transaction_id ?? null, createdAt: Date.now() };
+          const metaAmount = planPricing[meta.goal]?.[meta.plan]?.annual;
+          if (typeof meta.userId === 'string' && (meta.plan === 'standard' || meta.plan === 'premium') && (meta.goal === 'weight-loss' || meta.goal === 'muscle-gain') && Number.isFinite(metaAmount)) {
+            known = { plan: meta.plan, goal: meta.goal, amount: metaAmount, userId: meta.userId, refCommand: meta.ref ?? sessionId, transactionId: data?.transaction_id ?? null, createdAt: Date.now() };
             pendingPayments.set(sessionId, known);
           }
         }
