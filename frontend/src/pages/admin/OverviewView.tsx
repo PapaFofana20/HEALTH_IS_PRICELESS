@@ -6,6 +6,7 @@ import { planPricing, programs } from '../../data/programs';
 import { fetchAdminMembers, fetchAdminOrders, monthlyBuckets } from '../../services/adminApi';
 import type { AdminMember } from '../../services/adminApi';
 import { RevenueChart, SignupsChart, TierSplit } from '../../components/features/admin/AdminCharts';
+import { RevenueOverview } from '../../components/features/admin/RevenueOverview';
 import { Tag } from '../../components/ui/Badge';
 import { KpiCard } from './KpiCard';
 import { ErrorState, GridSkeleton } from '../../components/ui/States';
@@ -89,6 +90,7 @@ export function OverviewView() {
           <TierSplit members={members} />
         </div>
       </div>
+      <RevenueOverview orders={orders} />
       <div className="grid gap-5 sm:gap-6 xl:grid-cols-3">
         <div className="min-w-0 xl:col-span-2">
           <SignupsChart data={signupsSeries} />
