@@ -276,14 +276,14 @@ async function requireRequesterAdmin(req, res) {
     res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session requise' });
     return null;
   }
-  try {
-    const meRes = await fetch(SUPABASE_URL + '/auth/v1/user', {
-      headers: { apikey: SERVICE_KEY, Authorization: 'Bearer ' + bearer },
-    });
-    if (!meRes.ok) {
-      res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session invalide ou expirée' });
-      return null;
-    }
+    try {
+      const meRes = await fetch(SUPABASE_URL + '/auth/v1/user', {
+        headers: { apikey: SERVICE_KEY, Authorization: 'Bearer ' + bearer },
+      });
+      if (!meRes.ok) {
+        console.error('requireRequesterAdmin: GetUser rejeté', meRes.status);
+        return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session invalide ou expirée' });
+      }
     const me = await meRes.json();
     const requesterEmail = me?.email ?? null;
     const requesterId = me?.id ?? null;

@@ -162,6 +162,24 @@ export async function removeAdminEmail(email: string): Promise<void> {
 
 const BACKEND_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? 'http://localhost:3001';
 
+/**
+ * Token d'accès admin, rafraîchi si proche de l'expiration (les access
+ * tokens Supabase vivent ~1 h : sans ça, le backend répond 401
+ * « Session invalide ou expirée »).
+ */
+async function adminAccessToken(): Promise<string> {
+  if (!isSupabaseConfigured || !supabase) throw new Error('Supabase non configuré');
+  const { data } = await supabase.auth.getSession();
+  let token = data.session?.access_token ?? null;
+  const expiresAt = data.session?.expires_at ?? null;
+  if (token && expiresAt && expiresAt * 1000 - Date.now() < 60_000) {
+    const { data: refreshed, error } = await supabase.auth.refreshSession();
+    if (!error && refreshed.session?.access_token) token = refreshed.session.access_token;
+  }
+  if (!token) throw new Error('Session administrateur requise — reconnecte-toi');
+  return token;
+}
+
 export interface CreatedAdmin {
   created?: boolean;
   promoted?: boolean;
@@ -173,10 +191,7 @@ export interface CreatedAdmin {
  * Refuse l'auto-suppression et les comptes admin côté serveur.
  */
 export async function deleteBackendMember(userId: string): Promise<{ email?: string }> {
-  if (!isSupabaseConfigured || !supabase) throw new Error('Supabase non configuré');
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
-  if (!token) throw new Error('Session administrateur requise');
+  const token = await adminAccessToken();
   const res = await fetch(`${BACKEND_URL}/api/auth/members/${encodeURIComponent(userId)}`, {
     method: 'DELETE',
     credentials: 'include',
@@ -193,10 +208,7 @@ export async function deleteBackendMember(userId: string): Promise<{ email?: str
  * d'accès Supabase : sa session n'est pas touchée.
  */
 export async function createBackendAdmin(input: { email: string; password: string; firstName: string }): Promise<CreatedAdmin> {
-  if (!isSupabaseConfigured || !supabase) throw new Error('Supabase non configuré');
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
-  if (!token) throw new Error('Session administrateur requise');
+  const token = await adminAccessToken();
   const res = await fetch(`${BACKEND_URL}/api/auth/create-admin`, {
     method: 'POST',
     credentials: 'include',
