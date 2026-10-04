@@ -12,7 +12,7 @@ import { SectionHeading, container } from '../components/ui/SectionHeading';
 import { NotFoundState } from '../components/ui/States';
 
 /**
- * Espace acheté : #/espace/:spaceId (4 pages, plan × objectif).
+ * Espace acheté : /espace/:spaceId (4 pages, plan × objectif).
  * Design repris de la section Témoignages (fond mist, citation).
  * Accès réservé au membre ayant acheté ce programme dédié
  * (tier couvrant le plan + objectif aligné, ou programme en cours

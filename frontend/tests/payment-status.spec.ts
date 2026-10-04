@@ -9,7 +9,7 @@ import {
 } from './helpers';
 
 /**
- * Retour de paiement SasPay : /#/paiement/retour lit le sessionId dans
+ * Retour de paiement SasPay : /paiement/retour lit le sessionId dans
  * localStorage puis appelle GET /api/saspay/status/:sessionId.
  * Succès (PAID / SUCCESS) -> redirection vers l'espace du plan payé.
  * Échec  -> écran « Paiement non confirmé ».
@@ -30,9 +30,9 @@ test.describe('statut de paiement', () => {
       goal: 'weight-loss',
     });
 
-    await page.goto('/#/paiement/retour');
+    await page.goto('/paiement/retour');
 
-    await expect(page).toHaveURL(/#\/espace\/premium-perte-de-poids/);
+    await expect(page).toHaveURL(/\/espace\/premium-perte-de-poids/);
     await expect
       .poll(async () => page.evaluate(() => JSON.parse(window.localStorage.getItem('forge-user') ?? '{}').tier ?? null))
       .toBe('premium');
@@ -47,9 +47,9 @@ test.describe('statut de paiement', () => {
     await seedPendingPayment(page, { plan: 'standard', goal: 'muscle-gain', sessionId: 'sess_tx' });
     await mockPaymentStatus(page, { status: 'PENDING', transactionStatus: 'SUCCESS', plan: 'standard', goal: 'muscle-gain' });
 
-    await page.goto('/#/paiement/retour');
+    await page.goto('/paiement/retour');
 
-    await expect(page).toHaveURL(/#\/espace\/standard-prise-de-masse/);
+    await expect(page).toHaveURL(/\/espace\/standard-prise-de-masse/);
   });
 
   test('un paiement non confirmé affiche l\'écran d\'erreur', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('statut de paiement', () => {
     await seedPendingPayment(page, { plan: 'premium', goal: 'weight-loss', sessionId: 'sess_pending' });
     await mockPaymentStatus(page, { status: 'PENDING' });
 
-    await page.goto('/#/paiement/retour');
+    await page.goto('/paiement/retour');
 
     await expect(page.getByText('Paiement non confirmé')).toBeVisible();
     await expect(page).toHaveURL(/#\/paiement\/retour/);
@@ -72,9 +72,9 @@ test.describe('statut de paiement', () => {
     await seedPendingPayment(page, { plan: 'premium', goal: 'muscle-gain', sessionId: 'sess_paid' });
     await mockPaymentStatus(page, { status: 'PAID', plan: 'premium', goal: 'muscle-gain' });
 
-    await page.goto('/#/paiement/retour');
+    await page.goto('/paiement/retour');
 
-    await expect(page).toHaveURL(/#\/espace\/premium-prise-de-masse/);
+    await expect(page).toHaveURL(/\/espace\/premium-prise-de-masse/);
   });
 
   test('une erreur HTTP du backend affiche l\'écran d\'erreur', async ({ page }) => {
@@ -82,7 +82,7 @@ test.describe('statut de paiement', () => {
     await seedPendingPayment(page, { plan: 'premium', goal: 'weight-loss', sessionId: 'sess_500' });
     await mockPaymentStatus(page, { message: 'INTERNAL_ERROR' }, 500);
 
-    await page.goto('/#/paiement/retour');
+    await page.goto('/paiement/retour');
 
     await expect(page.getByText('Paiement non confirmé')).toBeVisible();
   });
@@ -95,7 +95,7 @@ test.describe('statut de paiement', () => {
       await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
     });
 
-    await page.goto('/#/paiement/retour');
+    await page.goto('/paiement/retour');
 
     await expect(page.getByText('Paiement non confirmé')).toBeVisible();
     expect(called).toBe(false);

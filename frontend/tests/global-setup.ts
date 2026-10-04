@@ -15,7 +15,7 @@ export default async function globalSetup(_config: FullConfig) {
   const browser = await chromium.launch();
   try {
     const page = await browser.newPage();
-    for (const route of ['/#/dashboard', '/#/admin', '/#/connexion', '/#/paiement?plan=premium']) {
+    for (const route of ['/dashboard', '/admin', '/connexion', '/paiement?plan=premium']) {
       await page.goto(`http://127.0.0.1:5173${route}`, { waitUntil: 'load' });
       await page.waitForLoadState('networkidle');
     }

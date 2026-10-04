@@ -26,7 +26,7 @@ test.describe('GET /api/auth/me', () => {
       });
     });
 
-    await page.goto('/#/admin');
+    await page.goto('/admin');
 
     // La réconciliation est asynchrone : on attend son effet avant d'affirmer
     // que le back-office s'ouvre (sinon assertion pendante sur le Suspense).
@@ -46,7 +46,7 @@ test.describe('GET /api/auth/me', () => {
       });
     });
 
-    await page.goto('/#/admin');
+    await page.goto('/admin');
 
     // Écran d'accès refusé : aucune navigation back-office.
     await expect(page.locator('nav')).toHaveCount(0);
@@ -62,7 +62,7 @@ test.describe('GET /api/auth/me', () => {
       });
     });
 
-    await page.goto('/#/dashboard');
+    await page.goto('/dashboard');
 
     await expect
       .poll(async () => page.evaluate(() => JSON.parse(window.localStorage.getItem('forge-user') ?? '{}').tier ?? null))
@@ -73,9 +73,9 @@ test.describe('GET /api/auth/me', () => {
     await seedSession(page, memberUser);
     await mockAuthMe(page); // 401
 
-    await page.goto('/#/dashboard');
+    await page.goto('/dashboard');
 
-    await expect(page.locator('a[href="#/connexion"]')).toHaveCount(0);
+    await expect(page.locator('a[href="/connexion"]')).toHaveCount(0);
     await expect
       .poll(async () => page.evaluate(() => window.localStorage.getItem('forge-user') !== null))
       .toBe(true);
@@ -85,9 +85,9 @@ test.describe('GET /api/auth/me', () => {
     await seedSession(page, memberUser);
     await page.route('**/api/auth/me', (route) => route.abort('failed'));
 
-    await page.goto('/#/dashboard');
+    await page.goto('/dashboard');
 
     // L'écran invité ne doit pas apparaître : on reste sur l'app connectée.
-    await expect(page.locator('a[href="#/connexion"]')).toHaveCount(0);
+    await expect(page.locator('a[href="/connexion"]')).toHaveCount(0);
   });
 });

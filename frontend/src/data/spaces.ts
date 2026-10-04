@@ -8,7 +8,7 @@ export interface Space {
 
 /**
  * Les 4 espaces achetables : plan × objectif.
- * slug = id de route (#/espace/:id) et clé de traduction t.space.names.
+ * slug = id de route (/espace/:id) et clé de traduction t.space.names.
  */
 export const SPACES: Space[] = [
   { id: 'standard-perte-de-poids', plan: 'standard', goal: 'weight-loss' },

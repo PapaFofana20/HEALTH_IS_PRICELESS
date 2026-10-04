@@ -299,7 +299,7 @@ router.post('/create-payment', paymentLimiter, async (req, res, next) => {
         country: 'SN',
         customer_email: account.email,
         customer_name: customerName,
-        return_url: appUrl() + '/#/paiement/retour',
+        return_url: appUrl() + '/paiement/retour',
         metadata: { userId, plan, goal, ref: refCommand },
       }),
     });

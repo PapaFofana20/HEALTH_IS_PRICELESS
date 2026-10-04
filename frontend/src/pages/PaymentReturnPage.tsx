@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { checkPaymentStatus } from '../services/saspay';
 import { spaceSlug } from '../data/spaces';
@@ -9,16 +9,9 @@ const PENDING_KEY = 'pending-payment';
 const MAX_ATTEMPTS = 3;
 const RETRY_DELAY_MS = 3000;
 
-/** Lit ?session_id= dans le hash (HashRouter) : repli si localStorage vidé. */
-function sessionIdFromUrl(): string | null {
-  try {
-    const hash = window.location.hash;
-    const queryIndex = hash.indexOf('?');
-    if (queryIndex === -1) return null;
-    return new URLSearchParams(hash.slice(queryIndex + 1)).get('session_id');
-  } catch {
-    return null;
-  }
+/** Lit ?session_id= dans l'URL : repli si localStorage vidé. */
+function sessionIdFromUrl(params: URLSearchParams): string | null {
+  return params.get('session_id');
 }
 
 const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
@@ -30,6 +23,7 @@ const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(re
  */
 export default function PaymentReturnPage() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const { setTier, updateUser } = useAuth();
   const [state, setState] = useState<'loading' | 'error'>('loading');
 
@@ -45,7 +39,7 @@ export default function PaymentReturnPage() {
     } catch {
       /* ignore */
     }
-    sessionId ??= sessionIdFromUrl();
+    sessionId ??= sessionIdFromUrl(params);
     if (!sessionId) {
       setState('error');
       return;
@@ -83,7 +77,7 @@ export default function PaymentReturnPage() {
     return () => {
       cancelled = true;
     };
-  }, [navigate, setTier, updateUser]);
+  }, [navigate, params, setTier, updateUser]);
 
   return (
     <main className="relative isolate min-h-screen overflow-hidden grid place-items-center bg-night-900 px-4 text-center">

@@ -61,7 +61,7 @@ export async function seedSession(page: Page, user: TestUser | null): Promise<vo
   );
 }
 
-/** Dépose un paiement en attente, consommé par /#/paiement/retour. */
+/** Dépose un paiement en attente, consommé par /paiement/retour. */
 export async function seedPendingPayment(
   page: Page,
   payment: { plan: string; goal: string; sessionId: string },

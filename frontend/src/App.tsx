@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { LanguageProvider } from './hooks/useLanguage';
 import { AuthProvider } from './hooks/useAuth';
 import { MainLayout } from './components/layout/MainLayout';
@@ -47,8 +47,9 @@ function BootScreen() {
 const CATALOG_SYNC_TIMEOUT = 5000;
 
 /**
- * HEALTH IS PRICELESS � fitness coaching platform.
- * HashRouter keeps deep links working when the app is served as a single static file.
+ * HEALTH IS PRICELESS — fitness coaching platform.
+ * BrowserRouter gives clean URLs (no #). Hosting must rewrite all routes
+ * to index.html (Render static site: Rewrite /* -> /index.html).
  * Pages are code-split: each route loads its own chunk on demand.
  */
 export default function App() {
@@ -74,7 +75,7 @@ export default function App() {
         <BootScreen />
       ) : (
         <AuthProvider>
-          <HashRouter>
+          <BrowserRouter>
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route element={<MainLayout />}>
@@ -102,7 +103,7 @@ export default function App() {
                 <Route path="admin/:section" element={<AdminPage />} />
               </Routes>
             </Suspense>
-          </HashRouter>
+          </BrowserRouter>
         </AuthProvider>
       )}
     </LanguageProvider>

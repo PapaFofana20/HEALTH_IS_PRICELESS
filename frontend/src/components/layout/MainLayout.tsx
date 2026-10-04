@@ -12,7 +12,7 @@ export function MainLayout() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  // HashRouter-safe skip link (no href="#…")
+  // Skip link accessibilité (bouton, pas de href="#…")
   const skipToContent = () => {
     const main = document.getElementById('main');
     main?.focus();
