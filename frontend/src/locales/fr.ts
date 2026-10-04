@@ -116,17 +116,14 @@ export const fr = {
     subtitle:
       'Deux parcours, une même méthode : des séances structurées, une nutrition adaptée et un suivi clair de tes progrès.',
     cta: 'Découvrir',
-    programsCount: (n: number) => `${n} programmes`,
     weightLoss: {
       title: 'Perte de poids',
       text: 'Brûle les graisses, améliore ton cardio et construis des habitudes durables.',
-      tags: ['Cardio', 'HIIT', 'Habitudes'],
       imageAlt: 'Femme réalisant un exercice de battle ropes en salle',
     },
     muscleGain: {
       title: 'Prise de masse',
       text: 'Développe ta force et construis efficacement ta masse musculaire.',
-      tags: ['Force', 'Hypertrophie', 'Nutrition'],
       imageAlt: 'Homme se préparant à soulever une barre dans une salle sombre',
     },
   },

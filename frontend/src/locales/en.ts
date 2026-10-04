@@ -116,17 +116,14 @@ export const en: Translations = {
     title: 'What’s your goal?',
     subtitle: 'Two paths, one method: structured sessions, adapted nutrition and clear progress tracking.',
     cta: 'Discover',
-    programsCount: (n: number) => `${n} programs`,
     weightLoss: {
       title: 'Weight loss',
       text: 'Burn fat, improve your cardio and build lasting habits.',
-      tags: ['Cardio', 'HIIT', 'Habits'],
       imageAlt: 'Woman doing a battle ropes workout in a gym',
     },
     muscleGain: {
       title: 'Muscle gain',
       text: 'Build strength and grow muscle mass efficiently.',
-      tags: ['Strength', 'Hypertrophy', 'Nutrition'],
       imageAlt: 'Man getting ready to lift a barbell in a dark gym',
     },
   },
