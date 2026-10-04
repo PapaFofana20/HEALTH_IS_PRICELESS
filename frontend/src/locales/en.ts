@@ -784,12 +784,6 @@ export const en: Translations = {
     contactTitle: 'Got a question?',
     contactCta: 'Contact us on WhatsApp',
     legalEyebrow: 'Legal',
-    legalTitle: 'Privacy & terms',
-    legal: [
-      'HEALTH IS PRICELESS only collects the data needed to run the service (profile, progress, preferences). It is never sold.',
-      'You can access, edit or delete your data at any time from your settings or by contacting us.',
-      'The content provided is informational and does not replace the advice of a healthcare professional. Consult a doctor before starting a program if in doubt.',
-    ],
   },
   dashboard: {
     nav: {

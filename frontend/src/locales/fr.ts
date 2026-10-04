@@ -788,12 +788,6 @@ export const fr = {
     contactTitle: 'Une question ?',
     contactCta: 'Nous contacter sur WhatsApp',
     legalEyebrow: 'Légal',
-    legalTitle: 'Confidentialité & CGU',
-    legal: [
-      'HEALTH IS PRICELESS collecte uniquement les données nécessaires au fonctionnement du service (profil, progression, préférences). Elles ne sont jamais revendues.',
-      'Tu peux accéder à tes données, les modifier ou les supprimer à tout moment depuis tes paramètres ou en nous contactant.',
-      'Les contenus proposés sont informatifs et ne remplacent pas l’avis d’un professionnel de santé. Consulte un médecin avant de commencer un programme si tu as un doute.',
-    ],
   },
   dashboard: {
     nav: {

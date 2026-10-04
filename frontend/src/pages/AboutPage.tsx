@@ -5,6 +5,7 @@ import { Eye, HeartHandshake, Mail, MessageCircle, ShieldCheck, TrendingUp, User
 import { cn } from '../utils/cn';
 import { useLanguage, usePageTitle } from '../hooks/useLanguage';
 import { coaches } from '../data/programs';
+import { cgu, privacy } from '../data/legal';
 import { media } from '../data/media';
 import { ButtonLink } from '../components/ui/Button';
 import { FaqList } from '../components/ui/Faq';
@@ -210,22 +211,37 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Legal */}
-      <section id="legal" className="scroll-mt-24 border-t border-edge bg-night-950 py-16 lg:py-20">
-        <div className={cn(container, 'grid gap-10 lg:grid-cols-12')}>
-          <div className="lg:col-span-4">
-            <SectionHeading eyebrow={t.about.legalEyebrow} title={t.about.legalTitle} />
+      {/* Legal : confidentialité + CGU (mêmes documents que /connexion) */}
+      {[
+        { id: 'privacy', doc: privacy },
+        { id: 'cgu', doc: cgu },
+      ].map(({ id, doc }) => (
+        <section key={id} id={id} className="scroll-mt-24 border-t border-edge bg-night-950 py-16 lg:py-20">
+          <div className={cn(container, 'grid gap-10 lg:grid-cols-12')}>
+            <div className="lg:col-span-4">
+              <SectionHeading eyebrow={t.about.legalEyebrow} title={loc(doc.title)} subtitle={loc(doc.updated)} />
+            </div>
+            <div className="space-y-8 lg:col-span-8">
+              {doc.sections.map((section) => (
+                <div key={loc(section.heading)}>
+                  <h3 className="font-display text-2xl uppercase">{loc(section.heading)}</h3>
+                  <ul className="mt-4 space-y-4">
+                    {section.paragraphs.map((paragraph) => (
+                      <li
+                        key={loc(paragraph)}
+                        className="flex gap-4 rounded-xl border border-edge bg-night-900 p-5 text-sm leading-relaxed text-muted"
+                      >
+                        <ShieldCheck className="h-5 w-5 shrink-0 text-volt" aria-hidden />
+                        {loc(paragraph)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
-          <ul className="space-y-4 lg:col-span-8">
-            {t.about.legal.map((paragraph) => (
-              <li key={paragraph} className="flex gap-4 rounded-xl border border-edge bg-night-900 p-5 text-sm leading-relaxed text-muted">
-                <ShieldCheck className="h-5 w-5 shrink-0 text-volt" aria-hidden />
-                {paragraph}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        </section>
+      ))}
     </>
   );
 }
