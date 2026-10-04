@@ -18,6 +18,7 @@ const ArticleDetailPage = lazy(() => import('./pages/ArticlesPage').then((module
 const PricingPage = lazy(() => import('./pages/PricingPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const AuthPage = lazy(() => import('./pages/AuthPage'));
+const LegalPage = lazy(() => import('./pages/LegalPage'));
 const EspacePage = lazy(() => import('./pages/EspacePage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
@@ -88,6 +89,8 @@ export default function App() {
                   <Route path="tarifs" element={<PricingPage />} />
                   <Route path="espace/:spaceId" element={<EspacePage />} />
                   <Route path="a-propos" element={<AboutPage />} />
+                  <Route path="confidentialite" element={<LegalPage docKey="confidentialite" />} />
+                  <Route path="cgu" element={<LegalPage docKey="cgu" />} />
                   <Route path="connexion" element={<AuthPage />} />
                   <Route path="paiement" element={<PaymentPage />} />
                   <Route path="paiement/retour" element={<PaymentReturnPage />} />

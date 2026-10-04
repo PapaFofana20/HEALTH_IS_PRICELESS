@@ -87,8 +87,8 @@ export function Footer() {
       links: [
         { to: '/a-propos?section=faq', label: t.footer.faq },
         { to: '/a-propos?section=contact', label: t.footer.contact },
-        { to: '/a-propos?section=privacy', label: t.footer.privacy },
-        { to: '/a-propos?section=cgu', label: t.footer.terms },
+        { to: '/confidentialite', label: t.footer.privacy },
+        { to: '/cgu', label: t.footer.terms },
       ],
     },
   ];
