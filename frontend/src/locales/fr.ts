@@ -786,6 +786,10 @@ export const fr = {
     contactCta: 'Nous contacter sur WhatsApp',
     legalEyebrow: 'Légal',
     legalToc: 'Sommaire',
+    legalPrivacySubtitle: 'Votre vie privée est importante pour nous. Découvrez comment HEALTH IS PRICELESS collecte, utilise et protège vos données personnelles.',
+    legalCguSubtitle: 'Les règles qui encadrent l’utilisation de HEALTH IS PRICELESS et de ses services.',
+    legalHelpTitle: 'Une question concernant nos conditions ou vos données ?',
+    legalHelpText: 'Notre équipe est disponible pour répondre à vos questions.',
   },
   dashboard: {
     nav: {

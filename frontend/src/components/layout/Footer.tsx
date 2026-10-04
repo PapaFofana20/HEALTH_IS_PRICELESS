@@ -1,4 +1,4 @@
-﻿import { Link } from 'react-router-dom';
+﻿import { Link, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { useLanguage } from '../../hooks/useLanguage';
 import { Logo } from '../ui/Logo';
@@ -53,6 +53,7 @@ const socials: { label: string; href: string; icon: ReactNode }[] = [
 
 export function Footer() {
   const { t } = useLanguage();
+  const { pathname } = useLocation();
   const year = new Date().getFullYear();
 
   const columns = [
@@ -122,13 +123,24 @@ export function Footer() {
               <div key={column.title}>
                 <h2 className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-volt">{column.title}</h2>
                 <ul className="mt-5 space-y-3">
-                  {column.links.map((link) => (
-                    <li key={link.label}>
-                      <Link to={link.to} className="text-sm font-semibold text-ink/80 transition-colors hover:text-volt">
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {column.links.map((link) => {
+                    const isActive = link.to === pathname;
+                    return (
+                      <li key={link.label}>
+                        <Link
+                          to={link.to}
+                          aria-current={isActive ? 'page' : undefined}
+                          className={
+                            isActive
+                              ? 'text-sm font-bold text-volt'
+                              : 'text-sm font-semibold text-ink/80 transition-colors hover:text-volt'
+                          }
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}

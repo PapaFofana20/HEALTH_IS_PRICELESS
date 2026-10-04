@@ -782,6 +782,10 @@ export const en: Translations = {
     contactCta: 'Contact us on WhatsApp',
     legalEyebrow: 'Legal',
     legalToc: 'Contents',
+    legalPrivacySubtitle: 'Your privacy matters to us. Learn how HEALTH IS PRICELESS collects, uses and protects your personal data.',
+    legalCguSubtitle: 'The rules governing the use of HEALTH IS PRICELESS and its services.',
+    legalHelpTitle: 'Questions about our terms or your data?',
+    legalHelpText: 'Our team is happy to answer your questions.',
   },
   dashboard: {
     nav: {
