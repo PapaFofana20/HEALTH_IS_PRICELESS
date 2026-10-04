@@ -69,8 +69,8 @@ export function OverviewView() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="space-y-5 sm:space-y-8">
+      <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4">
         <KpiCard icon={Users} label={t.admin.kpi.members} value={fmtNumber(members.length)} sub={t.admin.kpi.membersSub(fmtNumber(activeMembers.length))} />
         <KpiCard icon={TrendingUp} label={t.admin.kpi.revenue} value={fmtPrice(mrr)} sub={t.admin.kpi.revenueSub} />
         <KpiCard icon={Receipt} label={t.admin.kpi.orders} value={fmtNumber(paidOrders.length)} sub={t.admin.kpi.ordersSub(fmtPrice(collected))} />
@@ -81,27 +81,29 @@ export function OverviewView() {
           sub={t.admin.kpi.ratingSub(fmtNumber(programs.length))}
         />
       </div>
-      <div className="grid gap-6 xl:grid-cols-3">
-        <div className="xl:col-span-2">
+      <div className="grid gap-5 sm:gap-6 xl:grid-cols-3">
+        <div className="min-w-0 xl:col-span-2">
           <RevenueChart data={revenueSeries} />
         </div>
-        <TierSplit members={members} />
+        <div className="min-w-0">
+          <TierSplit members={members} />
+        </div>
       </div>
-      <div className="grid gap-6 xl:grid-cols-3">
-        <div className="xl:col-span-2">
+      <div className="grid gap-5 sm:gap-6 xl:grid-cols-3">
+        <div className="min-w-0 xl:col-span-2">
           <SignupsChart data={signupsSeries} />
         </div>
-        <article className="rounded-xl border border-edge bg-night-800 p-5 sm:p-6">
-          <h2 className="font-display text-2xl uppercase">{t.admin.latestTitle}</h2>
+        <article className="h-full rounded-2xl border border-edge/70 bg-night-800/70 p-6 sm:p-8">
+          <h2 className="font-display text-2xl uppercase tracking-tight">{t.admin.latestTitle}</h2>
           {latest.length === 0 ? (
-            <p className="mt-4 text-sm font-semibold text-muted">{t.admin.orders.empty}</p>
+            <p className="mt-5 text-sm font-semibold text-muted">{t.admin.orders.empty}</p>
           ) : (
-            <ul className="mt-4 divide-y divide-edge">
+            <ul className="mt-5 space-y-3">
               {latest.map((order) => (
-                <li key={order.id} className="flex items-center justify-between gap-3 py-3 text-sm">
+                <li key={order.id} className="flex items-center justify-between gap-3 rounded-xl border border-edge/60 bg-night-900/50 px-4 py-3.5 text-sm">
                   <div className="min-w-0">
-                    <p className="truncate font-bold">{order.member}</p>
-                    <p className="text-xs text-muted">{order.reference}</p>
+                    <p className="truncate font-bold tracking-tight">{order.member}</p>
+                    <p className="mt-0.5 truncate text-xs text-muted">{order.reference}</p>
                   </div>
                   <Tag tone={orderTone[order.status]}>{t.admin.orderStatus[order.status]}</Tag>
                 </li>

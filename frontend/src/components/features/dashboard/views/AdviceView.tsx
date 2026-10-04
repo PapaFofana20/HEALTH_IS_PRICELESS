@@ -30,18 +30,20 @@ export function AdviceView() {
   const list = (data ?? []).filter((article) => category === 'all' || article.category === category);
 
   return (
-    <div>
+    <div className="min-w-0">
       <ViewHeader title={t.dashboard.advice.title} subtitle={t.dashboard.advice.subtitle} />
 
-      <div role="group" aria-label={t.articlesPage.filtersLabel} className="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-        {CATEGORIES.map((value) => (
-          <Chip key={value} active={category === value} onClick={() => setCategory(value)}>
-            {value === 'all' ? t.common.all : t.articleCategories[value]}
-          </Chip>
-        ))}
+      <div className="mt-6 sm:mt-8">
+        <div role="group" aria-label={t.articlesPage.filtersLabel} className="scrollbar-none -mx-1 flex gap-2.5 overflow-x-auto px-1 pb-2">
+          {CATEGORIES.map((value) => (
+            <Chip key={value} active={category === value} onClick={() => setCategory(value)}>
+              {value === 'all' ? t.common.all : t.articleCategories[value]}
+            </Chip>
+          ))}
+        </div>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-8 sm:mt-10">
         {loading ? (
           <GridSkeleton count={6} />
         ) : error ? (
@@ -49,7 +51,7 @@ export function AdviceView() {
         ) : list.length === 0 ? (
           <EmptyState icon={<Newspaper aria-hidden />} title={t.articlesPage.emptyTitle} />
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid min-w-0 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {list.map((article) => (
               <ArticleCard key={article.id} article={article} />
             ))}

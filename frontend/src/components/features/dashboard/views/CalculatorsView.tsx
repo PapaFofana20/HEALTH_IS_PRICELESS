@@ -13,9 +13,11 @@ export function CalculatorsView() {
   const initial: CalculatorKey = KEYS.includes(raw as CalculatorKey) ? (raw as CalculatorKey) : 'calories';
 
   return (
-    <div>
+    <div className="min-w-0">
       <ViewHeader title={t.dashboard.calculators.title} subtitle={t.dashboard.calculators.subtitle} />
-      <CalculatorTabs key={initial} initial={initial} />
+      <div className="mt-8 min-w-0 sm:mt-10">
+        <CalculatorTabs key={initial} initial={initial} />
+      </div>
     </div>
   );
 }

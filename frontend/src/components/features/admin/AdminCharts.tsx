@@ -27,7 +27,7 @@ export interface ChartPoint {
 function ChartEmpty() {
   const { t } = useLanguage();
   return (
-    <div className="grid h-64 place-items-center rounded-lg border border-dashed border-edge px-6 text-center text-sm font-semibold text-muted">
+    <div className="grid h-64 place-items-center rounded-xl border border-dashed border-edge/70 bg-night-900/50 px-6 text-center text-sm font-semibold text-muted">
       {t.admin.charts.empty}
     </div>
   );
@@ -38,9 +38,9 @@ export function RevenueChart({ data }: { data: ChartPoint[] }) {
   const gradientId = `admin-revenue-${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
   const hasData = data.some((point) => point.value > 0);
   return (
-    <article className="h-full rounded-xl border border-edge bg-night-800 p-5 sm:p-6">
-      <h2 className="font-display text-2xl uppercase">{t.admin.charts.revenue}</h2>
-      <p className="text-sm text-muted">{t.admin.charts.revenueSub}</p>
+    <article className="h-full rounded-2xl border border-edge/70 bg-night-800/70 p-6 sm:p-8">
+      <h2 className="font-display text-2xl uppercase tracking-tight">{t.admin.charts.revenue}</h2>
+      <p className="mt-2 text-sm leading-relaxed text-muted">{t.admin.charts.revenueSub}</p>
       <div className="mt-6 h-64 w-full min-w-0">
         {!hasData ? (
           <ChartEmpty />
@@ -70,9 +70,9 @@ export function SignupsChart({ data }: { data: ChartPoint[] }) {
   const { t } = useLanguage();
   const hasData = data.some((point) => point.value > 0);
   return (
-    <article className="h-full rounded-xl border border-edge bg-night-800 p-5 sm:p-6">
-      <h2 className="font-display text-2xl uppercase">{t.admin.charts.signups}</h2>
-      <p className="text-sm text-muted">{t.admin.charts.signupsSub}</p>
+    <article className="h-full rounded-2xl border border-edge/70 bg-night-800/70 p-6 sm:p-8">
+      <h2 className="font-display text-2xl uppercase tracking-tight">{t.admin.charts.signups}</h2>
+      <p className="mt-2 text-sm leading-relaxed text-muted">{t.admin.charts.signupsSub}</p>
       <div className="mt-6 h-64 w-full min-w-0">
         {!hasData ? (
           <ChartEmpty />
@@ -100,16 +100,16 @@ export function TierSplit({ members }: { members: AdminMember[] }) {
     fill: TIER_COLORS[index],
   }));
   return (
-    <article className="h-full rounded-xl border border-edge bg-night-800 p-5 sm:p-6">
-      <h2 className="font-display text-2xl uppercase">{t.admin.charts.tiers}</h2>
-      <p className="text-sm text-muted">{t.admin.charts.tiersSub}</p>
+    <article className="h-full rounded-2xl border border-edge/70 bg-night-800/70 p-6 sm:p-8">
+      <h2 className="font-display text-2xl uppercase tracking-tight">{t.admin.charts.tiers}</h2>
+      <p className="mt-2 text-sm leading-relaxed text-muted">{t.admin.charts.tiersSub}</p>
       {members.length === 0 ? (
-        <div className="mt-4">
+        <div className="mt-6">
           <ChartEmpty />
         </div>
       ) : (
         <>
-          <div className="mt-4 h-56 w-full min-w-0">
+          <div className="mt-6 h-56 w-full min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Tooltip {...chartTooltip} />
@@ -121,7 +121,7 @@ export function TierSplit({ members }: { members: AdminMember[] }) {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <ul className="mt-2 space-y-2">
+          <ul className="mt-4 space-y-2.5">
             {data.map((entry) => (
               <li key={entry.name} className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-2 font-semibold text-ink/85">

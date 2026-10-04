@@ -13,17 +13,19 @@ export function FavoritesView() {
   const list = programs.filter((program) => favorites.includes(program.id));
 
   return (
-    <div>
+    <div className="min-w-0">
       <ViewHeader title={t.dashboard.favorites.title} subtitle={t.dashboard.favorites.subtitle} />
       {list.length === 0 ? (
-        <EmptyState
-          icon={<Bookmark aria-hidden />}
-          title={t.dashboard.favorites.emptyTitle}
-          text={t.dashboard.favorites.emptyText}
-          action={<ButtonLink to="/dashboard/programmes">{t.dashboard.favorites.browse}</ButtonLink>}
-        />
+        <div className="mt-8 sm:mt-10">
+          <EmptyState
+            icon={<Bookmark aria-hidden />}
+            title={t.dashboard.favorites.emptyTitle}
+            text={t.dashboard.favorites.emptyText}
+            action={<ButtonLink to="/dashboard/programmes">{t.dashboard.favorites.browse}</ButtonLink>}
+          />
+        </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-8 grid min-w-0 gap-6 sm:mt-10 sm:grid-cols-2 xl:grid-cols-3">
           {list.map((program) => (
             <ProgramCard key={program.id} program={program} />
           ))}

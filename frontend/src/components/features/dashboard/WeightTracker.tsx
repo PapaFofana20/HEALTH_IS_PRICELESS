@@ -13,7 +13,7 @@ import { EmptyState, ErrorState, Skeleton } from '../../ui/States';
 import { chartTooltip } from './Charts';
 import { ProgressBar } from './Widgets';
 
-const labelClass = 'text-[10px] font-extrabold uppercase tracking-[0.14em] text-muted';
+const labelClass = 'text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted';
 
 /** Weight log: stats, chart, add-measurement form. Persists through the API layer. */
 export function WeightTracker({ compact = false }: { compact?: boolean }) {
@@ -69,9 +69,9 @@ export function WeightTracker({ compact = false }: { compact?: boolean }) {
   };
 
   return (
-    <article className="h-full rounded-xl border border-edge bg-night-800 p-5 sm:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 font-display text-2xl uppercase">
+    <article className="h-full min-w-0 rounded-2xl border border-edge/70 bg-night-800/70 p-6 transition-colors duration-300 hover:border-edge-strong sm:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h2 className="flex items-center gap-2.5 font-display text-2xl uppercase leading-none tracking-tight">
           <Scale className="h-5 w-5 text-volt" aria-hidden />
           {t.dashboard.weight.title}
         </h2>
@@ -91,7 +91,7 @@ export function WeightTracker({ compact = false }: { compact?: boolean }) {
       </div>
 
       {saved && (
-        <p role="status" className="mt-3 flex items-center gap-2 text-sm font-semibold text-success">
+        <p role="status" className="mt-4 flex items-center gap-2 text-sm font-semibold leading-relaxed text-success">
           <CircleCheck className="h-4 w-4" aria-hidden />
           {t.dashboard.weight.saved}
         </p>
@@ -102,9 +102,9 @@ export function WeightTracker({ compact = false }: { compact?: boolean }) {
           id="weight-form"
           onSubmit={submit}
           noValidate
-          className="mt-4 grid animate-fade-up gap-3 rounded-lg border border-edge bg-night-900 p-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end"
+          className="mt-6 grid animate-fade-up gap-4 rounded-2xl border border-edge/70 bg-night-900/70 p-5 sm:grid-cols-[1fr_1fr_auto] sm:items-end sm:gap-5 sm:p-6"
         >
-          <div>
+          <div className="min-w-0 space-y-0">
             <label htmlFor="weight-value" className={labelClass}>
               {t.dashboard.weight.weightLabel}
             </label>
@@ -120,10 +120,10 @@ export function WeightTracker({ compact = false }: { compact?: boolean }) {
               placeholder={current !== undefined ? String(current) : '75.0'}
               aria-invalid={Boolean(formError) || undefined}
               aria-describedby={formError ? 'weight-error' : undefined}
-              className="mt-2 h-11 w-full rounded-lg border border-edge bg-night-800 px-3 font-bold text-ink transition-colors placeholder:text-muted/60 focus:border-volt focus:outline-none"
+              className="mt-3 h-12 w-full rounded-xl border border-edge bg-night-800 px-4 font-bold text-ink transition-colors placeholder:text-muted/60 focus:border-volt focus:outline-none"
             />
           </div>
-          <div>
+          <div className="min-w-0 space-y-0">
             <label htmlFor="weight-date" className={labelClass}>
               {t.dashboard.weight.dateLabel}
             </label>
@@ -133,14 +133,14 @@ export function WeightTracker({ compact = false }: { compact?: boolean }) {
               value={date}
               max={today}
               onChange={(event) => setDate(event.target.value)}
-              className="mt-2 h-11 w-full rounded-lg border border-edge bg-night-800 px-3 font-semibold text-ink transition-colors focus:border-volt focus:outline-none"
+              className="mt-3 h-12 w-full rounded-xl border border-edge bg-night-800 px-4 font-semibold text-ink transition-colors focus:border-volt focus:outline-none"
             />
           </div>
-          <Button type="submit" disabled={saving} icon={saving ? <LoaderCircle className="animate-spin" /> : undefined}>
+          <Button type="submit" disabled={saving} icon={saving ? <LoaderCircle className="animate-spin" /> : undefined} className="h-12 px-6">
             {t.common.save}
           </Button>
           {formError && (
-            <p id="weight-error" role="alert" className="text-xs font-semibold text-danger sm:col-span-3">
+            <p id="weight-error" role="alert" className="text-sm font-semibold leading-relaxed text-danger sm:col-span-3">
               {formError}
             </p>
           )}
@@ -148,16 +148,16 @@ export function WeightTracker({ compact = false }: { compact?: boolean }) {
       )}
 
       {loading ? (
-        <div className="mt-6 space-y-4">
+        <div className="mt-8 space-y-4">
           <Skeleton className="h-16 w-full" />
           <Skeleton className="h-44 w-full" />
         </div>
       ) : error ? (
-        <ErrorState className="mt-6" onRetry={refetch} />
+        <ErrorState className="mt-8" onRetry={refetch} />
       ) : entries.length === 0 ? (
         <EmptyState
           compact
-          className="mt-6"
+          className="mt-8"
           icon={<Scale aria-hidden />}
           title={t.dashboard.weight.emptyTitle}
           text={t.dashboard.weight.emptyText}
@@ -171,24 +171,24 @@ export function WeightTracker({ compact = false }: { compact?: boolean }) {
         />
       ) : (
         <>
-          <dl className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
-            <div className="rounded-lg bg-night-900 p-3">
+          <dl className="mt-8 grid grid-cols-3 gap-3 sm:gap-4">
+            <div className="min-w-0 rounded-2xl border border-edge/70 bg-night-900/70 p-4 sm:p-5">
               <dt className={labelClass}>{t.dashboard.weight.current}</dt>
-              <dd className="mt-1.5 font-display text-2xl leading-none sm:text-3xl">
+              <dd className="mt-2.5 font-display text-2xl leading-none tracking-tight sm:text-3xl">
                 {fmtKg(current ?? 0)}
                 <span className="ml-1 font-sans text-xs font-bold text-muted">{t.dashboard.weight.unit}</span>
               </dd>
             </div>
-            <div className="rounded-lg bg-night-900 p-3">
+            <div className="min-w-0 rounded-2xl border border-edge/70 bg-night-900/70 p-4 sm:p-5">
               <dt className={labelClass}>{t.dashboard.weight.goal}</dt>
-              <dd className="mt-1.5 font-display text-2xl leading-none text-volt sm:text-3xl">
+              <dd className="mt-2.5 font-display text-2xl leading-none tracking-tight text-volt sm:text-3xl">
                 {fmtKg(goal)}
                 <span className="ml-1 font-sans text-xs font-bold text-muted">{t.dashboard.weight.unit}</span>
               </dd>
             </div>
-            <div className="rounded-lg bg-night-900 p-3">
+            <div className="min-w-0 rounded-2xl border border-edge/70 bg-night-900/70 p-4 sm:p-5">
               <dt className={labelClass}>{t.dashboard.weight.change}</dt>
-              <dd className={cn('mt-1.5 flex items-center gap-1 font-display text-2xl leading-none sm:text-3xl', change <= 0 ? 'text-success' : 'text-amber-300')}>
+              <dd className={cn('mt-2.5 flex items-center gap-1.5 font-display text-2xl leading-none tracking-tight sm:text-3xl', change <= 0 ? 'text-success' : 'text-amber-300')}>
                 {change <= 0 ? <TrendingDown className="h-5 w-5" aria-hidden /> : <TrendingUp className="h-5 w-5" aria-hidden />}
                 {change > 0 ? '+' : ''}
                 {fmtKg(change)}
@@ -196,17 +196,17 @@ export function WeightTracker({ compact = false }: { compact?: boolean }) {
             </div>
           </dl>
 
-          <div className="mt-4">
-            <div className="flex justify-between gap-3 text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted">
+          <div className="mt-6">
+            <div className="flex justify-between gap-3 text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted">
               <span>{t.dashboard.weight.toGoal(Math.round(progress))}</span>
               <span>
                 {t.dashboard.weight.remaining} {fmtKg(remaining)} {t.dashboard.weight.unit}
               </span>
             </div>
-            <ProgressBar value={progress} label={t.dashboard.weight.toGoal(Math.round(progress))} tone="success" className="mt-2" />
+            <ProgressBar value={progress} label={t.dashboard.weight.toGoal(Math.round(progress))} tone="success" className="mt-3 h-2" />
           </div>
 
-          <div className={cn('mt-6 w-full min-w-0', compact ? 'h-44' : 'h-64')}>
+          <div className={cn('mt-8 w-full min-w-0', compact ? 'h-44' : 'h-64')}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                 <CartesianGrid stroke="#1E3448" strokeDasharray="3 6" vertical={false} />
@@ -228,14 +228,14 @@ export function WeightTracker({ compact = false }: { compact?: boolean }) {
           </div>
 
           {!compact && (
-            <div className="mt-6">
+            <div className="mt-8">
               <h3 className={labelClass}>{t.dashboard.weight.history}</h3>
-              <ul className="mt-3 divide-y divide-edge rounded-lg border border-edge">
+              <ul className="mt-4 divide-y divide-edge rounded-2xl border border-edge/70 bg-night-900/40">
                 {[...entries].reverse().map((entry, index, list) => {
                   const previous = list[index + 1];
                   const delta = previous ? entry.weight - previous.weight : 0;
                   return (
-                    <li key={entry.date} className="flex items-center justify-between px-4 py-3 text-sm">
+                    <li key={entry.date} className="flex items-center justify-between gap-3 px-5 py-3.5 text-sm">
                       <time dateTime={entry.date} className="text-muted">
                         {fmtDate(entry.date)}
                       </time>

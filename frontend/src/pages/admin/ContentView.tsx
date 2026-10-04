@@ -16,21 +16,21 @@ export function ContentView() {
     { icon: Dumbbell, label: t.admin.content.programs, count: programs.length, to: '/programmes' },
   ];
   return (
-    <div className="space-y-6">
-      <p className="max-w-2xl text-muted">{t.admin.content.subtitle}</p>
-      <div className="grid gap-4 sm:grid-cols-2">
+    <div className="space-y-5 sm:space-y-8">
+      <p className="max-w-2xl leading-relaxed text-muted">{t.admin.content.subtitle}</p>
+      <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
         {cards.map(({ icon: Icon, label, count, to }) => (
           <Link
             key={label}
             to={to}
-            className="group flex items-center gap-4 rounded-xl border border-edge bg-night-800 p-5 transition-colors hover:border-volt/50"
+            className="group flex items-center gap-4 rounded-2xl border border-edge/70 bg-night-800/70 p-6 transition-colors hover:border-volt/50"
           >
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg border border-volt/30 bg-volt/10 text-volt">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-volt/30 bg-volt/10 text-volt">
               <Icon className="h-5 w-5" aria-hidden />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block font-display text-3xl leading-none">{fmtNumber(count)}</span>
-              <span className="mt-1 block text-sm font-semibold text-muted">{label}</span>
+              <span className="block font-display text-3xl leading-none tracking-tight">{fmtNumber(count)}</span>
+              <span className="mt-1.5 block text-sm font-semibold text-muted">{label}</span>
             </span>
             <ArrowRight className="h-5 w-5 shrink-0 text-muted transition-all group-hover:translate-x-1 group-hover:text-volt" aria-hidden />
           </Link>

@@ -11,7 +11,6 @@ import { ButtonLink } from '../../../ui/Button';
 import { LockedContent } from '../../../ui/States';
 import { ProgressBar } from '../Widgets';
 import { ViewHeader } from '../DashboardLayout';
-import { labelClass } from '../constants';
 import type { User } from '../../../../types';
 
 export function NutritionView({ user }: { user: User }) {
@@ -41,17 +40,17 @@ export function NutritionView({ user }: { user: User }) {
   });
 
   const mealList = (
-    <ul className="space-y-3">
+    <ul className="space-y-4">
       {items.map(({ item, recipe }) => (
-        <li key={item.recipeId} className="flex items-center gap-4 rounded-lg border border-edge bg-night-900 p-3">
-          <img src={recipe.image} alt="" className="h-14 w-14 shrink-0 rounded-md object-cover" />
+        <li key={item.recipeId} className="flex min-w-0 items-center gap-4 rounded-2xl border border-edge/70 bg-night-900/70 p-4 transition-colors duration-200 hover:border-edge-strong sm:p-5">
+          <img src={recipe.image} alt="" className="h-16 w-16 shrink-0 rounded-xl object-cover" />
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-volt">{t.meals[item.category]}</p>
-            <p className="truncate font-bold">{loc(recipe.name)}</p>
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-volt">{t.meals[item.category]}</p>
+            <p className="mt-1 truncate font-bold leading-snug">{loc(recipe.name)}</p>
           </div>
-          <p className="shrink-0 text-right text-xs font-bold">
+          <p className="shrink-0 text-right text-sm font-bold leading-relaxed">
             {recipe.calories} kcal
-            <span className="block text-muted">
+            <span className="block text-xs font-semibold text-muted">
               {recipe.protein} g · {t.nutritionPage.protein}
             </span>
           </p>
@@ -61,7 +60,7 @@ export function NutritionView({ user }: { user: User }) {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-8 sm:space-y-10">
       <ViewHeader
         title={t.dashboard.nutrition.title}
         subtitle={t.dashboard.nutrition.subtitle}
@@ -71,30 +70,30 @@ export function NutritionView({ user }: { user: User }) {
           </ButtonLink>
         }
       />
-      <article className="rounded-xl border border-edge bg-night-800 p-6">
-        <h2 className="font-display text-2xl uppercase">{t.dashboard.nutrition.targets}</h2>
-        <p className="text-sm text-muted">{t.dashboard.nutrition.profileHint}</p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <article className="rounded-2xl border border-edge/70 bg-night-800/70 p-6 transition-colors duration-300 hover:border-edge-strong sm:p-8">
+        <h2 className="font-display text-2xl uppercase leading-none tracking-tight">{t.dashboard.nutrition.targets}</h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{t.dashboard.nutrition.profileHint}</p>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
           {macros.map((macro) => (
-            <div key={macro.label} className="rounded-lg bg-night-900 p-4">
-              <p className={labelClass}>{macro.label}</p>
-              <p className="mt-2 font-display text-3xl leading-none">
+            <div key={macro.label} className="min-w-0 rounded-2xl border border-edge/70 bg-night-900/70 p-5 sm:p-6">
+              <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted">{macro.label}</p>
+              <p className="mt-3 font-display text-4xl leading-none tracking-tight">
                 {fmtNumber(Math.round(macro.value * macro.ratio))}
-                <span className="ml-1 font-sans text-xs font-bold text-muted">
+                <span className="ml-1.5 font-sans text-xs font-bold text-muted">
                   / {fmtNumber(macro.value)} {macro.unit}
                 </span>
               </p>
-              <ProgressBar value={macro.ratio * 100} label={macro.label} className="mt-3" />
+              <ProgressBar value={macro.ratio * 100} label={macro.label} className="mt-4 h-2" />
             </div>
           ))}
         </div>
       </article>
-      <article className="rounded-xl border border-edge bg-night-800 p-6">
-        <h2 className="flex items-center gap-2 font-display text-2xl uppercase">
+      <article className="rounded-2xl border border-edge/70 bg-night-800/70 p-6 transition-colors duration-300 hover:border-edge-strong sm:p-8">
+        <h2 className="flex items-center gap-3 font-display text-2xl uppercase leading-none tracking-tight">
           {t.dashboard.nutrition.mealPlan}
           {tier !== 'premium' && <Lock className="h-4 w-4 text-volt" aria-hidden />}
         </h2>
-        <div className="mt-5">
+        <div className="mt-8">
           {tier === 'premium' ? (
             mealList
           ) : (

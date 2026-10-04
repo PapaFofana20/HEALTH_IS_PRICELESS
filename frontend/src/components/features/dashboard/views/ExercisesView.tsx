@@ -17,14 +17,16 @@ export function ExercisesView() {
   const list = data ?? [];
 
   return (
-    <div>
+    <div className="min-w-0">
       <ViewHeader title={t.dashboard.exercises.title} subtitle={t.dashboard.exercises.subtitle} />
 
-      <p aria-live="polite" className="text-sm font-semibold text-muted">
-        {loading ? t.common.loading : t.exercisesPage.count(list.length)}
-      </p>
+      <div className="mt-6 sm:mt-8">
+        <p aria-live="polite" className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted">
+          {loading ? t.common.loading : t.exercisesPage.count(list.length)}
+        </p>
+      </div>
 
-      <div className="mt-6">
+      <div className="mt-6 sm:mt-8">
         {loading ? (
           <GridSkeleton count={8} className="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" />
         ) : error ? (
@@ -32,7 +34,7 @@ export function ExercisesView() {
         ) : list.length === 0 ? (
           <EmptyState icon={<SearchX aria-hidden />} title={t.exercisesPage.emptyTitle} text={t.exercisesPage.emptyText} />
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid min-w-0 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {list.map((exercise) => (
               <ExerciseCard key={exercise.id} exercise={exercise} onOpen={setSelected} />
             ))}

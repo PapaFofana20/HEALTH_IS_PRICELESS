@@ -15,9 +15,9 @@ export function ProgressView({ progressQuery, volumeQuery, locked }: ProgressVie
   const { t } = useLanguage();
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-8 sm:space-y-10">
       <ViewHeader title={t.dashboard.progress.title} subtitle={t.dashboard.progress.subtitle} />
-      <div className="grid gap-6 xl:grid-cols-2">
+      <div className="grid min-w-0 gap-6 sm:gap-8 xl:grid-cols-2">
         <div className="min-w-0">
           <ProgressChart data={progressQuery.data} loading={progressQuery.loading} error={progressQuery.error} onRetry={progressQuery.refetch} />
         </div>
@@ -25,7 +25,9 @@ export function ProgressView({ progressQuery, volumeQuery, locked }: ProgressVie
           <WeightTracker />
         </div>
       </div>
-      <AdvancedStats locked={locked} data={volumeQuery.data} loading={volumeQuery.loading} />
+      <div className="min-w-0">
+        <AdvancedStats locked={locked} data={volumeQuery.data} loading={volumeQuery.loading} />
+      </div>
     </div>
   );
 }

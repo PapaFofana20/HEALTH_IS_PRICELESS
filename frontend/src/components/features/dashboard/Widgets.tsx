@@ -25,7 +25,7 @@ export function ProgressBar({ value, label, className, tone = 'volt' }: { value:
       aria-valuenow={Math.round(clamp(value, 0, 100))}
       aria-valuemin={0}
       aria-valuemax={100}
-      className={cn('h-1.5 overflow-hidden rounded-full bg-night-600', className)}
+      className={cn('h-2 overflow-hidden rounded-full bg-night-700', className)}
     >
       <div
         className={cn('h-full rounded-full transition-[width] duration-1000 ease-out', tone === 'volt' ? 'bg-volt' : 'bg-success')}
@@ -48,18 +48,18 @@ interface StatCardProps {
 
 export function StatCard({ icon: Icon, label, value, suffix, progress, accent, className }: StatCardProps) {
   return (
-    <article className={cn('relative overflow-hidden rounded-xl border border-edge bg-night-800 p-5 transition-colors duration-300 hover:border-edge-strong', className)}>
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-[11px] font-extrabold uppercase leading-snug tracking-[0.14em] text-muted">{label}</p>
-        <span className={cn('grid h-9 w-9 shrink-0 place-items-center rounded-lg', accent ? 'bg-volt text-night-900' : 'bg-night-700 text-volt')}>
+    <article className={cn('relative overflow-hidden rounded-2xl border border-edge/70 bg-night-800/70 p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-edge-strong hover:shadow-xl hover:shadow-black/20', className)}>
+      <div className="flex items-start justify-between gap-4">
+        <p className="text-[11px] font-extrabold uppercase leading-relaxed tracking-[0.18em] text-muted">{label}</p>
+        <span className={cn('grid h-10 w-10 shrink-0 place-items-center rounded-xl shadow-lg shadow-black/20', accent ? 'bg-volt text-night-900' : 'bg-night-700 text-volt')}>
           <Icon className="h-4 w-4" aria-hidden />
         </span>
       </div>
-      <p className="mt-4 font-display text-4xl leading-none">
+      <p className="mt-5 font-display text-4xl leading-[0.95] tracking-tight">
         {value}
         {suffix && <span className="ml-1.5 font-sans text-sm font-bold text-muted">{suffix}</span>}
       </p>
-      {progress !== undefined && <ProgressBar value={progress} label={label} className="mt-4" />}
+      {progress !== undefined && <ProgressBar value={progress} label={label} className="mt-5" />}
     </article>
   );
 }
@@ -109,16 +109,16 @@ export function NextSessionCard({ program, session, onComplete }: NextSessionCar
   };
 
   return (
-    <article className="relative h-full overflow-hidden rounded-xl border border-edge bg-night-800">
-      <img src={program.image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-35" />
-      <div aria-hidden className="absolute inset-0 bg-linear-to-r from-night-800 via-night-800/90 to-night-800/30" />
-      <div className="relative flex h-full flex-col p-6 sm:p-8">
+    <article className="relative h-full overflow-hidden rounded-2xl border border-edge/70 bg-night-800/70 shadow-xl shadow-black/20">
+      <img src={program.image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" />
+      <div aria-hidden className="absolute inset-0 bg-linear-to-r from-night-800 via-night-800/85 to-night-800/20" />
+      <div className="relative flex h-full flex-col p-6 sm:p-10">
         <Tag tone="volt" className="w-fit">
           {t.dashboard.nextSession}
         </Tag>
-        <h2 className="mt-4 font-display text-5xl uppercase leading-none sm:text-6xl">{loc(session.title)}</h2>
-        <p className="mt-2 text-muted">{loc(session.focus)}</p>
-        <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold">
+        <h2 className="mt-5 font-display text-5xl uppercase leading-[0.95] tracking-tight sm:text-6xl">{loc(session.title)}</h2>
+        <p className="mt-3 text-[15px] leading-relaxed text-muted">{loc(session.focus)}</p>
+        <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold">
           <li className="flex items-center gap-2">
             <Timer className="h-4 w-4 text-volt" aria-hidden />
             {t.common.minutes(session.minutes)}
@@ -132,7 +132,7 @@ export function NextSessionCard({ program, session, onComplete }: NextSessionCar
             {loc(program.name)}
           </li>
         </ul>
-        <div className="mt-auto flex flex-wrap items-center gap-3 pt-8">
+        <div className="mt-auto flex flex-wrap items-center gap-3 pt-10">
           <Button size="lg" icon={<Play className="fill-current" />} onClick={() => setOpen(true)}>
             {t.dashboard.startSession}
           </Button>
@@ -141,7 +141,7 @@ export function NextSessionCard({ program, session, onComplete }: NextSessionCar
           </ButtonLink>
         </div>
         {finished && (
-          <p role="status" className="mt-4 flex items-center gap-2 text-sm font-bold text-success">
+          <p role="status" className="mt-5 flex items-center gap-2 text-sm font-bold text-success">
             <CircleCheck className="h-4 w-4" aria-hidden />
             {t.dashboard.player.done}
           </p>
@@ -149,12 +149,12 @@ export function NextSessionCard({ program, session, onComplete }: NextSessionCar
       </div>
 
       <Modal open={open} onClose={() => setOpen(false)} title={loc(session.title)} description={t.dashboard.player.hint}>
-        <div className="flex items-center justify-between text-[11px] font-extrabold uppercase tracking-[0.14em]">
+        <div className="flex items-center justify-between text-[11px] font-extrabold uppercase tracking-[0.18em]">
           <span className="text-muted">{t.dashboard.player.progress(checked.length, total)}</span>
           <span className="text-volt">{Math.round(percent)}%</span>
         </div>
-        <ProgressBar value={percent} label={t.dashboard.player.progress(checked.length, total)} className="mt-2" />
-        <ul className="mt-5 space-y-2">
+        <ProgressBar value={percent} label={t.dashboard.player.progress(checked.length, total)} className="mt-3" />
+        <ul className="mt-6 space-y-2.5">
           {session.exercises.map((item, index) => {
             const exercise = getExerciseById(item.exerciseId);
             const key = `${item.exerciseId}-${index}`;
@@ -163,8 +163,8 @@ export function NextSessionCard({ program, session, onComplete }: NextSessionCar
               <li key={key}>
                 <label
                   className={cn(
-                    'flex cursor-pointer items-center gap-4 rounded-lg border p-3 transition-colors duration-200 has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-volt',
-                    isChecked ? 'border-volt/60 bg-volt/10' : 'border-edge hover:border-edge-strong',
+                    'flex cursor-pointer items-center gap-4 rounded-xl border p-4 transition-colors duration-200 has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-volt',
+                    isChecked ? 'border-volt/60 bg-volt/10' : 'border-edge/70 hover:border-edge-strong',
                   )}
                 >
                   <input type="checkbox" className="sr-only" checked={isChecked} onChange={() => toggle(key)} />
@@ -177,7 +177,7 @@ export function NextSessionCard({ program, session, onComplete }: NextSessionCar
                   >
                     {isChecked && <Check className="h-4 w-4" />}
                   </span>
-                  {exercise && <img src={exercise.image} alt="" className="h-12 w-12 shrink-0 rounded-md object-cover" />}
+                  {exercise && <img src={exercise.image} alt="" className="h-12 w-12 shrink-0 rounded-lg object-cover" />}
                   <span className="min-w-0 flex-1">
                     <span className={cn('block font-bold', isChecked && 'line-through decoration-volt/70')}>
                       {exercise ? loc(exercise.name) : item.exerciseId}
@@ -191,7 +191,7 @@ export function NextSessionCard({ program, session, onComplete }: NextSessionCar
             );
           })}
         </ul>
-        <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button variant="ghost" onClick={() => setOpen(false)}>
             {t.common.cancel}
           </Button>
@@ -226,24 +226,24 @@ export function WeekStrip({ statuses }: { statuses: DayStatus[] }) {
   const done = statuses.filter((status) => status === 'done').length;
   const planned = statuses.filter((status) => status !== 'rest').length;
   return (
-    <article className="h-full rounded-xl border border-edge bg-night-800 p-6">
-      <div className="flex items-center justify-between">
-        <h2 className="font-display text-2xl uppercase">{t.dashboard.weekTitle}</h2>
-        <span className="rounded-full bg-volt/10 px-2.5 py-1 text-xs font-extrabold text-volt">
+    <article className="h-full rounded-2xl border border-edge/70 bg-night-800/70 p-6 shadow-xl shadow-black/20 sm:p-8">
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="font-display text-2xl uppercase leading-tight tracking-tight">{t.dashboard.weekTitle}</h2>
+        <span className="rounded-full bg-volt/10 px-3 py-1 text-xs font-extrabold text-volt">
           {done}/{planned}
         </span>
       </div>
-      <ol className="mt-6 grid grid-cols-7 gap-1.5 sm:gap-2">
+      <ol className="mt-7 grid grid-cols-7 gap-1.5 sm:gap-2.5">
         {statuses.map((status, index) => {
           const Icon = dayIcons[status];
           return (
-            <li key={index} className="flex flex-col items-center gap-2">
-              <span aria-hidden className="text-[11px] font-extrabold uppercase text-muted">
+            <li key={index} className="flex min-w-0 flex-col items-center gap-2">
+              <span aria-hidden className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted">
                 {t.dashboard.days[index]}
               </span>
               <span
                 title={t.dashboard.dayStates[status]}
-                className={cn('grid aspect-square w-full max-w-11 place-items-center rounded-lg border transition-colors', dayStyles[status])}
+                className={cn('grid aspect-square w-full max-w-12 place-items-center rounded-xl border transition-all duration-200', dayStyles[status])}
               >
                 <Icon className="h-4 w-4" aria-hidden />
               </span>
@@ -254,10 +254,10 @@ export function WeekStrip({ statuses }: { statuses: DayStatus[] }) {
           );
         })}
       </ol>
-      <ul className="mt-6 grid grid-cols-2 gap-2 text-[11px] font-semibold text-muted">
+      <ul className="mt-7 grid grid-cols-2 gap-2.5 text-[11px] font-semibold text-muted/80">
         {(['done', 'today', 'planned', 'rest'] as DayStatus[]).map((status) => (
           <li key={status} className="flex items-center gap-2">
-            <span aria-hidden className={cn('h-2.5 w-2.5 rounded-sm', legendColors[status])} />
+            <span aria-hidden className={cn('h-2.5 w-2.5 rounded-full', legendColors[status])} />
             {t.dashboard.dayStates[status]}
           </li>
         ))}
@@ -270,15 +270,15 @@ export function WeekStrip({ statuses }: { statuses: DayStatus[] }) {
 export function UpgradeBanner() {
   const { t } = useLanguage();
   return (
-    <article className="relative flex flex-col gap-5 overflow-hidden rounded-xl border border-volt/40 bg-night-800 p-6 sm:flex-row sm:items-center sm:justify-between">
-      <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-1/3 pattern-stripes opacity-10 fade-mask-left" />
+    <article className="relative flex flex-col gap-5 overflow-hidden rounded-2xl border border-volt/25 bg-night-800/70 p-6 shadow-xl shadow-black/20 sm:p-8 sm:flex-row sm:items-center sm:justify-between">
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-1/3 pattern-stripes opacity-[0.07] fade-mask-left" />
       <div className="relative flex items-start gap-4">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-volt text-night-900">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-volt text-night-900 shadow-lg shadow-black/20">
           <Crown className="h-5 w-5" aria-hidden />
         </span>
         <div>
-          <h3 className="font-display text-2xl uppercase">{t.dashboard.upgrade.title}</h3>
-          <p className="mt-1 text-sm text-muted">{t.dashboard.upgrade.text}</p>
+          <h3 className="font-display text-2xl uppercase leading-tight tracking-tight">{t.dashboard.upgrade.title}</h3>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted">{t.dashboard.upgrade.text}</p>
         </div>
       </div>
       <ButtonLink to="/tarifs" className="relative shrink-0" iconRight={<ArrowRight />}>
@@ -291,14 +291,14 @@ export function UpgradeBanner() {
 export function NoticeBanner({ message, onClose }: { message: string; onClose: () => void }) {
   const { t } = useLanguage();
   return (
-    <div role="status" className="mb-6 flex animate-fade-up items-center gap-3 rounded-xl border border-success/40 bg-success/10 px-4 py-3 text-sm font-semibold text-ink">
+    <div role="status" className="mb-8 flex animate-fade-up items-center gap-3 rounded-2xl border border-success/30 bg-success/10 px-5 py-4 text-sm font-semibold text-ink shadow-lg shadow-black/20">
       <CircleCheck className="h-5 w-5 shrink-0 text-success" aria-hidden />
       <p className="flex-1">{message}</p>
       <button
         type="button"
         onClick={onClose}
         aria-label={t.common.close}
-        className="grid h-8 w-8 place-items-center rounded-full text-muted transition-colors hover:text-ink"
+        className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted transition-colors hover:text-ink"
       >
         <X className="h-4 w-4" aria-hidden />
       </button>

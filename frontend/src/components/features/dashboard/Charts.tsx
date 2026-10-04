@@ -44,13 +44,13 @@ export function ProgressChart({ data, loading, error, onRetry }: ProgressChartPr
   }));
 
   return (
-    <article className="h-full rounded-xl border border-edge bg-night-800 p-5 sm:p-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <article className="h-full rounded-2xl border border-edge/70 bg-night-800/70 p-6 shadow-xl shadow-black/20 sm:p-8">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="font-display text-2xl uppercase">{t.dashboard.chartTitle}</h2>
-          <p className="text-sm text-muted">{t.dashboard.chartSubtitle}</p>
+          <h2 className="font-display text-2xl uppercase leading-tight tracking-tight">{t.dashboard.chartTitle}</h2>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{t.dashboard.chartSubtitle}</p>
         </div>
-        <div role="group" aria-label={t.dashboard.chartTitle} className="inline-flex w-fit rounded-full border border-edge bg-night-900 p-1">
+        <div role="group" aria-label={t.dashboard.chartTitle} className="inline-flex w-fit gap-1 rounded-full border border-edge/70 bg-night-900/80 p-1 shadow-inner">
           {METRICS.map((item) => (
             <button
               key={item}
@@ -58,8 +58,8 @@ export function ProgressChart({ data, loading, error, onRetry }: ProgressChartPr
               aria-pressed={metric === item}
               onClick={() => setMetric(item)}
               className={cn(
-                'rounded-full px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] transition-colors duration-200',
-                metric === item ? 'bg-volt text-night-900' : 'text-muted hover:text-ink',
+                'rounded-full px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.14em] transition-all duration-200',
+                metric === item ? 'bg-volt text-night-900 shadow' : 'text-muted hover:text-ink',
               )}
             >
               {t.dashboard.metrics[item]}
@@ -68,7 +68,7 @@ export function ProgressChart({ data, loading, error, onRetry }: ProgressChartPr
         </div>
       </div>
 
-      <div className="mt-6 h-64 w-full min-w-0">
+      <div className="mt-7 h-64 w-full min-w-0">
         {loading ? (
           <Skeleton className="h-full w-full" />
         ) : error ? (
@@ -114,7 +114,7 @@ export function ProgressChart({ data, loading, error, onRetry }: ProgressChartPr
         )}
       </div>
 
-      <div className="mt-4 flex gap-5 text-xs font-semibold text-muted">
+      <div className="mt-5 flex flex-wrap gap-5 text-xs font-semibold text-muted">
         <span className="flex items-center gap-2">
           <span aria-hidden className="h-0.5 w-5 bg-volt" />
           {t.dashboard.done}
@@ -155,18 +155,18 @@ export function AdvancedStats({ locked, data, loading }: { locked: boolean; data
   else content = <EmptyState compact icon={<Activity aria-hidden />} title={t.dashboard.noData} text={t.dashboard.noDataText} />;
 
   return (
-    <article className="rounded-xl border border-edge bg-night-800 p-5 sm:p-6">
+    <article className="rounded-2xl border border-edge/70 bg-night-800/70 p-6 shadow-xl shadow-black/20 sm:p-8">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="flex items-center gap-2 font-display text-2xl uppercase">
+          <h2 className="flex items-center gap-2 font-display text-2xl uppercase leading-tight tracking-tight">
             {t.dashboard.advanced.title}
             {locked && <Lock className="h-4 w-4 text-volt" aria-hidden />}
           </h2>
-          <p className="text-sm text-muted">{t.dashboard.advanced.subtitle}</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{t.dashboard.advanced.subtitle}</p>
         </div>
         {!locked && <Tag tone="volt">{t.tiers.premium}</Tag>}
       </div>
-      <div className="mt-6">
+      <div className="mt-7">
         {locked ? (
           <LockedContent title={t.dashboard.advanced.title} text={t.dashboard.advanced.lockedText}>
             <MuscleVolumeChart data={previewVolume} />

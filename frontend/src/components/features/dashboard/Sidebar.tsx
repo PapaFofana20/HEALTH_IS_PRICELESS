@@ -79,7 +79,7 @@ const NAV_GROUPS: { label: NavGroupKey; keys: DashboardSection[] }[] = [
   { label: 'account', keys: ['profil', 'parametres'] },
 ];
 
-const NAV_GROUP_LABEL = 'px-3 pb-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-muted/70';
+const NAV_GROUP_LABEL = 'px-3 pb-2 text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted';
 
 export function DashboardSidebar({ active }: { active: DashboardSection }) {
   const { t } = useLanguage();
@@ -107,16 +107,16 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col overflow-hidden border-r border-edge bg-night-950 lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col overflow-hidden border-r border-edge/70 bg-night-950 shadow-2xl shadow-black/30 lg:flex">
         <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-volt/10 blur-3xl" />
-        <div className="relative flex h-20 items-center border-b border-edge px-6">
+        <div className="relative flex h-20 items-center border-b border-edge/70 px-5">
           <Logo />
         </div>
 
         {/* User card */}
-        <div className="relative border-b border-edge p-4">
-          <div className="flex items-center gap-3 rounded-2xl border border-edge bg-night-800/60 p-3">
-            <img src={user.avatar} alt="" className="h-10 w-10 shrink-0 rounded-xl object-cover ring-1 ring-volt/50" />
+        <div className="relative border-b border-edge/70 p-3">
+          <div className="flex items-center gap-3 rounded-2xl border border-edge/70 bg-night-800/70 p-3 shadow-lg shadow-black/20">
+            <img src={user.avatar} alt="" className="h-10 w-10 shrink-0 rounded-xl object-cover ring-1 ring-volt/40" />
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-bold leading-tight">
                 {user.firstName} {user.lastName}
@@ -129,7 +129,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
             <Link
               to="/dashboard/profil"
               aria-label={t.dashboard.nav.profil}
-              className="grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-edge text-muted transition-colors hover:border-volt/50 hover:text-volt"
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-edge/70 bg-night-900/60 text-muted transition-colors hover:border-volt/50 hover:text-volt"
             >
               <ChevronRight className="h-4 w-4" aria-hidden />
             </Link>
@@ -137,11 +137,11 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
         </div>
 
         {/* Grouped navigation */}
-        <nav aria-label={t.dashboard.navLabel} className="scrollbar-slim relative flex-1 overflow-y-auto px-4 py-4">
+        <nav aria-label={t.dashboard.navLabel} className="scrollbar-slim relative flex-1 overflow-y-auto px-3 py-4">
           {groups.map((group) => (
-            <div key={group.label} className="mb-4">
+            <div key={group.label} className="mb-5 last:mb-0">
               <p className={NAV_GROUP_LABEL}>{t.dashboard.navGroups[group.label]}</p>
-              <ul className="space-y-0.5">
+              <ul className="space-y-1">
                 {group.items.map(({ key, to, icon: Icon }) => {
                   const isActive = active === key;
                   return (
@@ -150,12 +150,12 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
                         to={to}
                         aria-current={isActive ? 'page' : undefined}
                         className={cn(
-                          'group relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-colors duration-150',
-                          isActive ? 'bg-night-800 text-ink' : 'text-muted hover:bg-night-800/50 hover:text-ink',
+                          'group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-all duration-150',
+                          isActive ? 'bg-volt/10 text-ink' : 'text-muted hover:bg-night-800/60 hover:text-ink',
                         )}
                       >
                         {isActive && (
-                          <span aria-hidden className="absolute -left-4 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-volt" />
+                          <span aria-hidden className="absolute left-1 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-volt" />
                         )}
                         <Icon
                           className={cn(
@@ -179,7 +179,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
                 <li>
                   <Link
                     to="/admin"
-                    className="group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-muted transition-colors duration-150 hover:bg-night-800/50 hover:text-ink"
+                    className="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-muted transition-colors duration-150 hover:bg-night-800/60 hover:text-ink"
                   >
                     <ShieldCheck className="h-[18px] w-[18px] shrink-0 text-muted transition-colors group-hover:text-volt" aria-hidden />
                     <span className="truncate">{t.nav.admin}</span>
@@ -191,26 +191,26 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
         </nav>
 
         {/* Footer */}
-        <div className="relative space-y-3 border-t border-edge p-4">
+        <div className="relative space-y-3 border-t border-edge/70 p-3">
           {tier !== 'premium' ? (
-            <div className="relative overflow-hidden rounded-2xl border border-volt/25 bg-gradient-to-b from-night-800 to-night-900 p-4">
-              <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rotate-12 pattern-stripes opacity-10" />
-              <p className="relative flex items-center gap-2 font-display text-lg uppercase leading-none">
+            <div className="relative overflow-hidden rounded-2xl border border-volt/20 bg-gradient-to-b from-night-800/80 to-night-900 p-4 shadow-lg shadow-black/20">
+              <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rotate-12 pattern-stripes opacity-[0.07]" />
+              <p className="relative flex items-center gap-2 font-display text-lg uppercase leading-tight tracking-tight">
                 <Crown className="h-4 w-4 text-volt" aria-hidden />
                 {t.dashboard.upgrade.title}
               </p>
-              <p className="relative mt-1.5 text-xs leading-relaxed text-muted">{t.dashboard.upgrade.text}</p>
-              <ButtonLink to="/tarifs" size="sm" fullWidth className="relative mt-3.5">
+              <p className="relative mt-2 text-xs leading-relaxed text-muted">{t.dashboard.upgrade.text}</p>
+              <ButtonLink to="/tarifs" size="sm" fullWidth className="relative mt-4">
                 {t.dashboard.upgrade.cta}
               </ButtonLink>
             </div>
           ) : (
-            <p className="flex items-center gap-2 rounded-xl border border-volt/30 bg-volt/10 px-3.5 py-3 text-[11px] font-extrabold uppercase tracking-[0.14em] text-volt">
+            <p className="flex items-center gap-2 rounded-2xl border border-volt/25 bg-volt/10 px-4 py-3 text-[11px] font-extrabold uppercase tracking-[0.14em] text-volt">
               <Crown className="h-4 w-4 shrink-0" aria-hidden />
               {t.dashboard.premiumActive}
             </p>
           )}
-          <div className="divide-y divide-edge overflow-hidden rounded-xl border border-edge bg-night-800/50">
+          <div className="divide-y divide-edge/70 overflow-hidden rounded-2xl border border-edge/70 bg-night-800/60">
             <div className="flex items-center justify-between gap-2 px-3 py-2.5">
               <Link
                 to="/"
@@ -234,10 +234,10 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
       </aside>
 
       {/* Mobile / tablet top bar */}
-      <div className="sticky top-0 z-40 border-b border-edge bg-night-950/95 backdrop-blur-md lg:hidden">
+      <div className="sticky top-0 z-40 border-b border-edge/70 bg-night-950/95 shadow-lg shadow-black/20 backdrop-blur-md lg:hidden">
         <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-6">
           <Logo compact />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <LanguageSwitcher />
             <Link
               to="/"
@@ -256,16 +256,16 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
             </button>
           </div>
         </div>
-        <nav aria-label={t.dashboard.navLabel} className="scrollbar-none overflow-x-auto px-4 pb-3 sm:px-6">
-          <ul className="flex w-max gap-2">
+        <nav aria-label={t.dashboard.navLabel} className="scrollbar-none overflow-x-auto px-4 pb-4 sm:px-6">
+          <ul className="flex w-max gap-2.5">
             {items.map(({ key, to, icon: Icon }) => (
               <li key={key}>
                 <Link
                   to={to}
                   aria-current={active === key ? 'page' : undefined}
                   className={cn(
-                    'inline-flex h-11 items-center gap-2 rounded-full border px-3.5 text-[11px] font-extrabold uppercase tracking-[0.12em] transition-colors duration-200',
-                    active === key ? 'border-volt bg-volt text-night-900' : 'border-edge text-muted hover:text-ink',
+                    'inline-flex h-11 items-center gap-2 rounded-full border px-4 text-[11px] font-extrabold uppercase tracking-[0.12em] transition-all duration-200',
+                    active === key ? 'border-volt bg-volt text-night-900 shadow-lg shadow-black/20' : 'border-edge/70 text-muted hover:text-ink',
                   )}
                 >
                   <Icon className="h-4 w-4" aria-hidden />
@@ -277,7 +277,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
               <li>
                 <Link
                   to="/admin"
-                  className="inline-flex h-11 items-center gap-2 rounded-full border border-edge px-3.5 text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted transition-colors duration-200 hover:border-volt hover:text-volt"
+                  className="inline-flex h-11 items-center gap-2 rounded-full border border-edge/70 px-4 text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted transition-colors duration-200 hover:border-volt hover:text-volt"
                 >
                   <ShieldCheck className="h-4 w-4" aria-hidden />
                   {t.nav.admin}

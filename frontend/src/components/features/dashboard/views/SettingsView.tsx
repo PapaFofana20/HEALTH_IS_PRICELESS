@@ -22,15 +22,15 @@ export function SettingsView({ onNotice }: { onNotice: (message: string) => void
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-8 sm:space-y-10">
       <ViewHeader title={t.dashboard.settings.title} subtitle={t.dashboard.settings.subtitle} />
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section className="h-fit rounded-xl border border-edge bg-night-800 p-6">
-          <h2 className="font-display text-2xl uppercase">{t.dashboard.settings.subscription}</h2>
-          <p className="mt-1 text-sm text-muted">
+      <div className="grid min-w-0 gap-6 sm:gap-8 lg:grid-cols-2">
+        <section className="h-fit min-w-0 rounded-2xl border border-edge/70 bg-night-800/70 p-6 transition-colors duration-300 hover:border-edge-strong sm:p-8">
+          <h2 className="font-display text-2xl uppercase leading-none tracking-tight">{t.dashboard.settings.subscription}</h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
             {isDemo ? t.dashboard.settings.subscriptionText : t.dashboard.settings.subscriptionLive}
           </p>
-          <div role="group" aria-label={t.dashboard.settings.subscription} className="mt-5 grid grid-cols-2 gap-2">
+          <div role="group" aria-label={t.dashboard.settings.subscription} className="mt-6 grid grid-cols-2 gap-3">
             {(['standard', 'premium'] as Tier[]).map((option) => (
               <button
                 key={option}
@@ -38,7 +38,7 @@ export function SettingsView({ onNotice }: { onNotice: (message: string) => void
                 aria-pressed={tier === option}
                 onClick={() => (isDemo ? changeTier(option) : navigate(`/paiement?plan=${option}`))}
                 className={cn(
-                  'flex h-20 flex-col items-center justify-center gap-1.5 rounded-xl border text-[11px] font-extrabold uppercase tracking-[0.12em] transition-colors duration-200',
+                  'flex h-24 min-w-0 flex-col items-center justify-center gap-2 rounded-2xl border text-[11px] font-extrabold uppercase tracking-[0.18em] transition-colors duration-200',
                   tier === option ? 'border-volt bg-volt/10 text-volt' : 'border-edge text-muted hover:border-edge-strong hover:text-ink',
                 )}
               >
@@ -49,17 +49,17 @@ export function SettingsView({ onNotice }: { onNotice: (message: string) => void
           </div>
         </section>
 
-        <div className="space-y-6">
-          <section className="rounded-xl border border-edge bg-night-800 p-6">
-            <h2 className="font-display text-2xl uppercase">{t.dashboard.settings.language}</h2>
-            <LanguageSwitcher className="mt-4" />
+        <div className="min-w-0 space-y-6 sm:space-y-8">
+          <section className="min-w-0 rounded-2xl border border-edge/70 bg-night-800/70 p-6 transition-colors duration-300 hover:border-edge-strong sm:p-8">
+            <h2 className="font-display text-2xl uppercase leading-none tracking-tight">{t.dashboard.settings.language}</h2>
+            <LanguageSwitcher className="mt-6" />
           </section>
-          <section className="rounded-xl border border-edge bg-night-800 p-6">
-            <h2 className="font-display text-2xl uppercase">{t.dashboard.settings.session}</h2>
-            <p className="mt-1 text-sm text-muted">{t.dashboard.settings.logoutText}</p>
+          <section className="min-w-0 rounded-2xl border border-edge/70 bg-night-800/70 p-6 transition-colors duration-300 hover:border-edge-strong sm:p-8">
+            <h2 className="font-display text-2xl uppercase leading-none tracking-tight">{t.dashboard.settings.session}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted">{t.dashboard.settings.logoutText}</p>
             <Button
               variant="outline"
-              className="mt-4"
+              className="mt-6 h-12 px-6"
               icon={<LogOut />}
               onClick={() => {
                 logout();

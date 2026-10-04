@@ -8,7 +8,7 @@ export function ProgramsView() {
   const { t } = useLanguage();
 
   return (
-    <div>
+    <div className="min-w-0">
       <ViewHeader
         title={t.dashboard.programs.title}
         subtitle={t.dashboard.programs.subtitle}
@@ -18,11 +18,11 @@ export function ProgramsView() {
           </ButtonLink>
         }
       />
-      <div className="grid items-start gap-6 lg:grid-cols-2">
+      <div className="mt-10 grid min-w-0 items-stretch gap-6 sm:mt-12 sm:gap-8 lg:grid-cols-2">
         <PlanShowcaseCard plan="standard" variant="full" />
         <PlanShowcaseCard plan="premium" variant="full" />
       </div>
-      <p className="mt-6 text-center text-xs font-semibold text-muted">{t.plans.note}</p>
+      <p className="mt-8 px-4 text-center text-xs font-medium leading-relaxed text-muted sm:mt-10">{t.plans.note}</p>
     </div>
   );
 }

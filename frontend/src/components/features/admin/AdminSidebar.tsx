@@ -36,7 +36,7 @@ const ADMIN_NAV_GROUPS: { label: NavGroupKey; keys: AdminSection[] }[] = [
   { label: 'catalog', keys: ['programs', 'content'] },
 ];
 
-const NAV_GROUP_LABEL = 'px-3 pb-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-muted/70';
+const NAV_GROUP_LABEL = 'px-3 pb-2 pt-1 text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted';
 
 export function AdminSidebar({ active }: { active: AdminSection }) {
   const { t } = useLanguage();
@@ -69,8 +69,8 @@ export function AdminSidebar({ active }: { active: AdminSection }) {
         </div>
 
         {/* Admin card */}
-        <div className="relative border-b border-edge p-4">
-          <div className="flex items-center gap-3 rounded-2xl border border-edge bg-night-800/60 p-3">
+        <div className="relative border-b border-edge px-4 py-4">
+          <div className="flex items-center gap-3 rounded-2xl border border-edge/70 bg-night-800/70 p-3.5 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)]">
             <span
               aria-hidden
               className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-volt to-volt-dark font-display text-xl text-night-900"
@@ -97,11 +97,11 @@ export function AdminSidebar({ active }: { active: AdminSection }) {
         </div>
 
         {/* Grouped navigation */}
-        <nav aria-label={t.admin.navLabel} className="scrollbar-slim relative flex-1 overflow-y-auto px-4 py-4">
+        <nav aria-label={t.admin.navLabel} className="scrollbar-slim relative flex-1 overflow-y-auto px-4 py-5">
           {groups.map((group) => (
-            <div key={group.label} className="mb-4">
+            <div key={group.label} className="mb-5 last:mb-0">
               <p className={NAV_GROUP_LABEL}>{t.admin.navGroups[group.label]}</p>
-              <ul className="space-y-0.5">
+              <ul className="mt-1 space-y-1">
                 {group.items.map(({ key, to, icon: Icon }) => {
                   const isActive = active === key;
                   return (
@@ -110,12 +110,12 @@ export function AdminSidebar({ active }: { active: AdminSection }) {
                         to={to}
                         aria-current={isActive ? 'page' : undefined}
                         className={cn(
-                          'group relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-colors duration-150',
-                          isActive ? 'bg-night-800 text-ink' : 'text-muted hover:bg-night-800/50 hover:text-ink',
+                          'group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors duration-150',
+                          isActive ? 'bg-volt/10 text-ink' : 'text-muted hover:bg-night-800/60 hover:text-ink',
                         )}
                       >
                         {isActive && (
-                          <span aria-hidden className="absolute -left-4 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-volt" />
+                          <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-volt" />
                         )}
                         <Icon
                           className={cn(
@@ -135,8 +135,8 @@ export function AdminSidebar({ active }: { active: AdminSection }) {
         </nav>
 
         {/* Footer */}
-        <div className="relative border-t border-edge p-4">
-          <div className="divide-y divide-edge overflow-hidden rounded-xl border border-edge bg-night-800/50">
+        <div className="relative border-t border-edge px-4 py-4">
+          <div className="divide-y divide-edge overflow-hidden rounded-2xl border border-edge/70 bg-night-800/70">
             <div className="flex items-center justify-between gap-2 px-3 py-2.5">
               <Link
                 to="/"
@@ -178,15 +178,15 @@ export function AdminSidebar({ active }: { active: AdminSection }) {
             </button>
           </div>
         </div>
-        <nav aria-label={t.admin.navLabel} className="scrollbar-none overflow-x-auto px-4 pb-3 sm:px-6">
-          <ul className="flex w-max gap-2">
+        <nav aria-label={t.admin.navLabel} className="scrollbar-none overflow-x-auto px-4 pb-4 pt-1 sm:px-6">
+          <ul className="flex w-max gap-2.5">
             {ADMIN_SECTIONS.map(({ key, to, icon: Icon }) => (
               <li key={key}>
                 <Link
                   to={to}
                   aria-current={active === key ? 'page' : undefined}
                   className={cn(
-                    'inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-[11px] font-extrabold uppercase tracking-[0.12em] transition-colors duration-200',
+                    'inline-flex h-10 items-center gap-2 rounded-full border px-4 text-[11px] font-extrabold uppercase tracking-[0.12em] transition-colors duration-200',
                     active === key ? 'border-volt bg-volt text-night-900' : 'border-edge text-muted hover:text-ink',
                   )}
                 >

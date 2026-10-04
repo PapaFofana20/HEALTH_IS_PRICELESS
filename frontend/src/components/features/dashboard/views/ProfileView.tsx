@@ -6,7 +6,7 @@ import { Button } from '../../../ui/Button';
 import { ViewHeader } from '../DashboardLayout';
 import type { User } from '../../../../types';
 
-const labelClass = 'text-[10px] font-extrabold uppercase tracking-[0.14em] text-muted';
+const labelClass = 'text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted';
 
 interface FieldProps {
   id: string;
@@ -30,7 +30,7 @@ function Field({ id, label, value, onChange, type = 'text', autoComplete, classN
         value={value}
         autoComplete={autoComplete}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 h-11 w-full rounded-lg border border-edge bg-night-900 px-3.5 text-sm font-semibold text-ink transition-colors focus:border-volt focus:outline-none"
+        className="mt-3 h-12 w-full min-w-0 rounded-xl border border-edge bg-night-900 px-4 text-sm font-semibold text-ink transition-colors focus:border-volt focus:outline-none"
       />
     </div>
   );
@@ -58,43 +58,43 @@ export function ProfileView({ user, onNotice }: { user: User; onNotice: (message
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-8 sm:space-y-10">
       <ViewHeader title={t.dashboard.profile.title} subtitle={t.dashboard.profile.subtitle} />
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section className="h-fit rounded-xl border border-edge bg-night-800 p-6">
-          <div className="flex items-center gap-4">
-            <img src={user.avatar} alt="" className="h-16 w-16 rounded-full object-cover ring-2 ring-volt/60" />
+      <div className="grid min-w-0 gap-6 sm:gap-8 lg:grid-cols-2">
+        <section className="h-fit min-w-0 rounded-2xl border border-edge/70 bg-night-800/70 p-6 transition-colors duration-300 hover:border-edge-strong sm:p-8">
+          <div className="flex items-center gap-5">
+            <img src={user.avatar} alt="" className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-volt/60" />
             <div className="min-w-0">
-              <p className="truncate font-display text-2xl uppercase leading-none">
+              <p className="truncate font-display text-2xl uppercase leading-none tracking-tight">
                 {user.firstName} {user.lastName}
               </p>
-              <p className="mt-1 truncate text-sm text-muted">{user.email}</p>
+              <p className="mt-2 truncate text-sm leading-relaxed text-muted">{user.email}</p>
             </div>
           </div>
-          <dl className="mt-6 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-lg bg-night-900 p-4">
+          <dl className="mt-8 grid gap-3 sm:grid-cols-3 sm:gap-4">
+            <div className="min-w-0 rounded-2xl border border-edge/70 bg-night-900/70 p-5">
               <dt className={labelClass}>{t.dashboard.tierLabel}</dt>
-              <dd className="mt-2 font-display text-xl uppercase leading-none">
+              <dd className="mt-2.5 font-display text-xl uppercase leading-none tracking-tight">
                 <span className={tier === 'premium' ? 'text-volt' : 'text-ink'}>{t.tiers[tier]}</span>
               </dd>
             </div>
-            <div className="rounded-lg bg-night-900 p-4">
+            <div className="min-w-0 rounded-2xl border border-edge/70 bg-night-900/70 p-5">
               <dt className={labelClass}>{t.dashboard.profile.goal}</dt>
-              <dd className="mt-2 font-display text-xl uppercase leading-none">{t.goals[user.goal]}</dd>
+              <dd className="mt-2.5 font-display text-xl uppercase leading-none tracking-tight">{t.goals[user.goal]}</dd>
             </div>
-            <div className="rounded-lg bg-night-900 p-4">
+            <div className="min-w-0 rounded-2xl border border-edge/70 bg-night-900/70 p-5">
               <dt className={labelClass}>{t.dashboard.profile.memberSince}</dt>
-              <dd className="mt-2 font-display text-xl uppercase leading-none">
+              <dd className="mt-2.5 font-display text-xl uppercase leading-none tracking-tight">
                 {fmtDate(user.memberSince, { day: 'numeric', month: 'short', year: 'numeric' })}
               </dd>
             </div>
           </dl>
         </section>
 
-        <form onSubmit={save} noValidate className="h-fit rounded-xl border border-edge bg-night-800 p-6">
-          <h2 className="font-display text-2xl uppercase">{t.dashboard.settings.profile}</h2>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        <form onSubmit={save} noValidate className="h-fit min-w-0 rounded-2xl border border-edge/70 bg-night-800/70 p-6 transition-colors duration-300 hover:border-edge-strong sm:p-8">
+          <h2 className="font-display text-2xl uppercase leading-none tracking-tight">{t.dashboard.settings.profile}</h2>
+          <div className="mt-6 grid gap-5 sm:grid-cols-2 sm:gap-6">
             <Field
               id="profile-first-name"
               label={t.dashboard.settings.firstName}
@@ -120,11 +120,11 @@ export function ProfileView({ user, onNotice }: { user: User; onNotice: (message
             />
           </div>
           {error && (
-            <p role="alert" className="mt-3 text-sm font-semibold text-danger">
+            <p role="alert" className="mt-4 text-sm font-semibold leading-relaxed text-danger">
               {error}
             </p>
           )}
-          <Button type="submit" className="mt-6">
+          <Button type="submit" className="mt-8 h-12 w-full px-8 sm:w-auto">
             {t.common.save}
           </Button>
         </form>
