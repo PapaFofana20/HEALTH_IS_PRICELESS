@@ -4,7 +4,6 @@ import {
   ArrowLeft,
   BookOpen,
   ChevronRight,
-  Dumbbell,
   LayoutDashboard,
   LogOut,
   Receipt,
@@ -17,13 +16,12 @@ import { useAuth } from '../../../hooks/useAuth';
 import { Logo } from '../../ui/Logo';
 import { LanguageSwitcher } from '../../layout/LanguageSwitcher';
 
-export type AdminSection = 'overview' | 'members' | 'orders' | 'programs' | 'content' | 'admins';
+export type AdminSection = 'overview' | 'members' | 'orders' | 'content' | 'admins';
 
 export const ADMIN_SECTIONS: { key: AdminSection; to: string; icon: LucideIcon }[] = [
   { key: 'overview', to: '/admin', icon: LayoutDashboard },
   { key: 'members', to: '/admin/members', icon: Users },
   { key: 'orders', to: '/admin/orders', icon: Receipt },
-  { key: 'programs', to: '/admin/programs', icon: Dumbbell },
   { key: 'content', to: '/admin/content', icon: BookOpen },
   { key: 'admins', to: '/admin/admins', icon: ShieldCheck },
 ];
@@ -33,7 +31,7 @@ type NavGroupKey = 'pilotage' | 'catalog';
 /** Grouped navigation — labels come from `t.admin.navGroups`. */
 const ADMIN_NAV_GROUPS: { label: NavGroupKey; keys: AdminSection[] }[] = [
   { label: 'pilotage', keys: ['overview', 'members', 'orders', 'admins'] },
-  { label: 'catalog', keys: ['programs', 'content'] },
+  { label: 'catalog', keys: ['content'] },
 ];
 
 const NAV_GROUP_LABEL = 'px-3 pb-2 pt-1 text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted';

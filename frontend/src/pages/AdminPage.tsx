@@ -10,7 +10,6 @@ import { AdminDeniedScreen } from './admin/AdminScreens';
 import { OverviewView } from './admin/OverviewView';
 import { MembersView } from './admin/MembersView';
 import { OrdersView } from './admin/OrdersView';
-import { ProgramsView } from './admin/ProgramsView';
 import { ContentView } from './admin/ContentView';
 import { AdminsView } from './admin/AdminsView';
 
@@ -35,7 +34,6 @@ export default function AdminPage() {
       {section === 'overview' && <OverviewView />}
       {section === 'members' && <MembersView />}
       {section === 'orders' && <OrdersView />}
-      {section === 'programs' && <ProgramsView />}
       {section === 'content' && <ContentView />}
       {section === 'admins' && <AdminsView />}
     </>

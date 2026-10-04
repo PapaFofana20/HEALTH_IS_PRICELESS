@@ -5,7 +5,6 @@ import { articles } from '../../data/articles';
 import { exercises } from '../../data/exercises';
 import { mealPlans } from '../../data/nutrition';
 import { recipes } from '../../data/nutrition';
-import { programs } from '../../data/programs';
 
 export function ContentView() {
   const { t, fmtNumber } = useLanguage();
@@ -13,7 +12,6 @@ export function ContentView() {
     { icon: Dumbbell, label: t.admin.content.exercises, count: exercises.length, to: '/exercices' },
     { icon: Salad, label: t.admin.content.recipes, count: recipes.length + mealPlans.length, to: '/nutrition' },
     { icon: BookOpen, label: t.admin.content.articles, count: articles.length, to: '/conseils' },
-    { icon: Dumbbell, label: t.admin.content.programs, count: programs.length, to: '/programmes' },
   ];
   return (
     <div className="space-y-5 sm:space-y-8">
