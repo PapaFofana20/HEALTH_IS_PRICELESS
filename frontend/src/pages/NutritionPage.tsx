@@ -33,13 +33,16 @@ export default function NutritionPage() {
   const [selected, setSelected] = useState<Recipe | null>(null);
   const [mealGoal, setMealGoal] = useState<Goal>('weight-loss');
 
-  // Deep-link support: /nutrition?section=recipes
+  // Deep-link support: /nutrition?section=recipes&tool=bmi
   useEffect(() => {
     const section = params.get('section');
     if (!section) return;
     const id = window.setTimeout(() => document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
     return () => window.clearTimeout(id);
   }, [params]);
+
+  const toolParam = params.get('tool');
+  const initialTool = toolParam === 'bmi' || toolParam === 'protein' || toolParam === 'calories' ? toolParam : undefined;
 
   const filtered = useMemo(
     () =>
@@ -96,7 +99,7 @@ export default function NutritionPage() {
             <SectionHeading title={t.nutritionPage.calculatorsTitle} subtitle={t.nutritionPage.calculatorsSubtitle} />
           </Reveal>
           <Reveal delay={80} className="mt-10">
-            <CalculatorTabs />
+            <CalculatorTabs key={initialTool ?? 'calories'} initial={initialTool} />
           </Reveal>
         </div>
       </section>

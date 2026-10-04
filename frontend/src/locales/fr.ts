@@ -243,6 +243,7 @@ export const fr = {
     tagline: 'HEALTH IS PRICELESS',
     platform: 'Plateforme',
     goals: 'Objectifs',
+    tools: 'Calculateurs',
     help: 'Aide',
     faq: 'FAQ',
     contact: 'Contact',

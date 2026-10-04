@@ -75,6 +75,14 @@ export function Footer() {
       ],
     },
     {
+      title: t.footer.tools,
+      links: [
+        { to: '/nutrition?section=calculators&tool=bmi', label: t.calc.tabs.bmi },
+        { to: '/nutrition?section=calculators&tool=calories', label: t.calc.tabs.calories },
+        { to: '/nutrition?section=calculators&tool=protein', label: t.calc.tabs.protein },
+      ],
+    },
+    {
       title: t.footer.help,
       links: [
         { to: '/a-propos?section=faq', label: t.footer.faq },
@@ -109,7 +117,7 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:col-span-7">
             {columns.map((column) => (
               <div key={column.title}>
                 <h2 className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-volt">{column.title}</h2>

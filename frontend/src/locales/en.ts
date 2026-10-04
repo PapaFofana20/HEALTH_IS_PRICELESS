@@ -241,6 +241,7 @@ export const en: Translations = {
     tagline: 'HEALTH IS PRICELESS',
     platform: 'Platform',
     goals: 'Goals',
+    tools: 'Calculators',
     help: 'Help',
     faq: 'FAQ',
     contact: 'Contact',
