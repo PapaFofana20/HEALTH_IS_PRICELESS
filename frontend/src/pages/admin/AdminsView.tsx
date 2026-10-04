@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import { useLanguage } from '../../hooks/useLanguage';
 import { useAsync } from '../../hooks/useAsync';
 import { fetchAdminEmails, createBackendAdmin, removeAdminEmail } from '../../services/adminApi';
 import { refreshAdminEmails, isValidEmail } from '../../hooks/useAuth';
@@ -8,7 +7,6 @@ import { Button } from '../../components/ui/Button';
 import { ErrorState, Skeleton } from '../../components/ui/States';
 
 export function AdminsView() {
-  const { t } = useLanguage();
   const { data, loading, error, refetch } = useAsync(fetchAdminEmails, []);
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
@@ -131,9 +129,6 @@ export function AdminsView() {
           {(data ?? []).length === 0 && <li className="px-5 py-5 text-sm font-semibold text-muted sm:px-6">Aucun administrateur enregistré.</li>}
         </ul>
       )}
-      <p className="max-w-3xl text-xs leading-relaxed text-muted/80">
-        {t.admin.guestHint} {'admin@hip.app'} — la nouvelle whitelist est appliquée via la table <code>admin_emails</code> (RLS : seuls les admins y accèdent).
-      </p>
     </div>
   );
 }

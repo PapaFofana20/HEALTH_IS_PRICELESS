@@ -171,28 +171,9 @@ router.post('/create-admin', authLimiter, async (req, res, next) => {
     if (!USE_SUPABASE) {
       return res.status(503).json({ error: 'NOT_CONFIGURED', message: 'Supabase requis pour créer un administrateur' });
     }
-    const bearer = req.headers.authorization?.startsWith('Bearer ')
-      ? req.headers.authorization.slice(7)
-      : null;
-    if (!bearer) {
-      return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session requise' });
-    }
-    let requesterEmail = null;
-    try {
-      const meRes = await fetch(SUPABASE_URL + '/auth/v1/user', {
-        headers: { apikey: SERVICE_KEY, Authorization: 'Bearer ' + bearer },
-      });
-      if (!meRes.ok) {
-        return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session invalide ou expirée' });
-      }
-      const me = await meRes.json();
-      requesterEmail = me?.email ?? null;
-    } catch {
-      return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session invalide ou expirée' });
-    }
-    if (!requesterEmail || !(await isAdminEmail(requesterEmail))) {
-      return res.status(403).json({ error: 'FORBIDDEN', message: 'Réservé aux administrateurs' });
-    }
+    const requester = await requireRequesterAdmin(req, res);
+    if (!requester) return;
+    void requester;
 
     const { firstName, email, password } = req.body ?? {};
     if (!email?.trim() || !password || typeof password !== 'string') {
@@ -285,5 +266,80 @@ async function addAdminEmail(email) {
     /* non bloquant : la création du compte a réussi */
   }
 }
+
+/* Vérifie que le demandeur (token Supabase) est admin. Retourne son email. */
+async function requireRequesterAdmin(req, res) {
+  const bearer = req.headers.authorization?.startsWith('Bearer ')
+    ? req.headers.authorization.slice(7)
+    : null;
+  if (!bearer) {
+    res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session requise' });
+    return null;
+  }
+  try {
+    const meRes = await fetch(SUPABASE_URL + '/auth/v1/user', {
+      headers: { apikey: SERVICE_KEY, Authorization: 'Bearer ' + bearer },
+    });
+    if (!meRes.ok) {
+      res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session invalide ou expirée' });
+      return null;
+    }
+    const me = await meRes.json();
+    const requesterEmail = me?.email ?? null;
+    const requesterId = me?.id ?? null;
+    if (!requesterEmail || !(await isAdminEmail(requesterEmail))) {
+      res.status(403).json({ error: 'FORBIDDEN', message: 'Réservé aux administrateurs' });
+      return null;
+    }
+    return { email: requesterEmail, id: requesterId };
+  } catch {
+    res.status(401).json({ error: 'UNAUTHORIZED', message: 'Session invalide ou expirée' });
+    return null;
+  }
+}
+
+/* Supprime définitivement un membre (compte Auth + profil + commandes).
+   Refuse l'auto-suppression et la suppression d'un autre admin. */
+router.delete('/members/:userId', authLimiter, async (req, res, next) => {
+  try {
+    if (!USE_SUPABASE) {
+      return res.status(503).json({ error: 'NOT_CONFIGURED', message: 'Supabase requis pour supprimer un membre' });
+    }
+    const requester = await requireRequesterAdmin(req, res);
+    if (!requester) return;
+    const targetId = req.params.userId;
+    if (!targetId || typeof targetId !== 'string') {
+      return res.status(400).json({ error: 'INVALID_INPUT', message: 'Identifiant membre invalide' });
+    }
+    if (targetId === requester.id) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Tu ne peux pas supprimer ton propre compte' });
+    }
+    const target = await findUserById(targetId);
+    if (!target) return res.status(404).json({ error: 'USER_NOT_FOUND' });
+    if (await isAdminEmail(target.email)) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Impossible de supprimer un administrateur (retire-le d’abord de la whitelist)' });
+    }
+
+    const headers = getSupabaseHeaders();
+    await fetch(SUPABASE_URL + '/rest/v1/orders?user_id=eq.' + encodeURIComponent(targetId), {
+      method: 'DELETE',
+      headers,
+    });
+    await fetch(SUPABASE_URL + '/rest/v1/profiles?id=eq.' + encodeURIComponent(targetId), {
+      method: 'DELETE',
+      headers,
+    });
+    const authDel = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + encodeURIComponent(targetId), {
+      method: 'DELETE',
+      headers,
+    });
+    if (!authDel.ok && authDel.status !== 404) {
+      return res.status(502).json({ error: 'AUTH_PROVIDER_ERROR', message: 'Suppression du compte impossible' });
+    }
+    res.json({ deleted: true, email: target.email });
+  } catch (err) {
+    next(err);
+  }
+});
 
 export { router as authRouter };

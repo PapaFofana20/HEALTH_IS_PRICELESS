@@ -1,12 +1,14 @@
 import { useState, useMemo } from 'react';
-import { Users as UsersIcon } from 'lucide-react';
+import { Trash2, Users as UsersIcon } from 'lucide-react';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useAsync } from '../../hooks/useAsync';
-import { fetchAdminMembers } from '../../services/adminApi';
+import { deleteBackendMember, fetchAdminMembers } from '../../services/adminApi';
 import type { AdminMember, MemberStatus } from '../../services/adminApi';
 import type { Tier } from '../../types';
 import { getProgramById } from '../../data/programs';
 import { Chip, PlanBadge, Tag } from '../../components/ui/Badge';
+import { Button } from '../../components/ui/Button';
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 import { ScrollTable } from '../../components/ui/ScrollTable';
 import { ErrorState, Skeleton } from '../../components/ui/States';
 
@@ -194,14 +196,35 @@ export function MembersView() {
         <MemberDetailModal
           member={selectedMember}
           onClose={() => setSelectedMember(null)}
+          onDeleted={() => {
+            setSelectedMember(null);
+            refetch();
+          }}
         />
       )}
     </div>
   );
 }
 
-function MemberDetailModal({ member, onClose }: { member: AdminMember; onClose: () => void }) {
+function MemberDetailModal({ member, onClose, onDeleted }: { member: AdminMember; onClose: () => void; onDeleted: () => void }) {
   const { t, loc, fmtDate, fmtNumber } = useLanguage();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const destroy = async () => {
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await deleteBackendMember(member.id);
+      setConfirmDelete(false);
+      onDeleted();
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : 'Suppression impossible');
+    } finally {
+      setDeleting(false);
+    }
+  };
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-night-900/80 backdrop-blur-sm sm:items-center sm:p-4" onClick={onClose}>
       <div
@@ -267,6 +290,30 @@ function MemberDetailModal({ member, onClose }: { member: AdminMember; onClose: 
             <p className="mt-1.5 break-words text-sm font-bold text-ink">{member.favorites.length > 0 ? member.favorites.join(', ') : '—'}</p>
           </div>
         </div>
+        {deleteError && (
+          <p role="alert" className="mt-4 rounded-xl border border-danger/40 bg-danger/10 p-3 text-sm font-semibold text-danger">
+            {deleteError}
+          </p>
+        )}
+        <Button
+          variant="outline"
+          fullWidth
+          className="mt-4 border-danger/40 text-danger hover:border-danger hover:bg-danger/10 hover:text-danger"
+          icon={<Trash2 />}
+          onClick={() => setConfirmDelete(true)}
+          disabled={deleting}
+        >
+          Supprimer ce compte
+        </Button>
+        <ConfirmDialog
+          open={confirmDelete}
+          title={`Supprimer ${member.name} ?`}
+          text={`Le compte ${member.email} sera définitivement supprimé (profil et commandes inclus). Cette action est irréversible.`}
+          onConfirm={destroy}
+          onClose={() => {
+            if (!deleting) setConfirmDelete(false);
+          }}
+        />
       </div>
     </div>
   );

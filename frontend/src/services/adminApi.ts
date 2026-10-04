@@ -169,6 +169,25 @@ export interface CreatedAdmin {
 }
 
 /**
+ * Supprime définitivement un membre (compte Auth + profil + commandes).
+ * Refuse l'auto-suppression et les comptes admin côté serveur.
+ */
+export async function deleteBackendMember(userId: string): Promise<{ email?: string }> {
+  if (!isSupabaseConfigured || !supabase) throw new Error('Supabase non configuré');
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) throw new Error('Session administrateur requise');
+  const res = await fetch(`${BACKEND_URL}/api/auth/members/${encodeURIComponent(userId)}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const payload = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error((payload as { message?: string }).message ?? 'Suppression impossible');
+  return payload as { email?: string };
+}
+
+/**
  * Crée un administrateur complet (compte Auth + profil + whitelist) via le
  * backend (clé service-role). Le demandeur prouve son rôle avec son token
  * d'accès Supabase : sa session n'est pas touchée.
