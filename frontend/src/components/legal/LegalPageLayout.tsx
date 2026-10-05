@@ -12,9 +12,7 @@ export type LegalDocKey = 'confidentialite' | 'cgu';
 
 const DOCS: Record<LegalDocKey, LegalDoc> = { confidentialite: privacy, cgu };
 
-
-/* Paragraphe mis en avant (callout) : cite un passage existant du document,
-   retire du flux pour eviter le doublon. */
+/* Paragraphe mis en avant (callout) : cite un passage existant du document. */
 const FEATURED: Record<LegalDocKey, { section: number; paragraph: number }> = {
   confidentialite: { section: 4, paragraph: 0 },
   cgu: { section: 2, paragraph: 0 },
@@ -27,8 +25,6 @@ const prefersReducedMotion = () =>
 
 const scrollBehavior = (): ScrollBehavior => (prefersReducedMotion() ? 'auto' : 'smooth');
 
-/* Layout juridique partage : hero institutionnel, sommaire sticky,
-   contenu hierarchise, CTA aide. Le fond juridique est inchange. */
 export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
   const { t, loc } = useLanguage();
   const doc = DOCS[docKey];
@@ -37,10 +33,13 @@ export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
   const isPrivacy = docKey === 'confidentialite';
   const featured = FEATURED[docKey];
 
-  usePageTitle(
-    doc ? loc(doc.title) : '',
-    doc ? (isPrivacy ? t.about.legalPrivacySubtitle : t.about.legalCguSubtitle) : undefined,
-  );
+  const subtitle = isPrivacy ? t.about.legalPrivacySubtitle : t.about.legalCguSubtitle;
+
+  usePageTitle(doc ? loc(doc.title) : '', subtitle);
+
+  useEffect(() => {
+    if (doc) document.title = `${loc(doc.title)} | HEALTH IS PRICELESS`;
+  }, [doc, loc]);
 
   useEffect(() => {
     if (!doc) return;
@@ -66,19 +65,29 @@ export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
     document.getElementById(`legal-section-${index}`)?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
   };
 
+  const HeroIcon = isPrivacy ? ShieldCheck : FileText;
+
   return (
     <>
       <section className="relative isolate overflow-hidden border-b border-edge bg-night-900 pb-12 pt-32 sm:pb-14 lg:pb-16 lg:pt-40">
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
         <div className={container}>
-          <Eyebrow className="animate-fade-up">{t.about.legalEyebrow}</Eyebrow>
-          <h1 className="mt-5 max-w-3xl animate-fade-up font-display text-4xl uppercase leading-[0.95] tracking-tight [animation-delay:60ms] sm:text-5xl lg:text-6xl">
+          <div className="flex items-center gap-4">
+            <span
+              aria-hidden
+              className="grid h-14 w-14 shrink-0 animate-fade-up place-items-center rounded-2xl border border-edge/70 bg-night-800 text-volt"
+            >
+              <HeroIcon className="h-7 w-7" />
+            </span>
+            <Eyebrow className="animate-fade-up [animation-delay:60ms]">{t.about.legalEyebrow}</Eyebrow>
+          </div>
+          <h1 className="mt-6 max-w-3xl animate-fade-up font-display text-4xl uppercase leading-[0.95] tracking-tight [animation-delay:120ms] sm:text-5xl lg:text-6xl">
             {loc(doc.title)}
           </h1>
-          <p className="mt-4 max-w-2xl animate-fade-up text-base leading-relaxed text-muted [animation-delay:120ms] sm:text-lg">
-            {isPrivacy ? t.about.legalPrivacySubtitle : t.about.legalCguSubtitle}
+          <p className="mt-4 max-w-2xl animate-fade-up text-base leading-relaxed text-muted [animation-delay:180ms] sm:text-lg">
+            {subtitle}
           </p>
-          <p className="mt-5 inline-flex animate-fade-up items-center gap-2 rounded-full border border-edge/70 bg-night-800/80 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-muted [animation-delay:180ms]">
+          <p className="mt-5 inline-flex animate-fade-up items-center gap-2 rounded-full border border-edge/70 bg-night-800/80 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-muted [animation-delay:240ms]">
             <CalendarDays className="h-3.5 w-3.5 text-volt" aria-hidden />
             {loc(doc.updated)}
           </p>
@@ -167,13 +176,20 @@ export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
                         const text = loc(paragraph);
                         if (sectionIndex === featured.section && paragraphIndex === featured.paragraph) {
                           return (
-                            <p
+                            <div
                               key={text}
-                              className="flex gap-3 rounded-xl border border-volt/30 bg-volt/[0.07] p-5 text-[15px] leading-[1.75] text-ink"
+                              className="rounded-xl border border-volt/30 bg-volt/[0.07] p-5"
                             >
-                              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-volt" aria-hidden />
-                              <span>{text}</span>
-                            </p>
+                              <p className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-volt">
+                                {isPrivacy ? (
+                                  <ShieldCheck className="h-4 w-4" aria-hidden />
+                                ) : (
+                                  <Info className="h-4 w-4" aria-hidden />
+                                )}
+                                {isPrivacy ? t.about.legalCalloutPrivacy : t.about.legalCalloutCgu}
+                              </p>
+                              <p className="mt-3 text-[15px] leading-[1.75] text-ink">{text}</p>
+                            </div>
                           );
                         }
                         return (

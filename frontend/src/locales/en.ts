@@ -786,6 +786,8 @@ export const en: Translations = {
     legalCguSubtitle: 'The rules governing the use of HEALTH IS PRICELESS and its services.',
     legalHelpTitle: 'Questions about our terms or your data?',
     legalHelpText: 'Our team is happy to answer your questions.',
+    legalCalloutPrivacy: 'Your data is protected',
+    legalCalloutCgu: 'About these terms',
   },
   dashboard: {
     nav: {

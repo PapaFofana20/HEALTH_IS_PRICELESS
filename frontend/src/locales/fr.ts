@@ -790,6 +790,8 @@ export const fr = {
     legalCguSubtitle: 'Les règles qui encadrent l’utilisation de HEALTH IS PRICELESS et de ses services.',
     legalHelpTitle: 'Une question concernant nos conditions ou vos données ?',
     legalHelpText: 'Notre équipe est disponible pour répondre à vos questions.',
+    legalCalloutPrivacy: 'Vos données sont protégées',
+    legalCalloutCgu: 'À propos de ces conditions',
   },
   dashboard: {
     nav: {
