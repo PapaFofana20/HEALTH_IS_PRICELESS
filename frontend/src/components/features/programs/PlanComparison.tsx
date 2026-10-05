@@ -75,7 +75,7 @@ export function PlanComparison() {
         <article className="relative flex flex-col overflow-hidden rounded-2xl border border-edge bg-night-800 p-6 sm:p-8 lg:p-10">
           <div aria-hidden className="pointer-events-none absolute -left-16 -bottom-16 h-48 w-48 rotate-12 pattern-stripes opacity-10" />
           <p className="relative text-[11px] font-extrabold uppercase tracking-[0.24em] text-muted">
-            <span className="text-volt">01</span> — {t.tiers.standard}
+            <span className="text-volt">01</span> — Programme de {t.goals[goal]}
           </p>
           <h3 className="relative mt-3 font-display text-4xl uppercase leading-none sm:text-5xl">{t.plans.standard.name}</h3>
           <p className="relative mt-3 text-muted">{t.plans.standard.tagline}</p>
@@ -99,7 +99,7 @@ export function PlanComparison() {
         <article className="relative flex flex-col overflow-hidden rounded-2xl border-2 border-volt bg-night-700 p-6 sm:p-8 lg:p-10">
           <div aria-hidden className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rotate-12 pattern-stripes opacity-[0.16]" />
 
-          <p className="relative text-[11px] font-extrabold uppercase tracking-[0.24em] text-volt">02 — {t.tiers.premium}</p>
+          <p className="relative text-[11px] font-extrabold uppercase tracking-[0.24em] text-volt">02 — Programme de {t.goals[goal]}</p>
           <h3 className="relative mt-3 flex items-center gap-3 font-display text-4xl uppercase leading-none sm:text-5xl">
             {t.plans.premium.name}
             <Crown className="h-6 w-6 text-volt sm:h-7 sm:w-7" aria-hidden />
