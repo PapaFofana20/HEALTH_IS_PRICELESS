@@ -32,7 +32,7 @@ export function GoalSelector() {
                     src={image}
                     alt={content.imageAlt}
                     loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                   <div aria-hidden className="absolute inset-0 bg-linear-to-t from-night-900 via-night-900/70 to-night-900/5" />
                   <span aria-hidden className="absolute right-6 top-4 font-display text-7xl leading-none txt-outline opacity-80 sm:right-8 sm:text-8xl">

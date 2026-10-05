@@ -412,7 +412,7 @@ function BmiResultView({ analysis, onReset }: { analysis: BmiAnalysis; onReset: 
   const recKey = analysis.category === 'under' || analysis.category === 'normal' || analysis.category === 'over' ? analysis.category : 'obese';
 
   return (
-    <div className="animate-fade-up motion-reduce:animate-none" aria-live="polite">
+    <div aria-live="polite">
       <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-volt">{t.calc.bmi.analysisDone}</p>
 
       {analysis.isMinor || !analysis.category ? (

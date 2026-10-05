@@ -180,7 +180,7 @@ export default function ProgramDetailPage() {
           </button>
         </h3>
         {open && (
-          <div id={`week-panel-${week}`} className="animate-fade-in border-t border-edge px-5 pb-2">
+          <div id={`week-panel-${week}`} className=" border-t border-edge px-5 pb-2">
             {phase && (
               <p className="pt-4 text-sm text-muted">
                 <span className="font-bold text-ink">{t.programDetail.focus} : </span>
@@ -276,7 +276,7 @@ export default function ProgramDetailPage() {
             </Tag>
             <Tag tone="light">{t.levels[program.level]}</Tag>
           </div>
-          <h1 className="mt-5 max-w-4xl animate-fade-up font-display text-5xl uppercase leading-[0.92] tracking-tight sm:text-7xl lg:text-8xl">
+          <h1 className="mt-5 max-w-4xl  font-display text-5xl uppercase leading-[0.92] tracking-tight sm:text-7xl lg:text-8xl">
             {loc(program.name)}
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-ink/80">{loc(program.tagline)}</p>

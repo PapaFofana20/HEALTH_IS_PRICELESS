@@ -1,14 +1,14 @@
-ï»¿import type { Translations } from './fr';
+import type { Translations } from './fr';
 
 /* ==========================================================
-   English â€” mirrors the French structure (type-checked).
+   English — mirrors the French structure (type-checked).
    ========================================================== */
 
 export const en: Translations = {
   brand: {
     name: 'HEALTH IS PRICELESS',
     tagline: 'Train. Eat better. Progress.',
-    homeLabel: 'HEALTH IS PRICELESS â€” back to home',
+    homeLabel: 'HEALTH IS PRICELESS — back to home',
     defaultTitle: 'HEALTH IS PRICELESS',
   },
   common: {
@@ -21,7 +21,7 @@ export const en: Translations = {
     yes: 'Yes',
     no: 'No',
     save: 'Save',
-    loading: 'Loadingâ€¦',
+    loading: 'Loading…',
     all: 'All',
     included: 'Included',
     notIncluded: 'Not included',
@@ -104,8 +104,8 @@ export const en: Translations = {
     statMembers: 'active members',
     statPrograms: 'programs & exercises',
     statRating: 'average rating',
-    todayLabel: 'Todayâ€™s session',
-    todayValue: 'HIIT Express Â· 30 min',
+    todayLabel: 'Today’s session',
+    todayValue: 'HIIT Express · 30 min',
     streakLabel: 'Current streak',
     streakValue: '12 days',
     imageAlt: 'Athlete performing a deadlift in a dark gym',
@@ -113,7 +113,7 @@ export const en: Translations = {
   marquee: ['Training', 'Nutrition', 'Discipline', 'Progress', 'Strength', 'Transformation'],
   goalSection: {
     eyebrow: 'Your goal',
-    title: 'Whatâ€™s your goal?',
+    title: 'What’s your goal?',
     subtitle: 'Two paths, one method: structured sessions, adapted nutrition and clear progress tracking.',
     cta: 'Discover',
     weightLoss: {
@@ -168,7 +168,7 @@ export const en: Translations = {
     title1: 'Start',
     title2: 'now',
     subtitle: 'No membership needed to move forward: calculators, exercises, tips and recipes are open to everyone.',
-    freeTag: 'Free',
+
     bmi: { title: 'BMI calculator', text: 'Quickly see where you stand.', cta: 'Calculate my BMI' },
     calories: { title: 'Calorie needs', text: 'Estimate your daily calories for your goal.', cta: 'Calculate' },
     protein: { title: 'Protein', text: 'Estimate your recommended daily intake.', cta: 'Calculate' },
@@ -181,12 +181,12 @@ export const en: Translations = {
     eyebrow: 'Personalised quiz',
     title1: 'Find your',
     title2: 'program',
-    text: 'Answer 7 quick questions: height, weight, goal, level, availability, location and duration. Weâ€™ll recommend the programs that suit you best.',
+    text: 'Answer 7 quick questions: height, weight, goal, level, availability, location and duration. We’ll recommend the programs that suit you best.',
     steps: ['Height', 'Weight', 'Goal', 'Level', 'Frequency', 'Location', 'Duration'],
     cta: 'Start the quiz',
-    duration: '2 minutes Â· Free Â· no sign-up',
+    duration: '2 minutes · Free · no sign-up',
     previewStep: 'Question 1 / 7',
-    previewQuestion: 'Whatâ€™s your goal?',
+    previewQuestion: 'What’s your goal?',
     previewA: 'Lose weight',
     previewB: 'Build muscle',
   },
@@ -197,7 +197,7 @@ export const en: Translations = {
     prev: 'Previous testimonial',
     next: 'Next testimonial',
     goTo: (n: number) => `Show testimonial ${n}`,
-    summary: '4.8/5 Â· over 1,200 reviews',
+    summary: '4.8/5 · over 1,200 reviews',
     followed: 'Program followed',
   },
   space: {
@@ -206,7 +206,7 @@ export const en: Translations = {
     lockedNote: 'This page is reserved for members who purchased the dedicated program.',
     unlockedNote: 'Your access to this program is active.',
     lockedCta: 'This program is not unlocked on your account yet.',
-    unlockedCta: 'Access confirmed â€” this programâ€™s content is coming soon.',
+    unlockedCta: 'Access confirmed — this program’s content is coming soon.',
     seePricing: 'See pricing',
     createAccount: 'Create account',
     names: {
@@ -263,9 +263,9 @@ export const en: Translations = {
     activity: 'Activity level',
     activityLevels: {
       sedentary: 'Sedentary (little or no exercise)',
-      light: 'Light (1â€“2 sessions / week)',
-      moderate: 'Moderate (3â€“4 sessions / week)',
-      active: 'Active (5â€“6 sessions / week)',
+      light: 'Light (1–2 sessions / week)',
+      moderate: 'Moderate (3–4 sessions / week)',
+      active: 'Active (5–6 sessions / week)',
       athlete: 'Very active (intense daily training)',
     },
     goal: 'Goal',
@@ -336,9 +336,9 @@ export const en: Translations = {
         `For your height of ${height} m, the range for a BMI of 18.5 to 24.9 is ${min} to ${max} kg.`,
       rangeNote: 'This range mathematically matches BMI values generally classed as normal in adults. It is neither an ideal weight nor a prescription.',
       position: {
-        below: 'Your current weight is below the range matching BMI thresholds 18.5â€“24.9 for your height.',
-        inside: 'Your current weight is within the range matching BMI thresholds 18.5â€“24.9 for your height.',
-        above: 'Your current weight is above the range matching BMI thresholds 18.5â€“24.9 for your height.',
+        below: 'Your current weight is below the range matching BMI thresholds 18.5–24.9 for your height.',
+        inside: 'Your current weight is within the range matching BMI thresholds 18.5–24.9 for your height.',
+        above: 'Your current weight is above the range matching BMI thresholds 18.5–24.9 for your height.',
       },
       goalTitle: 'Against your goal',
       goalCurrent: 'Current weight',
@@ -358,7 +358,7 @@ export const en: Translations = {
       finalTitle: 'Your summary',
       finalHeight: 'Height',
       finalWeight: 'Weight',
-      finalRange: 'Range for a BMI of 18.5â€“24.9',
+      finalRange: 'Range for a BMI of 18.5–24.9',
       finalNote: 'These results are indicative and do not replace the advice of a healthcare professional.',
       minorTitle: 'Interpretation for your age',
       minorText: 'Your result needs an interpretation suited to your age and sex. Adult BMI categories do not apply directly to children and teenagers. Talk about it with a healthcare professional or a trusted adult.',
@@ -374,7 +374,7 @@ export const en: Translations = {
         ageRequired: 'Please enter your age.',
         ageInvalid: 'Age must be valid (5 to 100 years).',
       },
-      resultUnit: 'kg/mÂ²',
+      resultUnit: 'kg/m²',
       analysisDone: 'Your analysis is complete.',
       gaugeTitle: 'Your position on the scale',
       gaugeClasses: {
@@ -474,7 +474,7 @@ export const en: Translations = {
     quizCta: 'Take the quiz',
     filtersLabel: 'Filter programs',
     searchLabel: 'Search programs',
-    searchPlaceholder: 'Search (HIIT, massâ€¦)',
+    searchPlaceholder: 'Search (HIIT, mass…)',
     sortLabel: 'Sort by',
     sort: {
       popular: 'Popularity',
@@ -505,7 +505,7 @@ export const en: Translations = {
     day: (n: number) => `Day ${n}`,
     sessionsTitle: 'Included sessions',
     exercise: 'Exercise',
-    setsReps: 'Sets Ã— reps',
+    setsReps: 'Sets × reps',
     rest: 'Rest',
     facts: { duration: 'Duration', level: 'Level', frequency: 'Frequency', sessionLength: 'Session', location: 'Location' },
     lockedTitle: 'For Premium members',
@@ -513,14 +513,14 @@ export const en: Translations = {
     lockedWeeks: (n: number) => `${n} more weeks locked`,
     access: 'Program access',
     accessYours: 'You have access to this program.',
-    accessGuest: 'Free preview â€” create an account to track your progress.',
+    accessGuest: 'Free preview — create an account to track your progress.',
     accessStandard: 'Included in the Standard plan.',
     accessPremium: 'Included in the Premium plan.',
     enrolled: 'members enrolled',
     related: 'Similar programs',
     notFoundTitle: 'Program not found',
-    notFoundText: 'This program doesnâ€™t exist or has been moved.',
-    startedNotice: 'Program added to your space. Letâ€™s go!',
+    notFoundText: 'This program doesn’t exist or has been moved.',
+    startedNotice: 'Program added to your space. Let’s go!',
     restDay: 'Active recovery or full rest',
     focus: 'Focus',
   },
@@ -531,7 +531,7 @@ export const en: Translations = {
     progressLabel: 'Quiz progress',
     questions: {
       goal: {
-        title: 'Whatâ€™s your goal?',
+        title: 'What’s your goal?',
         subtitle: 'Pick your current priority.',
         options: {
           'weight-loss': { label: 'Lose weight', desc: 'Burn fat and gain energy' },
@@ -539,12 +539,12 @@ export const en: Translations = {
         },
       },
       level: {
-        title: 'Whatâ€™s your level?',
+        title: 'What’s your level?',
         subtitle: 'Be honest: we adapt the progression.',
         options: {
-          beginner: { label: 'Beginner', desc: 'Iâ€™m new or returning after a long break' },
-          intermediate: { label: 'Intermediate', desc: 'Iâ€™ve trained regularly for a few months' },
-          advanced: { label: 'Advanced', desc: 'Iâ€™ve trained seriously for 2+ years' },
+          beginner: { label: 'Beginner', desc: 'I’m new or returning after a long break' },
+          intermediate: { label: 'Intermediate', desc: 'I’ve trained regularly for a few months' },
+          advanced: { label: 'Advanced', desc: 'I’ve trained seriously for 2+ years' },
         },
       },
       sessions: {
@@ -608,7 +608,7 @@ export const en: Translations = {
     subtitle: 'Technique, tips and mistakes to avoid. 100% Free, no sign-up.',
     freeBadge: '100% Free',
     searchLabel: 'Search exercises',
-    searchPlaceholder: 'Search an exerciseâ€¦',
+    searchPlaceholder: 'Search an exercise…',
     filters: { muscle: 'Muscle group', level: 'Difficulty', equipment: 'Equipment', type: 'Training type', all: 'All' },
     count: (n: number) => `${n} exercise${n > 1 ? 's' : ''}`,
     viewInstructions: 'View instructions',
@@ -675,7 +675,7 @@ export const en: Translations = {
     by: 'By',
     back: 'All articles',
     notFoundTitle: 'Article not found',
-    notFoundText: 'This article doesnâ€™t exist or has been moved.',
+    notFoundText: 'This article doesn’t exist or has been moved.',
     disclaimer: 'Informational content. For any health question, consult a professional.',
     emptyTitle: 'No article in this category',
     errorTitle: 'Unable to load articles',
@@ -692,7 +692,7 @@ export const en: Translations = {
     registerSubtitle: 'Free, in 30 seconds. You can pick a plan later.',
     firstName: 'First name',
     email: 'Email',
-    placeholders: { firstName: 'E.g. Awa', email: 'E.g. awa@example.com', password: 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢' },
+    placeholders: { firstName: 'E.g. Awa', email: 'E.g. awa@example.com', password: '••••••••' },
     password: 'Password',
     showPassword: 'Show password',
     hidePassword: 'Hide password',
@@ -721,7 +721,7 @@ export const en: Translations = {
     sideText: 'Programs, tracking and nutrition in one place.',
     sidePoints: ['Programs tailored to your goal', 'Session and weight tracking', 'Free tools and content'],
     terms: 'By creating an account, you accept our Terms and Privacy Policy.',
-    loggedInTitle: 'Youâ€™re logged in',
+    loggedInTitle: 'You’re logged in',
     loggedInText: (name: string) => `Logged in as ${name}.`,
     goDashboard: 'Go to my space',
   },
@@ -738,7 +738,7 @@ export const en: Translations = {
     faqTitle: 'Frequently asked questions',
     faq: [
       { q: 'Can I cancel anytime?', a: 'Yes. Plans have no commitment: you can switch or cancel from your settings in one click.' },
-      { q: 'Whatâ€™s the difference between Standard and Premium?', a: 'Standard gives access to essential programs and basic tracking. Premium unlocks every program, meal plans, advanced statistics and personalised recommendations.' },
+      { q: 'What’s the difference between Standard and Premium?', a: 'Standard gives access to essential programs and basic tracking. Premium unlocks every program, meal plans, advanced statistics and personalised recommendations.' },
       { q: 'Do the Free tools stay available?', a: 'Always. Calculators, the exercise library, articles and a selection of recipes are available without a membership.' },
       { q: 'Do I need equipment?', a: 'No. Several programs can be done at home with bodyweight or dumbbells. Required equipment is listed on every program.' },
     ],
@@ -754,7 +754,7 @@ export const en: Translations = {
     missionEyebrow: 'Our mission',
     missionTitle: 'Clear methods, measurable progress',
     missionText:
-      'We design realistic programs built on proven training principles: progression, consistency and recovery. No miracle promises, no extreme diets â€” a framework that helps you move forward week after week.',
+      'We design realistic programs built on proven training principles: progression, consistency and recovery. No miracle promises, no extreme diets — a framework that helps you move forward week after week.',
     values: [
       { title: 'Progression', text: 'Every program increases difficulty step by step, so you progress without getting hurt.' },
       { title: 'Transparency', text: 'Detailed sessions, measurable targets and explanations for every exercise.' },
@@ -773,7 +773,7 @@ export const en: Translations = {
     faqTitle: 'Frequently asked questions',
     faq: [
       { q: 'What is HEALTH IS PRICELESS?', a: 'A fitness platform offering structured training programs, nutrition tools, an exercise library and progress tracking, all accessible from the web.' },
-      { q: 'Is it suitable if Iâ€™m a complete beginner?', a: 'Yes. Take the quiz for a personalized recommendation, or start with beginner programs such as Fat Burn Starter and Mass Foundations.' },
+      { q: 'Is it suitable if I’m a complete beginner?', a: 'Yes. Take the quiz for a personalized recommendation, or start with beginner programs such as Fat Burn Starter and Mass Foundations.' },
       { q: 'How many sessions per week should I do?', a: 'Most programs plan 3 to 5 sessions per week. Each session lists its duration and level to help you plan ahead.' },
       { q: 'Do I need equipment to follow the programs?', a: 'Not necessarily. Many sessions use bodyweight or basic gear (dumbbells, bands). Each program specifies the equipment needed.' },
       { q: 'Can I cancel my subscription at any time?', a: 'Yes. Standard and Premium plans have no commitment and can be cancelled anytime from your account settings, in a few clicks.' },
@@ -820,7 +820,7 @@ export const en: Translations = {
     logout: 'Log out',
     logoutConfirmTitle: 'Log out?',
     logoutConfirmText: 'Do you really want to log out?',
-    greeting: (name: string) => `Hi ${name} ðŸ‘‹`,
+    greeting: (name: string) => `Hi ${name} ??`,
     subtitle: 'Ready for your next session?',
     stats: {
       sessions: 'Sessions done',
@@ -890,7 +890,7 @@ export const en: Translations = {
       subtitle: 'Your schedule and progress.',
       progress: 'Progress',
       weekOf: (a: number, b: number) => `Week ${a} of ${b}`,
-      thisWeek: 'This weekâ€™s schedule',
+      thisWeek: 'This week’s schedule',
       sessions: 'Program sessions',
       change: 'Change program',
       details: 'View details',
@@ -912,7 +912,7 @@ export const en: Translations = {
       title: 'Nutrition',
       subtitle: 'Your daily targets, based on your profile.',
       targets: 'Daily targets',
-      mealPlan: 'Todayâ€™s meal plan',
+      mealPlan: 'Today’s meal plan',
       lockedTitle: 'Premium meal plans',
       lockedText: 'Get a meal plan tailored to your needs every week.',
       tools: 'Open calculators',
@@ -985,7 +985,7 @@ export const en: Translations = {
       discover: 'Discover the program',
       start: 'Get started',
       pending: 'Secure payment will be connected in a later step. See you soon!',
-      included: 'Whatâ€™s included',
+      included: 'What’s included',
       objectives: 'Objectives',
       duration: 'Duration',
       standard: {
@@ -993,14 +993,14 @@ export const en: Translations = {
         text: 'A structured program to help you reach your goals with progressive guidance.',
         benefits: ['Structured program', 'Training sessions', 'Nutrition advice', 'Video content', 'Progress tracking'],
         objectives: ['Build healthy habits', 'Progress at your own pace', 'Reach your core goals'],
-        duration: '8 weeks Â· 3 sessions / week',
+        duration: '8 weeks · 3 sessions / week',
       },
       premium: {
         name: 'Premium Program',
         text: 'More complete guidance for people who want to go further in their transformation.',
         benefits: ['Complete program', 'Video sessions', 'Nutrition advice', 'Personal tracking', 'Exclusive content', 'Coach guidance'],
         objectives: ['Accelerate your transformation', 'Enjoy personalised tracking', 'Push past your limits'],
-        duration: '12 weeks Â· 4 sessions / week',
+        duration: '12 weeks · 4 sessions / week',
       },
     },
     programs: {
@@ -1045,7 +1045,7 @@ export const en: Translations = {
     latestTitle: 'Latest orders',
     revenue: {
       title: 'Collected revenue',
-      subtitle: 'Paid orders only â€” never an estimate.',
+      subtitle: 'Paid orders only — never an estimate.',
       periods: { month: 'This month', quarter: 'Quarter', year: 'This year', all: 'All time' },
       transactions: 'Transactions',
       avgBasket: 'Average basket',
@@ -1100,7 +1100,7 @@ export const en: Translations = {
       resetDone: 'Program restored to the original version.',
       reset: 'Restore original',
       confirmReset: 'Confirm?',
-      saving: 'Savingâ€¦',
+      saving: 'Saving…',
       invalid: 'Invalid fields: name required (FR and EN) and numbers out of range.',
       saveError: 'Save failed. Check that the 0003_programs.sql migration has been run in Supabase.',
       resetError: 'Restore failed: the programs table is missing in Supabase.',
@@ -1123,7 +1123,7 @@ export const en: Translations = {
         weeks: 'Duration (weeks)',
         perWeek: 'Sessions / week',
         minutes: 'Minutes / session',
-        rating: 'Rating (0â€“5)',
+        rating: 'Rating (0–5)',
         image: 'Image (URL)',
         coach: 'Coach',
         visible: 'Visible to members',
@@ -1141,7 +1141,7 @@ export const en: Translations = {
     errorTitle: 'Something went wrong',
     errorText: 'Unable to load the content. Please try again in a moment.',
     notFoundTitle: 'Page not found',
-    notFoundText: 'The page youâ€™re looking for doesnâ€™t exist or has been moved.',
+    notFoundText: 'The page you’re looking for doesn’t exist or has been moved.',
     backHome: 'Back to home',
   },
 };

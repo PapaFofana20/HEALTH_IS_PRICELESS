@@ -24,8 +24,8 @@ export function Hero() {
       <div className={cn(container, 'grid items-center gap-12 pb-14 lg:grid-cols-12 lg:items-center lg:gap-6 lg:pb-0')}>
         {/* Copy — centered on mobile, left-aligned from lg */}
         <div className="flex flex-col items-center text-center lg:col-span-6 lg:items-start lg:text-left">
-          <Eyebrow className="animate-fade-up lg:text-sm">{t.hero.eyebrow}</Eyebrow>
-          <h1 className="mt-5 animate-fade-up font-display text-[4.5rem] uppercase leading-[0.88] tracking-tight [animation-delay:80ms] min-[360px]:text-[5rem] sm:text-[5.4rem] lg:mt-4 lg:text-[clamp(3rem,17svh,10rem)]">
+          <Eyebrow className=" lg:text-sm">{t.hero.eyebrow}</Eyebrow>
+          <h1 className="mt-5  font-display text-[4.5rem] uppercase leading-[0.88] tracking-tight min-[360px]:text-[5rem] sm:text-[5.4rem] lg:mt-4 lg:text-[clamp(3rem,17svh,10rem)]">
             <span className="block">{t.hero.line1}</span>{' '}
             <span className="block">
               {t.hero.line2} <span className="text-volt">{t.hero.line2Accent}</span>
@@ -33,7 +33,7 @@ export function Hero() {
             <span className="block txt-outline">{t.hero.line3}</span>{' '}
             <span className="block">{t.hero.line4}</span>
           </h1>
-          <div className="mt-9 flex w-full animate-fade-up flex-col items-center gap-3 [animation-delay:220ms] sm:w-auto sm:flex-row sm:justify-center lg:mt-7 lg:justify-start">
+          <div className="mt-9 flex w-full  flex-col items-center gap-3 sm:w-auto sm:flex-row sm:justify-center lg:mt-7 lg:justify-start">
             <ButtonLink to="/quiz" size="lg" iconRight={<ArrowRight />}>
               {t.hero.ctaPrimary}
             </ButtonLink>
@@ -41,7 +41,7 @@ export function Hero() {
               {t.hero.ctaSecondary}
             </ButtonLink>
           </div>
-          <dl className="mt-12 grid w-full max-w-xl animate-fade-up grid-cols-3 divide-x divide-edge border-y border-edge text-center [animation-delay:280ms] lg:mt-8 lg:max-w-2xl lg:text-left">
+          <dl className="mt-12 grid w-full max-w-xl  grid-cols-3 divide-x divide-edge border-y border-edge text-center lg:mt-8 lg:max-w-2xl lg:text-left">
             {stats.map((stat) => (
               <div key={stat.label} className="flex flex-col-reverse items-center px-3 py-4 first:pl-0 sm:px-5 lg:items-start lg:py-3.5">
                 <dt className="mt-1.5 text-[10px] font-bold uppercase leading-snug tracking-[0.14em] text-muted sm:text-[11px] lg:text-xs">{stat.label}</dt>
@@ -70,7 +70,7 @@ export function Hero() {
             <div aria-hidden className="absolute left-[9%] top-[10%] h-[76%] w-[74%] -skew-x-6 rounded-sm border-2 border-volt/80 lg:left-[6%] lg:top-[9%] lg:h-[80%] lg:w-[86%]" />
 
             {/* Streak card */}
-            <div className="absolute right-0 top-[6%] animate-fade-up rounded-lg border border-edge bg-night-800/90 p-3.5 shadow-2xl shadow-black/40 backdrop-blur-md [animation-delay:450ms] sm:-right-3 lg:right-2">
+            <div className="absolute right-0 top-[6%]  rounded-lg border border-edge bg-night-800/90 p-3.5 shadow-2xl shadow-black/40 backdrop-blur-md sm:-right-3 lg:right-2">
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted">{t.hero.streakLabel}</p>
               <p className="mt-0.5 font-display text-2xl uppercase text-volt lg:text-[1.75rem]">{t.hero.streakValue}</p>
               <div aria-hidden className="mt-2 flex gap-1">
@@ -81,7 +81,7 @@ export function Hero() {
             </div>
 
             {/* Today's session card */}
-            <div className="absolute -left-1 bottom-[21%] animate-float sm:-left-8 lg:-left-4">
+            <div className="absolute -left-1 bottom-[21%]  sm:-left-8 lg:-left-4">
               <div className="flex items-center gap-3 rounded-lg border border-edge bg-night-800/90 p-3.5 pr-5 shadow-2xl shadow-black/40 backdrop-blur-md">
                 <span className="grid h-11 w-11 place-items-center rounded-md bg-volt text-night-900 lg:h-12 lg:w-12">
                   <Flame className="h-5 w-5 lg:h-6 lg:w-6" aria-hidden />
@@ -103,7 +103,7 @@ export function Hero() {
 function MarqueeTrack({ items, reverse = false }: { items: string[]; reverse?: boolean }) {
   const row = [...items, ...items, ...items];
   return (
-    <div className={cn('flex w-max animate-marquee', reverse && '[animation-direction:reverse]')}>
+    <div className={cn('flex w-max ', reverse && '')}>
       {[0, 1].map((copy) => (
         <ul key={copy} aria-hidden className="flex shrink-0 items-center">
           {row.map((item, index) => (

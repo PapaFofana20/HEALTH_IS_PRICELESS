@@ -7,7 +7,6 @@ import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { bmiGaugePosition } from '../../../utils/fitness';
 import { media } from '../../../data/media';
-import { Tag } from '../../ui/Badge';
 import { Button } from '../../ui/Button';
 import { Modal } from '../../ui/Modal';
 import { Reveal } from '../../ui/Reveal';
@@ -28,18 +27,16 @@ interface ToolCardProps {
   icon: LucideIcon;
   title: string;
   text: string;
-  freeTag: string;
   image: string;
   action: ReactNode;
 }
 
-function ToolCard({ icon, title, text, freeTag, image, action }: ToolCardProps) {
+function ToolCard({ icon, title, text, image, action }: ToolCardProps) {
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-edge bg-night-800 transition-colors duration-300 hover:border-volt/50">
       <div className="relative aspect-[16/9] overflow-hidden">
         <img src={image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
         <div aria-hidden className="absolute inset-0 bg-linear-to-t from-night-800 via-night-800/20 to-transparent" />
-        <Tag tone="volt" className="absolute right-3 top-3">{freeTag}</Tag>
       </div>
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-center gap-3">
@@ -108,7 +105,6 @@ export function FreeTools() {
               <div className="relative">
                 <div className="flex items-center justify-between">
                   <IconTile icon={Scale} />
-                  <Tag tone="volt">{t.freeTools.freeTag}</Tag>
                 </div>
                 <h3 className="mt-5 font-display text-3xl uppercase leading-none">{t.freeTools.bmi.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{t.freeTools.bmi.text}</p>
@@ -142,7 +138,6 @@ export function FreeTools() {
               icon={Flame}
               title={t.freeTools.calories.title}
               text={t.freeTools.calories.text}
-              freeTag={t.freeTools.freeTag}
               image={media.recipes.chickenBowl}
               action={
                 <Button variant="outline" size="sm" onClick={() => setTool('calories')} iconRight={<ArrowRight />}>
@@ -157,7 +152,6 @@ export function FreeTools() {
               icon={Beef}
               title={t.freeTools.protein.title}
               text={t.freeTools.protein.text}
-              freeTag={t.freeTools.freeTag}
               image={media.recipes.shake}
               action={
                 <Button variant="outline" size="sm" onClick={() => setTool('protein')} iconRight={<ArrowRight />}>

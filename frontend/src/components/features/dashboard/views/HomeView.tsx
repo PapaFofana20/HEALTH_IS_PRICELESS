@@ -23,10 +23,10 @@ export function HomeView({ user, program }: HomeViewProps) {
       <header className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
         <div className="min-w-0 max-w-2xl">
           <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted">{today}</p>
-          <h1 className="mt-3 animate-fade-up font-display text-4xl uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl">
+          <h1 className="mt-3  font-display text-4xl uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl">
             {t.dashboard.greeting(user.firstName)}
           </h1>
-          <p className="mt-3 max-w-xl animate-fade-up text-sm leading-relaxed text-muted sm:text-base [animation-delay:80ms]">{t.dashboard.home.question}</p>
+          <p className="mt-3 max-w-xl  text-sm leading-relaxed text-muted sm:text-base">{t.dashboard.home.question}</p>
         </div>
         <div className="shrink-0">
           <TierPill />

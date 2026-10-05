@@ -190,7 +190,7 @@ export default function NutritionPage() {
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
-            <ol key={mealGoal} className="grid animate-fade-up gap-4 sm:grid-cols-2 lg:col-span-2">
+            <ol key={mealGoal} className="grid  gap-4 sm:grid-cols-2 lg:col-span-2">
               {planItems.map(({ item, recipe }) => (
                 <li key={item.recipeId}>
                   <button

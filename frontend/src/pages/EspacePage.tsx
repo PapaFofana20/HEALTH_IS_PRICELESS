@@ -53,7 +53,7 @@ export default function EspacePage() {
         </Reveal>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-12">
-          <figure className="flex animate-fade-up flex-col justify-between border-l-4 border-night-900 pl-6 sm:pl-10 lg:col-span-7">
+          <figure className="flex  flex-col justify-between border-l-4 border-night-900 pl-6 sm:pl-10 lg:col-span-7">
             <div>
               <span className="grid h-12 w-12 place-items-center rounded-md bg-night-900 text-volt">
                 <Quote className="h-5 w-5" aria-hidden />
@@ -68,7 +68,7 @@ export default function EspacePage() {
             </figcaption>
           </figure>
 
-          <figure className="relative flex animate-fade-up flex-col justify-between overflow-hidden rounded-2xl bg-volt p-7 text-night-900 sm:p-9 lg:col-span-5">
+          <figure className="relative flex  flex-col justify-between overflow-hidden rounded-2xl bg-volt p-7 text-night-900 sm:p-9 lg:col-span-5">
             <div aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rotate-12 pattern-stripes-dark opacity-15" />
             <div className="relative">
               <span className="grid h-12 w-12 place-items-center rounded-md bg-night-900 text-volt">

@@ -11,7 +11,7 @@ export function GuestScreen() {
   return (
     <section className="relative isolate flex min-h-screen min-w-0 items-center justify-center overflow-hidden bg-night-900 px-4 py-16 sm:px-6 sm:py-20">
       <div aria-hidden className="absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
-      <div className="w-full max-w-lg animate-fade-up rounded-2xl border border-edge/70 bg-night-800/70 p-8 text-center shadow-2xl shadow-black/40 sm:p-12">
+      <div className="w-full max-w-lg  rounded-2xl border border-edge/70 bg-night-800/70 p-8 text-center shadow-2xl shadow-black/40 sm:p-12">
         <div className="flex justify-center">
           <Logo />
         </div>

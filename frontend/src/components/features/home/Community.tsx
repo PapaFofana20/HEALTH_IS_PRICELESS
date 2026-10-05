@@ -27,7 +27,7 @@ export function Newsletter() {
   };
 
   return (
-    <section aria-labelledby="newsletter-title" className="bg-night-900 pb-20 lg:pb-28">
+    <section aria-labelledby="newsletter-title" className="bg-night-900 pb-20 pt-16 lg:pb-28 lg:pt-20">
       <div className={container}>
         <Reveal>
           <div className="relative overflow-hidden rounded-3xl bg-volt px-6 py-12 text-night-900 sm:px-10 lg:px-16 lg:py-16">
@@ -75,7 +75,7 @@ export function Newsletter() {
                           )}
                         />
                       </div>
-                      <Button type="submit" variant="dark" size="lg" disabled={status === 'loading'} icon={status === 'loading' ? <LoaderCircle className="animate-spin" /> : undefined}>
+                      <Button type="submit" variant="dark" size="lg" disabled={status === 'loading'} icon={status === 'loading' ? <LoaderCircle className="" /> : undefined}>
                         {t.newsletter.cta}
                       </Button>
                     </div>

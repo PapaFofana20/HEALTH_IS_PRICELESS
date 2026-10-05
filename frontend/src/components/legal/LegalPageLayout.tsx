@@ -75,19 +75,19 @@ export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
           <div className="flex items-center gap-4">
             <span
               aria-hidden
-              className="grid h-14 w-14 shrink-0 animate-fade-up place-items-center rounded-2xl border border-edge/70 bg-night-800 text-volt"
+              className="grid h-14 w-14 shrink-0  place-items-center rounded-2xl border border-edge/70 bg-night-800 text-volt"
             >
               <HeroIcon className="h-7 w-7" />
             </span>
-            <Eyebrow className="animate-fade-up [animation-delay:60ms]">{t.about.legalEyebrow}</Eyebrow>
+            <Eyebrow className="">{t.about.legalEyebrow}</Eyebrow>
           </div>
-          <h1 className="mt-6 max-w-3xl animate-fade-up font-display text-4xl uppercase leading-[0.95] tracking-tight [animation-delay:120ms] sm:text-5xl lg:text-6xl">
+          <h1 className="mt-6 max-w-3xl  font-display text-4xl uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl">
             {loc(doc.title)}
           </h1>
-          <p className="mt-4 max-w-2xl animate-fade-up text-base leading-relaxed text-muted [animation-delay:180ms] sm:text-lg">
+          <p className="mt-4 max-w-2xl  text-base leading-relaxed text-muted sm:text-lg">
             {subtitle}
           </p>
-          <p className="mt-5 inline-flex animate-fade-up items-center gap-2 rounded-full border border-edge/70 bg-night-800/80 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-muted [animation-delay:240ms]">
+          <p className="mt-5 inline-flex  items-center gap-2 rounded-full border border-edge/70 bg-night-800/80 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-muted">
             <CalendarDays className="h-3.5 w-3.5 text-volt" aria-hidden />
             {loc(doc.updated)}
           </p>

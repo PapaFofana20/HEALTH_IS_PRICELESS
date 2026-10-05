@@ -1,4 +1,4 @@
-﻿import { useEffect, useId, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
@@ -72,7 +72,7 @@ export function Modal({ open, onClose, title, description, children, size = 'lg'
 
   return createPortal(
     <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-6">
-      <div aria-hidden className="absolute inset-0 animate-fade-in bg-night-950/80 backdrop-blur-sm" onClick={onClose} />
+      <div aria-hidden className="absolute inset-0  bg-night-950/80 backdrop-blur-sm" onClick={onClose} />
       <div
         ref={panelRef}
         role="dialog"
@@ -81,7 +81,7 @@ export function Modal({ open, onClose, title, description, children, size = 'lg'
         aria-describedby={description ? descId : undefined}
         tabIndex={-1}
         className={cn(
-          'relative z-10 flex max-h-[92vh] w-full animate-fade-up flex-col overflow-hidden rounded-t-2xl border border-edge bg-night-800 shadow-2xl shadow-black/50 focus:outline-none sm:rounded-xl',
+          'relative z-10 flex max-h-[92vh] w-full  flex-col overflow-hidden rounded-t-2xl border border-edge bg-night-800 shadow-2xl shadow-black/50 focus:outline-none sm:rounded-xl',
           sizes[size],
         )}
       >

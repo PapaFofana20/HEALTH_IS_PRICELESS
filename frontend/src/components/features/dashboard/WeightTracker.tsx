@@ -102,7 +102,7 @@ export function WeightTracker({ compact = false }: { compact?: boolean }) {
           id="weight-form"
           onSubmit={submit}
           noValidate
-          className="mt-6 grid animate-fade-up gap-4 rounded-2xl border border-edge/70 bg-night-900/70 p-5 sm:grid-cols-[1fr_1fr_auto] sm:items-end sm:gap-5 sm:p-6"
+          className="mt-6 grid  gap-4 rounded-2xl border border-edge/70 bg-night-900/70 p-5 sm:grid-cols-[1fr_1fr_auto] sm:items-end sm:gap-5 sm:p-6"
         >
           <div className="min-w-0 space-y-0">
             <label htmlFor="weight-value" className={labelClass}>
@@ -136,7 +136,7 @@ export function WeightTracker({ compact = false }: { compact?: boolean }) {
               className="mt-3 h-12 w-full rounded-xl border border-edge bg-night-800 px-4 font-semibold text-ink transition-colors focus:border-volt focus:outline-none"
             />
           </div>
-          <Button type="submit" disabled={saving} icon={saving ? <LoaderCircle className="animate-spin" /> : undefined} className="h-12 px-6">
+          <Button type="submit" disabled={saving} icon={saving ? <LoaderCircle className="" /> : undefined} className="h-12 px-6">
             {t.common.save}
           </Button>
           {formError && (

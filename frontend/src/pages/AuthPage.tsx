@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowRight, Check, Crown, Dumbbell, Eye, EyeOff, Flame, LoaderCircle, Lock, LogOut, Mail, User as UserIcon } from 'lucide-react';
@@ -144,7 +144,7 @@ export default function AuthPage() {
     return (
       <section className="relative isolate flex min-h-[85vh] items-center justify-center px-4 pb-20 pt-32">
         <div aria-hidden className="absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
-        <div className="w-full max-w-md animate-fade-up rounded-2xl border border-edge bg-night-800 p-8 text-center">
+        <div className="w-full max-w-md  rounded-2xl border border-edge bg-night-800 p-8 text-center">
           <img src={user.avatar} alt="" className="mx-auto h-16 w-16 rounded-full object-cover ring-2 ring-volt" />
           <h1 className="mt-5 font-display text-4xl uppercase">{t.auth.loggedInTitle}</h1>
           <p className="mt-2 text-muted">{t.auth.loggedInText(user.firstName)}</p>
@@ -204,7 +204,7 @@ export default function AuthPage() {
               ))}
             </div>
 
-            <h1 key={mode} className="mt-10 animate-fade-up font-display text-5xl uppercase leading-none">
+            <h1 key={mode} className="mt-10  font-display text-5xl uppercase leading-none">
               {mode === 'login' ? t.auth.loginTitle : t.auth.registerTitle}
             </h1>
             <p className="mt-3 text-muted">{mode === 'login' ? t.auth.loginSubtitle : t.auth.registerSubtitle}</p>
@@ -354,7 +354,7 @@ export default function AuthPage() {
                 </p>
               )}
 
-              <Button type="submit" size="lg" fullWidth disabled={submitting} icon={submitting ? <LoaderCircle className="animate-spin" /> : undefined}>
+              <Button type="submit" size="lg" fullWidth disabled={submitting} icon={submitting ? <LoaderCircle className="" /> : undefined}>
                 {mode === 'login' ? t.auth.submitLogin : t.auth.submitRegister}
               </Button>
             </form>

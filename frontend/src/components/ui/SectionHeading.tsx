@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 
 /** Shared page container width + gutters. */
@@ -99,14 +99,14 @@ export function PageHero({ eyebrow, title, subtitle, image, children, className 
       <div aria-hidden className="pointer-events-none absolute -right-12 top-28 -z-10 hidden h-72 w-72 rotate-12 border border-volt/20 lg:block" />
       <div aria-hidden className="pointer-events-none absolute right-24 top-44 -z-10 hidden h-40 w-40 rotate-12 pattern-stripes opacity-20 lg:block" />
       <div className={container}>
-        <Eyebrow className="animate-fade-up">{eyebrow}</Eyebrow>
-        <h1 className="mt-4 max-w-4xl animate-fade-up font-display text-5xl uppercase leading-[0.92] tracking-tight [animation-delay:60ms] sm:text-6xl lg:text-7xl xl:text-8xl">
+        <Eyebrow className="">{eyebrow}</Eyebrow>
+        <h1 className="mt-4 max-w-4xl  font-display text-5xl uppercase leading-[0.92] tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-6 max-w-2xl animate-fade-up text-base leading-relaxed text-muted [animation-delay:120ms] sm:text-lg">{subtitle}</p>
+          <p className="mt-6 max-w-2xl  text-base leading-relaxed text-muted sm:text-lg">{subtitle}</p>
         )}
-        {children && <div className="mt-8 animate-fade-up [animation-delay:180ms]">{children}</div>}
+        {children && <div className="mt-8 ">{children}</div>}
       </div>
     </section>
   );

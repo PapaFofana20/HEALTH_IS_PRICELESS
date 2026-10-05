@@ -1,4 +1,4 @@
-﻿import { Crown, House, Inbox, LoaderCircle, Lock, RefreshCw, TriangleAlert } from 'lucide-react';
+import { Crown, House, Inbox, LoaderCircle, Lock, RefreshCw, TriangleAlert } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -6,7 +6,7 @@ import { Button, ButtonLink } from './Button';
 
 /* ---------- Loading ---------- */
 export function Skeleton({ className }: { className?: string }) {
-  return <div aria-hidden className={cn('animate-pulse rounded-md bg-night-700/80', className)} />;
+  return <div aria-hidden className={cn(' rounded-md bg-night-700/80', className)} />;
 }
 
 export function CardSkeleton() {
@@ -43,7 +43,7 @@ export function Spinner({ className, label }: { className?: string; label?: stri
   const { t } = useLanguage();
   return (
     <span role="status" className={cn('inline-flex items-center gap-2 text-sm text-muted', className)}>
-      <LoaderCircle className="h-4 w-4 animate-spin text-volt" aria-hidden />
+      <LoaderCircle className="h-4 w-4  text-volt" aria-hidden />
       <span>{label ?? t.common.loading}</span>
     </span>
   );

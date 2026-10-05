@@ -154,7 +154,7 @@ export function ArticleDetailPage() {
             <div className="mt-8">
               <Tag tone="volt">{t.articleCategories[article.category]}</Tag>
             </div>
-            <h1 className="mt-4 animate-fade-up font-display text-4xl uppercase leading-[0.95] tracking-tight sm:text-6xl">{loc(article.title)}</h1>
+            <h1 className="mt-4  font-display text-4xl uppercase leading-[0.95] tracking-tight sm:text-6xl">{loc(article.title)}</h1>
             <p className="mt-5 text-lg leading-relaxed text-ink/80">{loc(article.excerpt)}</p>
             <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 text-sm font-semibold text-muted">
               <span>
