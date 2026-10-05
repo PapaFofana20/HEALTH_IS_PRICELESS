@@ -14,14 +14,14 @@ interface StyleOptions {
 }
 
 const base =
-  'group relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-full font-extrabold uppercase tracking-[0.12em] transition-all duration-200 ease-out active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50';
+  'group relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-full font-extrabold uppercase tracking-[0.12em] disabled:pointer-events-none disabled:opacity-50';
 
 const variants: Record<ButtonVariant, string> = {
-  primary: 'bg-volt text-night-900 hover:bg-volt-dark hover:-translate-y-0.5',
-  outline: 'border border-ink/25 text-ink hover:border-volt hover:text-volt',
-  ghost: 'text-ink hover:text-volt',
-  dark: 'bg-night-900 text-ink hover:bg-night-800 focus-visible:outline-night-900',
-  subtle: 'border border-edge bg-night-700 text-ink hover:border-edge-strong hover:bg-night-600',
+  primary: 'bg-volt text-night-900',
+  outline: 'border border-ink/25 text-ink',
+  ghost: 'text-ink',
+  dark: 'bg-night-900 text-ink focus-visible:outline-night-900',
+  subtle: 'border border-edge bg-night-700 text-ink',
 };
 
 const sizes: Record<ButtonSize, string> = {
@@ -46,7 +46,7 @@ function Content({ icon, iconRight, children }: ContentProps) {
       {icon && <span className="shrink-0 [&>svg]:h-4 [&>svg]:w-4">{icon}</span>}
       {children}
       {iconRight && (
-        <span className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 [&>svg]:h-4 [&>svg]:w-4">
+        <span className="shrink-0 [&>svg]:h-4 [&>svg]:w-4">
           {iconRight}
         </span>
       )}

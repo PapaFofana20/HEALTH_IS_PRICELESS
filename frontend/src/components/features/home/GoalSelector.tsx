@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Dumbbell, Flame } from 'lucide-react';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { media } from '../../../data/media';
+import { Reveal } from '../../ui/Reveal';
 import { SectionHeading, container } from '../../ui/SectionHeading';
 import type { Goal } from '../../../types';
 
@@ -16,20 +17,22 @@ export function GoalSelector() {
   return (
     <section aria-labelledby="goal-title" className="relative bg-night-900 pb-20 pt-10 lg:pb-28 lg:pt-16">
       <div className={container}>
-        <SectionHeading id="goal-title" eyebrow={t.goalSection.eyebrow} title={t.goalSection.title} subtitle={t.goalSection.subtitle} />
+        <Reveal>
+          <SectionHeading id="goal-title" eyebrow={t.goalSection.eyebrow} title={t.goalSection.title} subtitle={t.goalSection.subtitle} />
+        </Reveal>
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          {cards.map(({ goal, number, image, content, Icon }) => {
+          {cards.map(({ goal, number, image, content, Icon }, index) => {
             return (
-              <Link
-                key={goal}
-                to={`/programmes?goal=${goal}`}
+              <Reveal key={goal} delay={index * 120} className="h-full">
+                <Link
+                  to={`/programmes?goal=${goal}`}
                   className="group relative flex h-[380px] flex-col justify-end overflow-hidden rounded-2xl border border-edge bg-night-800 p-6 transition-colors duration-300 hover:border-volt/70 sm:h-[440px] sm:p-8 lg:h-[560px] lg:p-10"
                 >
                   <img
                     src={image}
                     alt={content.imageAlt}
                     loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
                   <div aria-hidden className="absolute inset-0 bg-linear-to-t from-night-900 via-night-900/70 to-night-900/5" />
                   <span aria-hidden className="absolute right-6 top-4 font-display text-7xl leading-none txt-outline opacity-80 sm:right-8 sm:text-8xl">
@@ -49,6 +52,7 @@ export function GoalSelector() {
                     </span>
                   </div>
                 </Link>
+              </Reveal>
             );
           })}
         </div>
