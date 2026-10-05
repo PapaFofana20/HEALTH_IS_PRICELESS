@@ -117,12 +117,12 @@ export const en: Translations = {
     subtitle: 'Two paths, one method: structured sessions, adapted nutrition and clear progress tracking.',
     cta: 'Discover',
     weightLoss: {
-      title: 'Weight loss',
+      title: 'Weight loss program',
       text: 'Burn fat, improve your cardio and build lasting habits.',
       imageAlt: 'Woman doing a battle ropes workout in a gym',
     },
     muscleGain: {
-      title: 'Muscle gain',
+      title: 'Muscle gain program',
       text: 'Build strength and grow muscle mass efficiently.',
       imageAlt: 'Man getting ready to lift a barbell in a dark gym',
     },

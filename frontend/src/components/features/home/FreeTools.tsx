@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import type { ReactNode } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
-import { bmiGaugePosition } from '../../../utils/fitness';
+import { bmiGaugePosition, calculateCalories, calculateProtein } from '../../../utils/fitness';
 import { media, unsplash } from '../../../data/media';
 import { Button } from '../../ui/Button';
 import { Modal } from '../../ui/Modal';
@@ -14,26 +13,49 @@ import { BmiCalculator, CalorieCalculator, ProteinCalculator } from '../nutritio
 
 type ToolKey = 'bmi' | 'calories' | 'protein';
 
-interface ToolCardProps {
-  title: string;
-  text: string;
-  image: string;
-  action: ReactNode;
+function CaloriePreview() {
+  const { t, fmtNumber } = useLanguage();
+  const result = calculateCalories({ sex: 'male', age: 30, heightCm: 175, weightKg: 75, activity: 'moderate', goal: 'lose' });
+  const proteinPct = (result.protein * 4 / result.target) * 100;
+  const carbsPct = (result.carbs * 4 / result.target) * 100;
+  const fatPct = (result.fat * 9 / result.target) * 100;
+  return (
+    <div className="relative mt-6">
+      <div aria-hidden className="flex items-end justify-between">
+        <span className="font-display text-5xl leading-none text-volt">{fmtNumber(result.target)}</span>
+        <span className="text-[11px] font-extrabold uppercase tracking-wider text-muted">{t.calc.calories.perDay}</span>
+      </div>
+      <div aria-hidden className="relative mt-3 h-2.5 overflow-hidden rounded-full bg-night-700">
+        <span className="h-full bg-volt" style={{ width: `${proteinPct}%` }} />
+        <span className="h-full bg-sky-400" style={{ width: `${carbsPct}%` }} />
+        <span className="h-full bg-amber-400" style={{ width: `${fatPct}%` }} />
+      </div>
+      <div aria-hidden className="mt-2 flex justify-between text-[10px] font-bold uppercase tracking-wide text-muted">
+        <span>{t.calc.calories.protein}</span>
+        <span>{t.calc.calories.carbs}</span>
+        <span>{t.calc.calories.fat}</span>
+      </div>
+    </div>
+  );
 }
 
-function ToolCard({ title, text, image, action }: ToolCardProps) {
+function ProteinPreview() {
+  const { t, fmtNumber } = useLanguage();
+  const result = calculateProtein(75, 'gain', 'moderate');
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-edge bg-night-800 transition-colors duration-300 hover:border-volt/50">
-      <div className="relative aspect-[16/9] overflow-hidden">
-        <img src={image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
-        <div aria-hidden className="absolute inset-0 bg-linear-to-t from-night-800 via-night-800/20 to-transparent" />
+    <div className="relative mt-6">
+      <div aria-hidden className="flex items-end justify-between">
+        <span className="font-display text-5xl leading-none text-volt">{fmtNumber(result.daily)}</span>
+        <span className="text-[11px] font-extrabold uppercase tracking-wider text-muted">g</span>
       </div>
-      <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-display text-2xl uppercase leading-none">{title}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-muted">{text}</p>
-        <div className="mt-auto pt-6">{action}</div>
+      <div aria-hidden className="relative mt-3 h-2.5 overflow-hidden rounded-full bg-night-700">
+        <span className="h-full bg-volt" style={{ width: '100%' }} />
       </div>
-    </article>
+      <div aria-hidden className="mt-2 flex justify-between text-[10px] font-bold uppercase tracking-wide text-muted">
+        <span>{fmtNumber(result.min)} g</span>
+        <span>{fmtNumber(result.max)} g</span>
+      </div>
+    </div>
   );
 }
 
@@ -115,27 +137,35 @@ export function FreeTools() {
           </Reveal>
 
           <Reveal className="h-full sm:col-span-2 lg:col-span-2" delay={80}>
-            <ToolCard
-              title={t.freeTools.calories.title}
-              text={t.freeTools.calories.text}              image={unsplash('photo-1744444202869-54debf97b285')}
-              action={
-                <Button variant="outline" size="sm" onClick={() => setTool('calories')} iconRight={<ArrowRight />}>
+            <article className="relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-edge bg-night-800 p-6 transition-colors duration-300 hover:border-volt/50">
+              <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rotate-12 pattern-stripes opacity-10" />
+              <div className="relative">
+                <h3 className="font-display text-3xl uppercase leading-none">{t.freeTools.calories.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{t.freeTools.calories.text}</p>
+              </div>
+              <div className="relative mt-6">
+                <CaloriePreview />
+                <Button variant="outline" size="sm" className="mt-6" onClick={() => setTool('calories')} iconRight={<ArrowRight />}>
                   {t.freeTools.calories.cta}
                 </Button>
-              }
-            />
+              </div>
+            </article>
           </Reveal>
 
           <Reveal className="h-full sm:col-span-2 lg:col-span-2" delay={120}>
-            <ToolCard
-              title={t.freeTools.protein.title}
-              text={t.freeTools.protein.text}              image={unsplash('photo-1652769710760-c7a93ad559c0')}
-              action={
-                <Button variant="outline" size="sm" onClick={() => setTool('protein')} iconRight={<ArrowRight />}>
+            <article className="relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-edge bg-night-800 p-6 transition-colors duration-300 hover:border-volt/50">
+              <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rotate-12 pattern-stripes opacity-10" />
+              <div className="relative">
+                <h3 className="font-display text-3xl uppercase leading-none">{t.freeTools.protein.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{t.freeTools.protein.text}</p>
+              </div>
+              <div className="relative mt-6">
+                <ProteinPreview />
+                <Button variant="outline" size="sm" className="mt-6" onClick={() => setTool('protein')} iconRight={<ArrowRight />}>
                   {t.freeTools.protein.cta}
                 </Button>
-              }
-            />
+              </div>
+            </article>
           </Reveal>
 
           <Reveal className="h-full lg:col-span-2" delay={160}>

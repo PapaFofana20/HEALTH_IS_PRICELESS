@@ -117,12 +117,12 @@ export const fr = {
       'Deux parcours, une même méthode : des séances structurées, une nutrition adaptée et un suivi clair de tes progrès.',
     cta: 'Découvrir',
     weightLoss: {
-      title: 'Perte de poids',
+      title: 'Programme de perte de poids',
       text: 'Brûle les graisses, améliore ton cardio et construis des habitudes durables.',
       imageAlt: 'Femme réalisant un exercice de battle ropes en salle',
     },
     muscleGain: {
-      title: 'Prise de masse',
+      title: 'Programme de prise de masse',
       text: 'Développe ta force et construis efficacement ta masse musculaire.',
       imageAlt: 'Homme se préparant à soulever une barre dans une salle sombre',
     },

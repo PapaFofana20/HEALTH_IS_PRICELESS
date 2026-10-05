@@ -39,6 +39,7 @@ export function GoalSelector() {
                     {number}
                   </span>
                   <div className="relative">
+                    <p className="relative text-[11px] font-extrabold uppercase tracking-[0.24em] text-volt">{number} — Premium</p>
                     <h3 className="mt-5 font-display text-4xl uppercase leading-none tracking-tight sm:text-5xl">{content.title}</h3>
                     <p className="mt-3 max-w-md text-base leading-relaxed text-ink/80">{content.text}</p>
                     <span className="mt-7 inline-flex w-fit items-center gap-3 rounded-full bg-volt py-1.5 pl-6 pr-1.5 text-[13px] font-extrabold uppercase tracking-[0.14em] text-night-900">
