@@ -14,7 +14,7 @@ export function rateLimit({ windowMs = 15 * 60 * 1000, max = 30 } = {}) {
     for (const [key, entry] of hits) {
       if (now - entry.start > windowMs) hits.delete(key);
     }
-  }, Math.min(windowMs, 60 * 1000)).unref();
+  }, 30_000).unref();
 
   return (req, res, next) => {
     const key = `rl:${getKey(req)}`;

@@ -27,7 +27,7 @@ if (isProduction && !corsOriginsEnv) {
   console.error('[server] CRITICAL: CORS_ORIGIN environment variable is required in production');
   process.exit(1);
 }
-const allowedOrigins = (corsOriginsEnv ?? 'http://localhost:5173,http://localhost:5174')
+const allowedOrigins = corsOriginsEnv
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
@@ -128,7 +128,6 @@ app.use(
   }),
 );
 app.use(express.json({ limit: '100kb' }));
-app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
 app.use('/api/', globalLimiter);
 

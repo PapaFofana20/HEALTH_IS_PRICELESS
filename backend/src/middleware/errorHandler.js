@@ -11,7 +11,7 @@ export function errorHandler(err, req, res, next) {
     return res.status(403).json({ error: 'FORBIDDEN', message: err.message });
   }
   // JSON malformé (express.json) -> 400.
-  if (err.type === 'entity.parse.failed' || (err instanceof SyntaxError && 'body' in err)) {
+  if (err.type === 'entity.parse.failed' || (err instanceof SyntaxError && 'body' in err) || (err.statusCode === 400 && err.message.includes('JSON'))) {
     return res.status(400).json({ error: 'INVALID_JSON', message: 'Corps JSON invalide' });
   }
   res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Erreur interne du serveur' });
