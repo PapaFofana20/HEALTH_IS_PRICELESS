@@ -750,13 +750,13 @@ export const fr = {
   },
   about: {
     heroEyebrow: 'À propos de HEALTH IS PRICELESS',
-    heroTitle: 'Parce que votre santé vaut plus que tout.',
+    heroTitle: 'Parce que votre {{santé}} vaut {{plus que tout}}.',
     heroSubtitle:
       'HEALTH IS PRICELESS est une plateforme dédiée à celles et ceux qui souhaitent prendre soin de leur corps, améliorer leur alimentation et construire un mode de vie plus sain, simplement et durablement.',
     heroVisionCta: 'Découvrir notre vision',
     heroProgramsCta: 'Découvrir nos programmes',
     visionLabel: 'Notre vision',
-    visionTitle: 'Rendre le bien-être plus simple, plus accessible et plus personnel.',
+    visionTitle: 'Rendre le bien-être plus simple, {{plus accessible}} et plus personnel.',
     visionText:
       "Nous croyons que prendre soin de sa santé ne devrait pas être réservé à une minorité. Entre les informations contradictoires, les programmes génériques et les difficultés à savoir par où commencer, beaucoup de personnes abandonnent avant même d'avoir commencé.\n\nHEALTH IS PRICELESS est née d'une volonté simple : proposer une approche plus claire, plus accessible et plus adaptée aux réalités de chacun.",
     visionBlocks: [
@@ -765,7 +765,7 @@ export const fr = {
       { title: 'Progression', text: 'Des outils pour mieux comprendre et suivre son évolution.' },
     ],
     whyLabel: 'Pourquoi nous existons',
-    whyTitle: 'Tout a commencé par une question simple.',
+    whyTitle: 'Tout a commencé par une {{question simple}}.',
     whyQuote: '« Comment aider davantage de personnes à prendre soin d’elles-mêmes sans rendre la santé compliquée ? »',
     whyText:
       'Le projet est né de la volonté de simplifier l’accès à l’information, au sport, à la nutrition et aux outils permettant de mieux comprendre sa progression.',
@@ -775,14 +775,14 @@ export const fr = {
       { title: 'Créer', text: 'Nous avons alors imaginé une plateforme qui rassemble progressivement les outils essentiels au même endroit.' },
       { title: 'Construire', text: 'HEALTH IS PRICELESS est née avec une ambition : accompagner chaque personne dans son propre parcours.' },
     ],
-    problemTitle: 'Aujourd’hui, vouloir prendre soin de soi ne devrait pas être compliqué.',
+    problemTitle: 'Aujourd’hui, vouloir prendre soin de soi ne devrait pas être {{compliqué}}.',
     problems: [
       { title: 'Je ne sais pas par où commencer', text: 'Beaucoup de personnes veulent changer mais ne savent pas quel programme, quelle alimentation ou quelle routine choisir.' },
       { title: 'Je trouve énormément d’informations', text: 'Mais elles sont souvent dispersées, contradictoires ou trop générales.' },
       { title: 'Les solutions ne sont pas toujours adaptées', text: 'Un parcours efficace doit tenir compte du niveau, de l’objectif et du contexte de chaque personne.' },
     ],
     responseLabel: 'Notre réponse',
-    responseTitle: 'Alors nous avons décidé de construire autrement.',
+    responseTitle: 'Alors nous avons décidé de construire {{autrement}}.',
     responseText:
       'HEALTH IS PRICELESS se construit comme un véritable écosystème — programmes sportifs, nutrition, outils d’analyse, calculateurs et suivi de progression — plutôt qu’une simple boutique de programmes.',
     responseFeatures: [
@@ -798,14 +798,15 @@ export const fr = {
       { title: 'Nutrition', text: 'Des ressources alimentaires simples, accessibles et adaptées à différents objectifs, avec une approche qui privilégie la régularité plutôt que les solutions extrêmes.' },
       { title: 'Compréhension', text: 'Des outils pour mieux comprendre son corps, ses objectifs et sa progression.' },
     ],
-    foundersTitle: 'Le mot des cofondateurs',
+    foundersTitle: 'Le mot des {{cofondateurs}}',
     foundersAuthor: 'Les cofondateurs de HEALTH IS PRICELESS',
+    foundersPhotoHint: 'Espace photo',
     foundersQuote1:
       'Nous n’avons pas créé HEALTH IS PRICELESS simplement pour proposer des programmes. Nous voulions construire quelque chose qui puisse réellement accompagner les personnes dans leur parcours. Nous sommes convaincus que prendre soin de sa santé ne devrait pas être une question de perfection, mais de progression.',
     foundersQuote2:
       'Nous voulons construire une plateforme qui parle à notre génération, qui comprend ses réalités et qui rend la santé plus simple à intégrer dans la vie quotidienne. Notre ambition est de commencer ici et de construire progressivement une vision capable de dépasser nos frontières.',
     approachLabel: 'Notre approche',
-    approachTitle: 'Pas de transformation magique. Une vraie progression.',
+    approachTitle: 'Pas de transformation magique. Une vraie {{progression}}.',
     approachText: 'HEALTH IS PRICELESS ne promet pas de transformation miraculeuse. La plateforme encourage la progression, la régularité et la construction d’habitudes durables.',
     approachSteps: [
       { title: 'Comprendre', text: 'Identifier son objectif et mieux comprendre sa situation.' },
@@ -821,13 +822,13 @@ export const fr = {
       { title: 'Confiance', text: 'La relation avec nos utilisateurs repose sur la transparence.' },
     ],
     ambitionLabel: 'Notre ambition',
-    ambitionTitle: 'Commencer ici. Penser au-delà des frontières.',
+    ambitionTitle: 'Commencer ici. Penser {{au-delà des frontières}}.',
     ambitionText:
       'Notre ambition est de faire évoluer HEALTH IS PRICELESS en une véritable plateforme de santé, sport et nutrition accessible au plus grand nombre. Nous voulons progressivement développer une expérience capable de répondre aux besoins d’une nouvelle génération qui souhaite prendre davantage soin de sa santé, tout en restant connectée aux réalités de notre environnement.',
-    buildingTitle: 'Nous ne construisons pas seulement un site.',
+    buildingTitle: 'Nous ne construisons pas seulement un {{site}}.',
     buildingItems: ['Programmes personnalisés', 'Outils d’analyse', 'Nutrition', 'Suivi de progression', 'Contenu éducatif', 'Expérience digitale'],
     buildingFooter: 'HEALTH IS PRICELESS évolue avec les besoins de sa communauté.',
-    finalTitle: 'Votre parcours commence ici.',
+    finalTitle: 'Votre parcours commence {{ici}}.',
     finalSubtitle: 'Il n’est jamais nécessaire d’être parfait pour commencer. Il suffit de faire le premier pas.',
     finalPrimary: 'Commencer maintenant',
     finalSecondary: 'Découvrir les programmes',

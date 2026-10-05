@@ -14,6 +14,20 @@ const WHATSAPP_NUMBER = (import.meta.env.VITE_WHATSAPP_NUMBER as string | undefi
 const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=Bonjour%20HEALTH%20IS%20PRICELESS%2C%20j%27ai%20une%20question.`;
 const waDisplay = '+225 07 00 00 00 00';
 
+const FOUNDER_PHOTOS: (string | null)[] = [null, null];
+
+function mark(text: string) {
+  return text.split(/\{\{(.+?)\}\}/g).map((part, i) =>
+    i % 2 === 1 ? (
+      <span key={i} className="text-volt">
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  );
+}
+
 export default function AboutPage() {
   const { t } = useLanguage();
   usePageTitle(t.nav.about, t.about.heroSubtitle);
@@ -34,7 +48,7 @@ export default function AboutPage() {
     <>
       <PageHero
         eyebrow={t.about.heroEyebrow}
-        title={t.about.heroTitle}
+        title={mark(t.about.heroTitle)}
         subtitle={t.about.heroSubtitle}
         image={media.aboutHero}
       >
@@ -56,7 +70,7 @@ export default function AboutPage() {
         <div className={cn(container, 'grid items-start gap-12 lg:grid-cols-2')}>
           <Reveal>
             <Eyebrow>{t.about.visionLabel}</Eyebrow>
-            <h2 className="mt-4 font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{t.about.visionTitle}</h2>
+            <h2 className="mt-4 font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{mark(t.about.visionTitle)}</h2>
             <p className="mt-5 whitespace-pre-line text-lg leading-relaxed text-muted">{t.about.visionText}</p>
           </Reveal>
           <div className="grid gap-4">
@@ -80,7 +94,7 @@ export default function AboutPage() {
         <div className={container}>
           <Reveal>
             <Eyebrow>{t.about.whyLabel}</Eyebrow>
-            <h2 className="mt-4 max-w-3xl font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{t.about.whyTitle}</h2>
+            <h2 className="mt-4 max-w-3xl font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{mark(t.about.whyTitle)}</h2>
             <p className="mt-6 max-w-3xl border-l-2 border-volt pl-5 font-display text-2xl uppercase leading-snug text-ink sm:text-3xl">{t.about.whyQuote}</p>
             <p className="mt-5 max-w-2xl text-muted">{t.about.whyText}</p>
           </Reveal>
@@ -102,7 +116,7 @@ export default function AboutPage() {
       <section className="py-16 lg:py-24">
         <div className={container}>
           <Reveal>
-            <SectionHeading title={t.about.problemTitle} />
+            <SectionHeading title={mark(t.about.problemTitle)} />
           </Reveal>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {t.about.problems.map((problem, index) => (
@@ -123,7 +137,7 @@ export default function AboutPage() {
         <div className={cn(container, 'grid items-center gap-12 lg:grid-cols-2')}>
           <Reveal>
             <Eyebrow>{t.about.responseLabel}</Eyebrow>
-            <h2 className="mt-4 font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{t.about.responseTitle}</h2>
+            <h2 className="mt-4 font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{mark(t.about.responseTitle)}</h2>
             <p className="mt-5 text-muted">{t.about.responseText}</p>
             <ul className="mt-8 grid grid-cols-2 gap-3">
               {t.about.responseFeatures.map((feature) => (
@@ -174,22 +188,36 @@ export default function AboutPage() {
       <section className="border-t border-edge bg-night-800/40 py-16 lg:py-24">
         <div className={container}>
           <Reveal>
-            <SectionHeading title={t.about.foundersTitle} />
+            <SectionHeading title={mark(t.about.foundersTitle)} />
           </Reveal>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
-            {[t.about.foundersQuote1, t.about.foundersQuote2].map((quote, index) => (
-              <Reveal key={index} delay={index * 100}>
-                <figure className="flex h-full flex-col rounded-2xl border border-edge bg-night-800 p-8">
-                  <div className="flex items-center gap-4">
-                    <span className="grid h-14 w-14 place-items-center rounded-full border border-dashed border-edge-strong text-muted">
-                      <UserRound className="h-6 w-6" aria-hidden />
-                    </span>
-                    <figcaption className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">{t.about.foundersAuthor}</figcaption>
-                  </div>
-                  <blockquote className="mt-6 text-base leading-relaxed text-ink/90">« {quote} »</blockquote>
-                </figure>
-              </Reveal>
-            ))}
+            {[t.about.foundersQuote1, t.about.foundersQuote2].map((quote, index) => {
+              const photo = FOUNDER_PHOTOS[index];
+              return (
+                <Reveal key={index} delay={index * 100} className="h-full">
+                  <figure className="flex h-full flex-col rounded-2xl border border-edge bg-night-800 p-6 sm:p-8">
+                    <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-dashed border-edge-strong bg-night-900">
+                      {photo ? (
+                        <img src={photo} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-6 text-center">
+                          <span className="grid h-16 w-16 place-items-center rounded-2xl border border-dashed border-edge-strong text-edge-strong">
+                            <UserRound className="h-7 w-7" aria-hidden />
+                          </span>
+                          <span className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted/70">{t.about.foundersPhotoHint}</span>
+                        </div>
+                      )}
+                    </div>
+                    <figcaption className="mt-5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">{t.about.foundersAuthor}</figcaption>
+                    <blockquote className="mt-5 flex-1">
+                      <span aria-hidden className="block font-display text-6xl leading-[0.6] text-volt">“</span>
+                      <p className="mt-4 text-base leading-relaxed text-ink/90 sm:text-lg">{quote}</p>
+                      <span aria-hidden className="mt-3 block text-right font-display text-6xl leading-[0.6] text-volt">”</span>
+                    </blockquote>
+                  </figure>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -199,7 +227,7 @@ export default function AboutPage() {
         <div className={container}>
           <Reveal>
             <Eyebrow>{t.about.approachLabel}</Eyebrow>
-            <h2 className="mt-4 max-w-3xl font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{t.about.approachTitle}</h2>
+            <h2 className="mt-4 max-w-3xl font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{mark(t.about.approachTitle)}</h2>
             <p className="mt-5 max-w-2xl text-muted">{t.about.approachText}</p>
           </Reveal>
           <ol className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -235,7 +263,7 @@ export default function AboutPage() {
         <div className={cn(container, 'py-20 lg:py-28')}>
           <Reveal>
             <Eyebrow>{t.about.ambitionLabel}</Eyebrow>
-            <h2 className="mt-4 max-w-3xl font-display text-4xl uppercase leading-[0.95] sm:text-6xl">{t.about.ambitionTitle}</h2>
+            <h2 className="mt-4 max-w-3xl font-display text-4xl uppercase leading-[0.95] sm:text-6xl">{mark(t.about.ambitionTitle)}</h2>
             <p className="mt-6 max-w-2xl leading-relaxed text-muted">{t.about.ambitionText}</p>
           </Reveal>
         </div>
@@ -245,7 +273,7 @@ export default function AboutPage() {
       <section className="py-16 lg:py-24">
         <div className={container}>
           <Reveal>
-            <h2 className="max-w-2xl font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{t.about.buildingTitle}</h2>
+            <h2 className="max-w-2xl font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{mark(t.about.buildingTitle)}</h2>
           </Reveal>
           <ul className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3">
             {t.about.buildingItems.map((item, index) => (
@@ -318,10 +346,18 @@ export default function AboutPage() {
       </section>
 
       {/* CTA final */}
-      <section className="border-t border-edge bg-night-950 py-16 lg:py-24">
-        <div className={cn(container, 'text-center')}>
+      <section className="relative isolate overflow-hidden border-t border-edge">
+        <img
+          src="https://images.unsplash.com/photo-1765302755287-e3288ea8fbcb?auto=format&fit=crop&w=1600&h=900&q=70"
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-40"
+        />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-night-950 via-night-950/60 to-night-950/30" />
+        <div className={cn(container, 'py-20 text-center lg:py-28')}>
           <Reveal>
-            <h2 className="font-display text-5xl uppercase leading-[0.95] sm:text-6xl lg:text-7xl">{t.about.finalTitle}</h2>
+            <h2 className="font-display text-5xl uppercase leading-[0.95] sm:text-6xl lg:text-7xl">{mark(t.about.finalTitle)}</h2>
             <p className="mx-auto mt-5 max-w-xl text-muted">{t.about.finalSubtitle}</p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <ButtonLink to="/quiz" size="lg">{t.about.finalPrimary}</ButtonLink>

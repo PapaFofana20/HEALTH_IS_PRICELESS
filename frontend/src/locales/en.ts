@@ -747,13 +747,13 @@ export const en: Translations = {
   },
   about: {
     heroEyebrow: 'About HEALTH IS PRICELESS',
-    heroTitle: 'Because your health is worth more than anything.',
+    heroTitle: 'Because your {{health}} is worth {{more than anything}}.',
     heroSubtitle:
       'HEALTH IS PRICELESS is a platform for anyone who wants to take care of their body, improve their diet and build a healthier lifestyle — simply and sustainably.',
     heroVisionCta: 'Discover our vision',
     heroProgramsCta: 'Discover our programs',
     visionLabel: 'Our vision',
-    visionTitle: 'Making wellness simpler, more accessible and more personal.',
+    visionTitle: 'Making wellness simpler, {{more accessible}} and more personal.',
     visionText:
       "We believe taking care of your health shouldn't be reserved for a few. Between conflicting information, generic programs and not knowing where to start, many people quit before they even begin.\n\nHEALTH IS PRICELESS was born from a simple desire: offer a clearer, more accessible approach, adapted to each person's reality.",
     visionBlocks: [
@@ -762,7 +762,7 @@ export const en: Translations = {
       { title: 'Progress', text: 'Tools to better understand and track your evolution.' },
     ],
     whyLabel: 'Why we exist',
-    whyTitle: 'It all started with a simple question.',
+    whyTitle: 'It all started with a {{simple question}}.',
     whyQuote: '"How can we help more people take care of themselves without making health complicated?"',
     whyText: 'The project was born from the desire to simplify access to information, sport, nutrition and tools that help people understand their progress.',
     whySteps: [
@@ -771,14 +771,14 @@ export const en: Translations = {
       { title: 'Create', text: 'So we imagined a platform that gradually brings the essential tools together in one place.' },
       { title: 'Build', text: 'HEALTH IS PRICELESS was born with one ambition: support everyone on their own journey.' },
     ],
-    problemTitle: 'Today, taking care of yourself shouldn’t be complicated.',
+    problemTitle: 'Today, taking care of yourself shouldn’t be {{complicated}}.',
     problems: [
       { title: 'I don’t know where to start', text: 'Many people want to change but don’t know which program, diet or routine to pick.' },
       { title: 'I find a lot of information', text: 'But it is often scattered, contradictory or too generic.' },
       { title: 'Solutions aren’t always adapted', text: 'An effective journey must account for each person’s level, goal and context.' },
     ],
     responseLabel: 'Our answer',
-    responseTitle: 'So we decided to build it differently.',
+    responseTitle: 'So we decided to build it {{differently}}.',
     responseText:
       'HEALTH IS PRICELESS is being built as a true ecosystem — sports programs, nutrition, analysis tools, calculators and progress tracking — rather than just a program store.',
     responseFeatures: [
@@ -794,14 +794,15 @@ export const en: Translations = {
       { title: 'Nutrition', text: 'Simple, accessible nutrition resources for different goals, prioritizing consistency over extreme solutions.' },
       { title: 'Understanding', text: 'Tools to better understand your body, your goals and your progress.' },
     ],
-    foundersTitle: 'A word from the co-founders',
+    foundersTitle: 'A word from the {{co-founders}}',
     foundersAuthor: 'The co-founders of HEALTH IS PRICELESS',
+    foundersPhotoHint: 'Photo space',
     foundersQuote1:
       'We didn’t create HEALTH IS PRICELESS just to offer programs. We wanted to build something that could truly support people on their journey. Taking care of your health shouldn’t be about perfection — it should be about progress.',
     foundersQuote2:
       'We want to build a platform that speaks to our generation, understands its realities, and makes health easier to fit into everyday life. Our ambition is to start here and gradually build a vision that reaches beyond our borders.',
     approachLabel: 'Our approach',
-    approachTitle: 'No magic transformation. Real progress.',
+    approachTitle: 'No magic transformation. Real {{progress}}.',
     approachText: 'HEALTH IS PRICELESS promises no miracle transformation. The platform encourages progress, consistency and building lasting habits.',
     approachSteps: [
       { title: 'Understand', text: 'Identify your goal and understand your situation better.' },
@@ -817,13 +818,13 @@ export const en: Translations = {
       { title: 'Trust', text: 'Our relationship with users is built on transparency.' },
     ],
     ambitionLabel: 'Our ambition',
-    ambitionTitle: 'Start here. Think beyond borders.',
+    ambitionTitle: 'Start here. Think {{beyond borders}}.',
     ambitionText:
       'Our ambition is to grow HEALTH IS PRICELESS into a true health, sport and nutrition platform accessible to as many people as possible. We want to progressively build an experience that answers the needs of a new generation that wants to take better care of its health, while staying connected to the realities of our environment.',
-    buildingTitle: 'We are not just building a website.',
+    buildingTitle: 'We are not just building a {{website}}.',
     buildingItems: ['Personalized programs', 'Analysis tools', 'Nutrition', 'Progress tracking', 'Educational content', 'Digital experience'],
     buildingFooter: 'HEALTH IS PRICELESS evolves with the needs of its community.',
-    finalTitle: 'Your journey starts here.',
+    finalTitle: 'Your journey starts {{here}}.',
     finalSubtitle: 'You never need to be perfect to start. You just need to take the first step.',
     finalPrimary: 'Start now',
     finalSecondary: 'Discover programs',
