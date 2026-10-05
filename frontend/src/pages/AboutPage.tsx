@@ -8,13 +8,14 @@ import { ButtonLink } from '../components/ui/Button';
 import { FaqList } from '../components/ui/Faq';
 import { Reveal } from '../components/ui/Reveal';
 import { Eyebrow, PageHero, SectionHeading, container } from '../components/ui/SectionHeading';
+import founderPapaFofana from '../assets/founder-papa-fofana.jpg';
 
 const CONTACT_EMAIL = (import.meta.env.VITE_CONTACT_EMAIL as string | undefined) ?? 'contact@hip.app';
 const WHATSAPP_NUMBER = (import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined) ?? '2250700000000';
 const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=Bonjour%20HEALTH%20IS%20PRICELESS%2C%20j%27ai%20une%20question.`;
 const waDisplay = '+225 07 00 00 00 00';
 
-const FOUNDER_PHOTOS: (string | null)[] = [null, null];
+const FOUNDER_PHOTOS: (string | null)[] = [null, founderPapaFofana];
 
 function mark(text: string) {
   return text.split(/\{\{(.+?)\}\}/g).map((part, i) =>
@@ -191,14 +192,19 @@ export default function AboutPage() {
             <SectionHeading title={mark(t.about.foundersTitle)} />
           </Reveal>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
-            {[t.about.foundersQuote1, t.about.foundersQuote2].map((quote, index) => {
+            {t.about.founders.map((founder, index) => {
               const photo = FOUNDER_PHOTOS[index];
               return (
                 <Reveal key={index} delay={index * 100} className="h-full">
                   <figure className="flex h-full flex-col rounded-2xl border border-edge bg-night-800 p-6 sm:p-8">
-                    <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-dashed border-edge-strong bg-night-900">
+                    <div
+                      className={cn(
+                        'relative aspect-square w-full overflow-hidden rounded-2xl bg-night-900',
+                        photo ? 'border border-edge' : 'border border-dashed border-edge-strong',
+                      )}
+                    >
                       {photo ? (
-                        <img src={photo} alt="" className="h-full w-full object-cover" />
+                        <img src={photo} alt={founder.name} className="h-full w-full object-cover object-top" />
                       ) : (
                         <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-6 text-center">
                           <span className="grid h-16 w-16 place-items-center rounded-2xl border border-dashed border-edge-strong text-edge-strong">
@@ -208,10 +214,13 @@ export default function AboutPage() {
                         </div>
                       )}
                     </div>
-                    <figcaption className="mt-5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">{t.about.foundersAuthor}</figcaption>
+                    <figcaption className="mt-5">
+                      {founder.name && <p className="font-display text-2xl uppercase leading-none">{founder.name}</p>}
+                      <p className={cn('text-[11px] font-extrabold uppercase tracking-[0.16em] text-volt', founder.name && 'mt-2')}>{founder.role}</p>
+                    </figcaption>
                     <blockquote className="mt-5 flex-1">
                       <span aria-hidden className="block font-display text-6xl leading-[0.6] text-volt">“</span>
-                      <p className="mt-4 text-base leading-relaxed text-ink/90 sm:text-lg">{quote}</p>
+                      <p className="mt-4 text-base leading-relaxed text-ink/90 sm:text-lg">{founder.quote}</p>
                       <span aria-hidden className="mt-3 block text-right font-display text-6xl leading-[0.6] text-volt">”</span>
                     </blockquote>
                   </figure>

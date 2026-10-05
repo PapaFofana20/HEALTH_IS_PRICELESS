@@ -795,12 +795,21 @@ export const en: Translations = {
       { title: 'Understanding', text: 'Tools to better understand your body, your goals and your progress.' },
     ],
     foundersTitle: 'A word from the {{co-founders}}',
-    foundersAuthor: 'The co-founders of HEALTH IS PRICELESS',
     foundersPhotoHint: 'Photo space',
-    foundersQuote1:
-      'We didn’t create HEALTH IS PRICELESS just to offer programs. We wanted to build something that could truly support people on their journey. Taking care of your health shouldn’t be about perfection — it should be about progress.',
-    foundersQuote2:
-      'We want to build a platform that speaks to our generation, understands its realities, and makes health easier to fit into everyday life. Our ambition is to start here and gradually build a vision that reaches beyond our borders.',
+    founders: [
+      {
+        name: '',
+        role: 'The co-founders of HEALTH IS PRICELESS',
+        quote:
+          'We didn’t create HEALTH IS PRICELESS just to offer programs. We wanted to build something that could truly support people on their journey. Taking care of your health shouldn’t be about perfection — it should be about progress.',
+      },
+      {
+        name: 'Papa Fofana',
+        role: 'Co-founder of HIP',
+        quote:
+          'We want to build a platform that speaks to our generation, understands its realities, and makes health easier to fit into everyday life. Our ambition is to start here and gradually build a vision that reaches beyond our borders.',
+      },
+    ],
     approachLabel: 'Our approach',
     approachTitle: 'No magic transformation. Real {{progress}}.',
     approachText: 'HEALTH IS PRICELESS promises no miracle transformation. The platform encourages progress, consistency and building lasting habits.',

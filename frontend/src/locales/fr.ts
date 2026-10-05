@@ -799,12 +799,21 @@ export const fr = {
       { title: 'Compréhension', text: 'Des outils pour mieux comprendre son corps, ses objectifs et sa progression.' },
     ],
     foundersTitle: 'Le mot des {{cofondateurs}}',
-    foundersAuthor: 'Les cofondateurs de HEALTH IS PRICELESS',
     foundersPhotoHint: 'Espace photo',
-    foundersQuote1:
-      'Nous n’avons pas créé HEALTH IS PRICELESS simplement pour proposer des programmes. Nous voulions construire quelque chose qui puisse réellement accompagner les personnes dans leur parcours. Nous sommes convaincus que prendre soin de sa santé ne devrait pas être une question de perfection, mais de progression.',
-    foundersQuote2:
-      'Nous voulons construire une plateforme qui parle à notre génération, qui comprend ses réalités et qui rend la santé plus simple à intégrer dans la vie quotidienne. Notre ambition est de commencer ici et de construire progressivement une vision capable de dépasser nos frontières.',
+    founders: [
+      {
+        name: '',
+        role: 'Les cofondateurs de HEALTH IS PRICELESS',
+        quote:
+          'Nous n’avons pas créé HEALTH IS PRICELESS simplement pour proposer des programmes. Nous voulions construire quelque chose qui puisse réellement accompagner les personnes dans leur parcours. Nous sommes convaincus que prendre soin de sa santé ne devrait pas être une question de perfection, mais de progression.',
+      },
+      {
+        name: 'Papa Fofana',
+        role: 'Co-fondateur de HIP',
+        quote:
+          'Nous voulons construire une plateforme qui parle à notre génération, qui comprend ses réalités et qui rend la santé plus simple à intégrer dans la vie quotidienne. Notre ambition est de commencer ici et de construire progressivement une vision capable de dépasser nos frontières.',
+      },
+    ],
     approachLabel: 'Notre approche',
     approachTitle: 'Pas de transformation magique. Une vraie {{progression}}.',
     approachText: 'HEALTH IS PRICELESS ne promet pas de transformation miraculeuse. La plateforme encourage la progression, la régularité et la construction d’habitudes durables.',
