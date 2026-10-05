@@ -830,7 +830,7 @@ export const en: Translations = {
     ambitionTitle: 'Start here. Think {{beyond borders}}.',
     ambitionText:
       'Our ambition is to grow HEALTH IS PRICELESS into a true health, sport and nutrition platform accessible to as many people as possible. We want to progressively build an experience that answers the needs of a new generation that wants to take better care of its health, while staying connected to the realities of our environment.',
-    buildingTitle: 'We are not just building a {{website}}.',
+    buildingTitle: 'We are not building programs but routines.',
     buildingItems: ['Personalized programs', 'Analysis tools', 'Nutrition', 'Progress tracking', 'Educational content', 'Digital experience'],
     buildingFooter: 'HEALTH IS PRICELESS evolves with the needs of its community.',
     finalTitle: 'Your journey starts {{here}}.',

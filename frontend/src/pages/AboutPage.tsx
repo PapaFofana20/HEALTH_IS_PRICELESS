@@ -1,6 +1,6 @@
 ﻿import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Dumbbell, Mail, MessageCircle, Salad, TrendingUp, UserRound } from 'lucide-react';
+import { Mail, MessageCircle, UserRound } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { useLanguage, usePageTitle } from '../hooks/useLanguage';
 import { media } from '../data/media';
@@ -52,19 +52,7 @@ export default function AboutPage() {
         title={mark(t.about.heroTitle)}
         subtitle={t.about.heroSubtitle}
         image={media.aboutHero}
-      >
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <a
-            href="#vision"
-            className="inline-flex h-13 items-center justify-center rounded-full bg-volt px-7 text-[13px] font-extrabold uppercase tracking-[0.12em] text-night-900 transition-all duration-150 hover:-translate-y-0.5 hover:bg-volt-dark active:scale-[0.97]"
-          >
-            {t.about.heroVisionCta}
-          </a>
-          <ButtonLink to="/programmes" size="lg" variant="outline">
-            {t.about.heroProgramsCta}
-          </ButtonLink>
-        </div>
-      </PageHero>
+      />
 
       {/* Vision */}
       <section id="vision" className="scroll-mt-24 py-16 lg:py-24">
@@ -159,29 +147,6 @@ export default function AboutPage() {
               <span className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-edge bg-night-900 px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.16em]">Analyse</span>
             </div>
           </Reveal>
-        </div>
-      </section>
-
-      {/* 3 piliers */}
-      <section className="py-16 lg:py-24">
-        <div className={container}>
-          <div className="grid gap-4 md:grid-cols-3">
-            {t.about.pillars.map((pillar, index) => {
-              const Icon = [Dumbbell, Salad, TrendingUp][index % 3];
-              return (
-                <Reveal key={pillar.title} delay={index * 80} className="h-full">
-                  <article className="flex h-full flex-col rounded-2xl border border-edge bg-night-800 p-8 transition-all duration-300 hover:-translate-y-1 hover:border-volt/40 hover:shadow-2xl hover:shadow-black/40">
-                    <span className="grid h-12 w-12 place-items-center rounded-xl border border-volt/30 bg-volt/10 text-volt">
-                      <Icon className="h-5 w-5" aria-hidden />
-                    </span>
-                    <span className="mt-8 font-display text-2xl text-volt">0{index + 1}</span>
-                    <h3 className="mt-2 font-display text-3xl uppercase">{pillar.title}</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-muted">{pillar.text}</p>
-                  </article>
-                </Reveal>
-              );
-            })}
-          </div>
         </div>
       </section>
 

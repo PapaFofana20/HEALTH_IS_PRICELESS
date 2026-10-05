@@ -798,12 +798,12 @@ export const fr = {
       { title: 'Nutrition', text: 'Des ressources alimentaires simples, accessibles et adaptées à différents objectifs, avec une approche qui privilégie la régularité plutôt que les solutions extrêmes.' },
       { title: 'Compréhension', text: 'Des outils pour mieux comprendre son corps, ses objectifs et sa progression.' },
     ],
-    foundersTitle: 'Le mot des {{cofondateurs}}',
+    foundersTitle: 'Le mot des {{co-fondateurs}}',
     foundersPhotoHint: 'Espace photo',
     founders: [
       {
         name: '',
-        role: 'Les cofondateurs de HEALTH IS PRICELESS',
+        role: 'Les co-fondateurs de HEALTH IS PRICELESS',
         quote:
           'Nous n’avons pas créé HEALTH IS PRICELESS simplement pour proposer des programmes. Nous voulions construire quelque chose qui puisse réellement accompagner les personnes dans leur parcours. Nous sommes convaincus que prendre soin de sa santé ne devrait pas être une question de perfection, mais de progression.',
       },
@@ -834,7 +834,7 @@ export const fr = {
     ambitionTitle: 'Commencer ici. Penser {{au-delà des frontières}}.',
     ambitionText:
       'Notre ambition est de faire évoluer HEALTH IS PRICELESS en une véritable plateforme de santé, sport et nutrition accessible au plus grand nombre. Nous voulons progressivement développer une expérience capable de répondre aux besoins d’une nouvelle génération qui souhaite prendre davantage soin de sa santé, tout en restant connectée aux réalités de notre environnement.',
-    buildingTitle: 'Nous ne construisons pas seulement un {{site}}.',
+    buildingTitle: 'Nous ne construisons pas des programmes mais des routines.',
     buildingItems: ['Programmes personnalisés', 'Outils d’analyse', 'Nutrition', 'Suivi de progression', 'Contenu éducatif', 'Expérience digitale'],
     buildingFooter: 'HEALTH IS PRICELESS évolue avec les besoins de sa communauté.',
     finalTitle: 'Votre parcours commence {{ici}}.',
