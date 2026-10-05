@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
-import type { LucideIcon } from 'lucide-react';
-import { ArrowRight, Beef, BookOpen, Dumbbell, Flame, Salad, Scale, Zap } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { bmiGaugePosition } from '../../../utils/fitness';
@@ -15,22 +14,14 @@ import { BmiCalculator, CalorieCalculator, ProteinCalculator } from '../nutritio
 
 type ToolKey = 'bmi' | 'calories' | 'protein';
 
-function IconTile({ icon: Icon, large }: { icon: LucideIcon; large?: boolean }) {
-  return (
-    <span className={cn('grid place-items-center rounded-lg border border-volt/30 bg-volt/10 text-volt', large ? 'h-14 w-14' : 'h-11 w-11')}>
-      <Icon className={large ? 'h-6 w-6' : 'h-5 w-5'} aria-hidden />
-    </span>
-  );
-}
-
 interface ToolCardProps {
-  icon: LucideIcon;
   title: string;
-  text: string;  image: string;
+  text: string;
+  image: string;
   action: ReactNode;
 }
 
-function ToolCard({ icon, title, text, image, action }: ToolCardProps) {
+function ToolCard({ title, text, image, action }: ToolCardProps) {
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-edge bg-night-800 transition-colors duration-300 hover:border-volt/50">
       <div className="relative aspect-[16/9] overflow-hidden">
@@ -38,10 +29,7 @@ function ToolCard({ icon, title, text, image, action }: ToolCardProps) {
         <div aria-hidden className="absolute inset-0 bg-linear-to-t from-night-800 via-night-800/20 to-transparent" />
       </div>
       <div className="flex flex-1 flex-col p-6">
-        <div className="flex items-center gap-3">
-          <IconTile icon={icon} />
-        </div>
-        <h3 className="mt-4 font-display text-2xl uppercase leading-none">{title}</h3>
+        <h3 className="font-display text-2xl uppercase leading-none">{title}</h3>
         <p className="mt-2 text-sm leading-relaxed text-muted">{text}</p>
         <div className="mt-auto pt-6">{action}</div>
       </div>
@@ -49,7 +37,7 @@ function ToolCard({ icon, title, text, image, action }: ToolCardProps) {
   );
 }
 
-function LinkCard({ to, icon, title, text, cta, image }: { to: string; icon: LucideIcon; title: string; text: string; cta: string; image: string }) {
+function LinkCard({ to, title, text, cta, image }: { to: string; title: string; text: string; cta: string; image: string }) {
   return (
     <Link
       to={to}
@@ -60,10 +48,7 @@ function LinkCard({ to, icon, title, text, cta, image }: { to: string; icon: Luc
         <div aria-hidden className="absolute inset-0 bg-linear-to-t from-night-800 via-night-800/20 to-transparent" />
       </div>
       <div className="flex flex-1 flex-col p-6">
-        <div className="flex items-center gap-3">
-          <IconTile icon={icon} />
-        </div>
-        <h3 className="mt-4 font-display text-2xl uppercase leading-none">{title}</h3>
+        <h3 className="font-display text-2xl uppercase leading-none">{title}</h3>
         <p className="mt-2 text-sm leading-relaxed text-muted">{text}</p>
         <span className="mt-auto inline-flex items-center gap-2 pt-6 text-[11px] font-extrabold uppercase tracking-[0.14em] transition-colors group-hover:text-volt">
           {cta}
@@ -102,10 +87,7 @@ export function FreeTools() {
             <article className="relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-edge bg-night-800 p-6 transition-colors duration-300 hover:border-volt/50">
               <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rotate-12 pattern-stripes opacity-10" />
               <div className="relative">
-                <div className="flex items-center justify-between">
-                  <IconTile icon={Scale} />
-                </div>
-                <h3 className="mt-5 font-display text-3xl uppercase leading-none">{t.freeTools.bmi.title}</h3>
+                <h3 className="font-display text-3xl uppercase leading-none">{t.freeTools.bmi.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{t.freeTools.bmi.text}</p>
               </div>
               <div className="relative mt-6">
@@ -134,7 +116,6 @@ export function FreeTools() {
 
           <Reveal className="h-full sm:col-span-2 lg:col-span-2" delay={80}>
             <ToolCard
-              icon={Flame}
               title={t.freeTools.calories.title}
               text={t.freeTools.calories.text}              image={unsplash('photo-1744444202869-54debf97b285')}
               action={
@@ -147,7 +128,6 @@ export function FreeTools() {
 
           <Reveal className="h-full sm:col-span-2 lg:col-span-2" delay={120}>
             <ToolCard
-              icon={Beef}
               title={t.freeTools.protein.title}
               text={t.freeTools.protein.text}              image={unsplash('photo-1652769710760-c7a93ad559c0')}
               action={
@@ -159,15 +139,15 @@ export function FreeTools() {
           </Reveal>
 
           <Reveal className="h-full lg:col-span-2" delay={160}>
-            <LinkCard to="/exercices" icon={Dumbbell} image={media.exercises.squat} {...t.freeTools.exercises} />
+            <LinkCard to="/exercices" image={media.exercises.squat} {...t.freeTools.exercises} />
           </Reveal>
 
           <Reveal className="h-full lg:col-span-2" delay={200}>
-            <LinkCard to="/conseils?cat=training" icon={Zap} image={media.articles.startTraining} {...t.freeTools.tips} />
+            <LinkCard to="/conseils?cat=training" image={media.articles.startTraining} {...t.freeTools.tips} />
           </Reveal>
 
           <Reveal className="h-full lg:col-span-2" delay={60}>
-            <LinkCard to="/conseils?cat=nutrition" icon={BookOpen} image={media.articles.protein} {...t.freeTools.articles} />
+            <LinkCard to="/conseils?cat=nutrition" image={media.articles.protein} {...t.freeTools.articles} />
           </Reveal>
 
           <Reveal className="h-full sm:col-span-2 lg:col-span-6" delay={120}>
@@ -183,8 +163,7 @@ export function FreeTools() {
               />
               <div aria-hidden className="absolute inset-0 bg-linear-to-r from-night-800 via-night-800/90 to-night-800/10" />
               <div className="relative flex max-w-xs flex-col justify-center p-6 sm:p-8 lg:max-w-sm">
-                <IconTile icon={Salad} />
-                <h3 className="mt-6 font-display text-3xl uppercase leading-none">{t.freeTools.recipes.title}</h3>
+                <h3 className="font-display text-3xl uppercase leading-none">{t.freeTools.recipes.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{t.freeTools.recipes.text}</p>
                 <span className="mt-auto inline-flex items-center gap-2 pt-6 text-[11px] font-extrabold uppercase tracking-[0.14em] transition-colors group-hover:text-volt">
                   {t.freeTools.recipes.cta}

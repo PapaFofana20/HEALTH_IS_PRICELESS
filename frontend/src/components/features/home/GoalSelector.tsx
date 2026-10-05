@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Dumbbell, Flame } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { media } from '../../../data/media';
 import { Reveal } from '../../ui/Reveal';
@@ -10,8 +10,8 @@ export function GoalSelector() {
   const { t } = useLanguage();
 
   const cards = [
-    { goal: 'weight-loss' as Goal, number: '01', image: media.goals.weightLoss, content: t.goalSection.weightLoss, Icon: Flame },
-    { goal: 'muscle-gain' as Goal, number: '02', image: media.goals.muscleGain, content: t.goalSection.muscleGain, Icon: Dumbbell },
+    { goal: 'weight-loss' as Goal, number: '01', image: media.goals.weightLoss, content: t.goalSection.weightLoss },
+    { goal: 'muscle-gain' as Goal, number: '02', image: media.goals.muscleGain, content: t.goalSection.muscleGain },
   ];
 
   return (
@@ -21,7 +21,7 @@ export function GoalSelector() {
           <SectionHeading id="goal-title" eyebrow={t.goalSection.eyebrow} title={t.goalSection.title} subtitle={t.goalSection.subtitle} />
         </Reveal>
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          {cards.map(({ goal, number, image, content, Icon }, index) => {
+          {cards.map(({ goal, number, image, content }, index) => {
             return (
               <Reveal key={goal} delay={index * 120} className="h-full">
                 <Link
@@ -39,9 +39,6 @@ export function GoalSelector() {
                     {number}
                   </span>
                   <div className="relative">
-                    <span className="grid h-11 w-11 place-items-center rounded-md bg-volt text-night-900">
-                      <Icon className="h-5 w-5" aria-hidden />
-                    </span>
                     <h3 className="mt-5 font-display text-4xl uppercase leading-none tracking-tight sm:text-5xl">{content.title}</h3>
                     <p className="mt-3 max-w-md text-base leading-relaxed text-ink/80">{content.text}</p>
                     <span className="mt-7 inline-flex w-fit items-center gap-3 rounded-full bg-volt py-1.5 pl-6 pr-1.5 text-[13px] font-extrabold uppercase tracking-[0.14em] text-night-900">
