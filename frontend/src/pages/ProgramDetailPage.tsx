@@ -105,7 +105,7 @@ export default function ProgramDetailPage() {
       return;
     }
     if (!user) {
-      navigate(`/connexion?mode=register&plan=${program.plan}`);
+      navigate(`/connexion?mode=register&plan=${program.plan}&goal=${program.goal}`);
       return;
     }
     navigate('/tarifs');

@@ -74,6 +74,8 @@ export default function AuthPage() {
   usePageTitle(mode === 'login' ? t.auth.loginTab : t.auth.registerTab);
   const planParam = params.get('plan');
   const plan: Plan | null = planParam === 'standard' || planParam === 'premium' ? planParam : null;
+  const goalParam = params.get('goal');
+  const goal: Goal | null = goalParam === 'weight-loss' || goalParam === 'muscle-gain' ? goalParam : null;
 
   const [form, setForm] = useState({ firstName: '', email: '', password: '', goal: 'weight-loss' as Goal });
   const [errors, setErrors] = useState<Errors>({});
@@ -125,7 +127,7 @@ export default function AuthPage() {
       // Un plan dans l'URL exprime une intention d'achat, jamais un droit :
       // on redirige vers le tunnel de paiement au lieu d'accorder la formule.
       if (plan) {
-        navigate(`/paiement?plan=${plan}`);
+        navigate(`/paiement?plan=${plan}${goal ? `&goal=${goal}` : ''}`);
         return;
       }
       // Return to where the user came from (e.g. the admin gate), else the
