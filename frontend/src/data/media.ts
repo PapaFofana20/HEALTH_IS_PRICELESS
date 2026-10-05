@@ -8,6 +8,9 @@ const px = (id: number, w = 1200, h = 800) =>
 
 export const avatar = (gender: 'men' | 'women', n: number) => `https://randomuser.me/api/portraits/${gender}/${n}.jpg`;
 
+const un = (id: string, w = 1200, h = 800) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=70`;
+
 export const media = {
   goals: {
     weightLoss: px(6455787, 1100, 1300),
@@ -39,15 +42,15 @@ export const media = {
     bicepCurl: px(19132573, 800, 600),
   },
   recipes: {
-    overnightOats: px(12174224, 800, 560),
-    omelette: px(17477762, 800, 560),
-    chickenBowl: px(1591226, 800, 560),
-    lentilSalad: px(7660437, 800, 560),
-    salmon: px(9213918, 800, 560),
-    beefRice: px(9213866, 800, 560),
-    tofuBowl: px(11931273, 800, 560),
-    skyr: px(27400769, 800, 560),
-    shake: px(1652312, 800, 560),
+    overnightOats: un('photo-1756457892871-88522afffbdc', 800, 560),
+    omelette: un('photo-1510693206972-df098062cb71', 800, 560),
+    chickenBowl: un('photo-1762631383846-6bead15b9796', 800, 560),
+    lentilSalad: un('photo-1748444432939-f5e117280ab0', 800, 560),
+    salmon: un('photo-1762098457195-aa2185a2330e', 800, 560),
+    beefRice: un('photo-1761064864532-1794a1f8f784', 800, 560),
+    tofuBowl: un('photo-1769031240699-e15f4818224a', 800, 560),
+    skyr: un('photo-1648912607168-88b8db633771', 800, 560),
+    shake: un('photo-1626668934174-edba98195dbf', 800, 560),
   },
   articles: {
     weightLossMistakes: px(35419772, 1200, 750),
