@@ -1,4 +1,4 @@
-import { ArrowRight, Clock } from 'lucide-react';
+import { ArrowRight, Clock, Flame } from 'lucide-react';
 import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { Tag } from '../../ui/Badge';
@@ -36,18 +36,32 @@ export function RecipeCard({ recipe, onOpen }: RecipeCardProps) {
   const { t, loc } = useLanguage();
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-edge bg-night-800 transition-all duration-300 hover:-translate-y-1 hover:border-edge-strong hover:shadow-2xl hover:shadow-black/40 has-[button:focus-visible]:ring-2 has-[button:focus-visible]:ring-volt">
-      <div className="relative aspect-[16/10] overflow-hidden">
+      <div className="relative aspect-[4/3] overflow-hidden">
         <img src={recipe.image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
-        <div aria-hidden className="absolute inset-0 bg-linear-to-t from-night-800/80 via-transparent to-transparent" />
-        <Tag tone="light" icon={<Clock className="h-3 w-3" aria-hidden />} className="absolute right-3 top-3">
+        <div aria-hidden className="absolute inset-0 bg-linear-to-t from-night-800 via-transparent to-transparent" />
+        <Tag tone="light" className="absolute left-3 top-3">
+          {t.meals[recipe.category]}
+        </Tag>
+        <Tag tone="volt" className="absolute right-3 top-3 bg-night-900/75" icon={<Clock className="h-3 w-3" aria-hidden />}>
           {recipe.prepMinutes} min
         </Tag>
       </div>
       <div className="flex flex-1 flex-col p-5">
-        <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-volt">{t.meals[recipe.category]}</p>
-        <h3 className="mt-2 font-display text-xl uppercase leading-tight tracking-wide sm:text-2xl">{loc(recipe.name)}</h3>
+        <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-volt">
+          {recipe.goal === 'both' ? `${t.goals['weight-loss']} · ${t.goals['muscle-gain']}` : t.goals[recipe.goal]}
+        </p>
+        <h3 className="mt-2 font-display text-2xl uppercase leading-tight tracking-wide">{loc(recipe.name)}</h3>
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted">{loc(recipe.description)}</p>
-        <MacroGrid recipe={recipe} className="mt-4" />
+        <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-edge pt-4 text-xs font-semibold text-ink/85">
+          <li className="flex items-center gap-1.5">
+            <Flame className="h-3.5 w-3.5 text-muted" aria-hidden />
+            {recipe.calories} kcal
+          </li>
+          <li className="flex items-center gap-1.5">
+            <Clock className="h-3.5 w-3.5 text-muted" aria-hidden />
+            {recipe.prepMinutes} min
+          </li>
+        </ul>
         <button
           type="button"
           onClick={() => onOpen(recipe)}
