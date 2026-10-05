@@ -44,9 +44,9 @@ export function GoalSelector() {
                     </span>
                     <h3 className="mt-5 font-display text-4xl uppercase leading-none tracking-tight sm:text-5xl">{content.title}</h3>
                     <p className="mt-3 max-w-md text-base leading-relaxed text-ink/80">{content.text}</p>
-                    <span className="mt-7 inline-flex w-fit items-center gap-3 rounded-full bg-volt py-1.5 pl-6 pr-1.5 text-[13px] font-extrabold uppercase tracking-[0.14em] text-night-900 transition-shadow duration-300 group-hover:shadow-[0_0_36px_-6px] group-hover:shadow-volt/60">
+                    <span className="mt-7 inline-flex w-fit items-center gap-3 rounded-full bg-volt py-1.5 pl-6 pr-1.5 text-[13px] font-extrabold uppercase tracking-[0.14em] text-night-900">
                       {t.goalSection.cta}
-                      <span className="grid h-10 w-10 place-items-center rounded-full bg-night-900 text-volt transition-transform duration-300 group-hover:translate-x-1">
+                      <span className="grid h-10 w-10 place-items-center rounded-full bg-night-900 text-volt">
                         <ArrowRight className="h-4 w-4" aria-hidden />
                       </span>
                     </span>

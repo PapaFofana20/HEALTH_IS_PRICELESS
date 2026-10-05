@@ -15,7 +15,7 @@ import {
   LogOut,
   Salad,
   Settings,
-  ShieldCheck,
+  Lock,
   Target,
   TrendingUp,
   User,
@@ -222,7 +222,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
                       expanded ? 'gap-3 px-3' : 'justify-center px-0',
                     )}
                   >
-                    <ShieldCheck className="h-[18px] w-[18px] shrink-0 text-muted transition-colors group-hover:text-volt" aria-hidden />
+                    <Lock className="h-[18px] w-[18px] shrink-0 text-muted transition-colors group-hover:text-volt" aria-hidden />
                     <span className={expanded ? 'truncate' : 'sr-only'}>{t.nav.admin}</span>
                   </Link>
                 </li>
@@ -322,7 +322,7 @@ export function DashboardSidebar({ active }: { active: DashboardSection }) {
                   to="/admin"
                   className="inline-flex h-11 items-center gap-2 rounded-full border border-edge/70 px-4 text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted transition-colors duration-200 hover:border-volt hover:text-volt"
                 >
-                  <ShieldCheck className="h-4 w-4" aria-hidden />
+                  <Lock className="h-4 w-4" aria-hidden />
                   {t.nav.admin}
                 </Link>
               </li>

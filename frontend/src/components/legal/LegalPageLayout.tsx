@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CalendarDays, ChevronDown, FileText, Info, Scale, ShieldCheck } from 'lucide-react';
+import { CalendarDays, ChevronDown, FileText, Info, Scale, Lock } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useLanguage, usePageTitle } from '../../hooks/useLanguage';
 import { cgu, privacy } from '../../data/legal';
@@ -18,7 +18,7 @@ const FEATURED: Record<LegalDocKey, { section: number; paragraph: number }> = {
   cgu: { section: 2, paragraph: 0 },
 };
 
-const SECTION_ICONS = [ShieldCheck, FileText, Scale, Info] as const;
+const SECTION_ICONS = [Lock, FileText, Scale, Info] as const;
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -65,22 +65,12 @@ export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
     document.getElementById(`legal-section-${index}`)?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
   };
 
-  const HeroIcon = isPrivacy ? ShieldCheck : FileText;
-
   return (
     <>
       <section className="relative isolate overflow-hidden border-b border-edge bg-night-900 pb-12 pt-32 sm:pb-14 lg:pb-16 lg:pt-40">
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
         <div className={container}>
-          <div className="flex items-center gap-4">
-            <span
-              aria-hidden
-              className="grid h-14 w-14 shrink-0 animate-fade-up place-items-center rounded-2xl border border-edge/70 bg-night-800 text-volt"
-            >
-              <HeroIcon className="h-7 w-7" />
-            </span>
-            <Eyebrow className="animate-fade-up [animation-delay:60ms]">{t.about.legalEyebrow}</Eyebrow>
-          </div>
+          <Eyebrow className="animate-fade-up">{t.about.legalEyebrow}</Eyebrow>
           <h1 className="mt-6 max-w-3xl animate-fade-up font-display text-4xl uppercase leading-[0.95] tracking-tight [animation-delay:120ms] sm:text-5xl lg:text-6xl">
             {loc(doc.title)}
           </h1>
@@ -182,7 +172,7 @@ export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
                             >
                               <p className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-volt">
                                 {isPrivacy ? (
-                                  <ShieldCheck className="h-4 w-4" aria-hidden />
+                                  <Lock className="h-4 w-4" aria-hidden />
                                 ) : (
                                   <Info className="h-4 w-4" aria-hidden />
                                 )}

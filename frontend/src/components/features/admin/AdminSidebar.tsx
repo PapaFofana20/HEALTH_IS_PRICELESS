@@ -8,7 +8,7 @@ import {
   LayoutDashboard,
   LogOut,
   Receipt,
-  ShieldCheck,
+  Lock,
   Users,
 } from 'lucide-react';
 import { cn } from '../../../utils/cn';
@@ -25,7 +25,7 @@ export const ADMIN_SECTIONS: { key: AdminSection; to: string; icon: LucideIcon }
   { key: 'members', to: '/admin/members', icon: Users },
   { key: 'orders', to: '/admin/orders', icon: Receipt },
   { key: 'content', to: '/admin/content', icon: BookOpen },
-  { key: 'admins', to: '/admin/admins', icon: ShieldCheck },
+  { key: 'admins', to: '/admin/admins', icon: Lock },
 ];
 
 type NavGroupKey = 'pilotage' | 'catalog';
@@ -104,7 +104,7 @@ export function AdminSidebar({ active }: { active: AdminSection }) {
                   {user.firstName} {user.lastName}
                 </p>
                 <p className="mt-1 inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-[0.16em] text-volt">
-                  <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
+                  <Lock className="h-3.5 w-3.5" aria-hidden />
                   {t.admin.role}
                 </p>
               </div>
@@ -201,7 +201,7 @@ export function AdminSidebar({ active }: { active: AdminSection }) {
           <Logo compact />
           <div className="flex items-center gap-2">
             <span className="hidden items-center gap-1.5 rounded-full border border-volt/40 bg-volt/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-volt sm:inline-flex">
-              <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
+              <Lock className="h-3.5 w-3.5" aria-hidden />
               {t.admin.role}
             </span>
             <button
