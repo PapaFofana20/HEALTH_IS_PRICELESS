@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { isAdminEmail } from '../hooks/useAuth';
 import type { Goal, Tier } from '../types';
 
 /* ==========================================================
@@ -61,7 +62,9 @@ export async function fetchAdminMembers(): Promise<AdminMember[]> {
     .select('id, email, first_name, last_name, avatar, tier, goal, current_program_id, current_week, weight_goal, favorites, member_since')
     .order('member_since', { ascending: false });
   if (error) throw new Error(error.message);
-  return (data as Record<string, unknown>[] | null ?? []).map((row) => ({
+  return (data as Record<string, unknown>[] | null ?? [])
+    .filter((row) => typeof row.email !== 'string' || !isAdminEmail(row.email))
+    .map((row) => ({
     id: String(row.id ?? ''),
     name: displayName(row.first_name, row.last_name, row.email),
     email: typeof row.email === 'string' ? row.email : '',
