@@ -8,7 +8,7 @@ import { ButtonLink } from '../components/ui/Button';
 import { FaqList } from '../components/ui/Faq';
 import { Reveal } from '../components/ui/Reveal';
 import { Eyebrow, PageHero, SectionHeading, container } from '../components/ui/SectionHeading';
-import founderPapaFofana from '../assets/founder-papa-fofana.jpg';
+import founderPapaFofana from '../assets/founder-papa-fofana.jpeg';
 
 const CONTACT_EMAIL = (import.meta.env.VITE_CONTACT_EMAIL as string | undefined) ?? 'contact@hip.app';
 const WHATSAPP_NUMBER = (import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined) ?? '2250700000000';
