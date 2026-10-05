@@ -100,6 +100,11 @@ app.post('/api/saspay/webhook', webhookLimiter, express.raw({ type: 'application
   }
 });
 
+// Health check AVANT le CORS ( Render / uptime monitors n'envoient pas d'Origin).
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -140,10 +145,6 @@ app.use('/api/nutrition', nutritionRouter);
 app.use('/api/community', communityRouter);
 app.use('/api/pricing', pricingRouter);
 app.use('/api/saspay', saspayRouter);
-
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
 
 app.use((req, res) => {
   res.status(404).json({ error: 'NOT_FOUND' });
