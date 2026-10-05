@@ -9,7 +9,7 @@ import { fetchSessionUser } from '../services/backendApi';
 /* ==========================================================
    Authentication: Supabase Auth when configured
    (VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY), otherwise
-   local mock. App profile (tier, goal, program�) stays in
+   local mock. App profile (tier, goal, program) stays in
    localStorage keyed by account id in both modes.
    ========================================================== */
 
@@ -81,12 +81,12 @@ export const isAdminEmail = (email: string): boolean => {
 
 /**
  * Admin access is decided by email ONLY. Stored/local and remote profiles
- * can carry a stale role 'user' (from an earlier registration) � they must
+ * can carry a stale role 'user' (from an earlier registration) — they must
  * never downgrade an admin email, otherwise /admin stays locked forever.
  */
 function enforceAdmin<T extends User>(user: T): T {
   if (!isAdminEmail(user.email)) return user;
-  // On ne d�rive pas le tier de l'email : le plan doit venir d'un paiement valid� c�t� serveur.
+  // On ne dérive pas le tier de l'email : le plan doit venir d'un paiement validé côté serveur.
   return { ...user, role: 'admin' };
 }
 
