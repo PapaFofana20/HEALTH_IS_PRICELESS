@@ -108,13 +108,10 @@ app.get('/api/health', (req, res) => {
 app.use(
   cors({
     origin: (origin, callback) => {
-      // En production, exiger un Origin valide. En dev, autoriser les requêtes sans Origin (curl, tests).
+      // Les requêtes sans Origin (webhooks, health checks, curl, server-to-server)
+      // sont autorisées ; le contrôle strict ne s'applique qu'aux navigateurs,
+      // qui envoient toujours Origin sur les requêtes cross-origin.
       if (!origin) {
-        if (isProduction) {
-          const err = new Error('Origine requise en production');
-          err.code = 'CORS_FORBIDDEN';
-          return callback(err);
-        }
         return callback(null, true);
       }
       if (allowedOrigins.includes(origin)) {
