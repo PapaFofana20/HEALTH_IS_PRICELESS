@@ -1,30 +1,28 @@
 ﻿import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import type { LucideIcon } from 'lucide-react';
-import { Eye, HeartHandshake, Mail, MessageCircle, TrendingUp, Users } from 'lucide-react';
+import { Dumbbell, Mail, MessageCircle, Salad, TrendingUp, UserRound } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { useLanguage, usePageTitle } from '../hooks/useLanguage';
-import { coaches } from '../data/programs';
 import { media } from '../data/media';
 import { ButtonLink } from '../components/ui/Button';
 import { FaqList } from '../components/ui/Faq';
 import { Reveal } from '../components/ui/Reveal';
 import { Eyebrow, PageHero, SectionHeading, container } from '../components/ui/SectionHeading';
 
-const valueIcons: LucideIcon[] = [TrendingUp, Eye, Users, HeartHandshake];
-
 const CONTACT_EMAIL = (import.meta.env.VITE_CONTACT_EMAIL as string | undefined) ?? 'contact@hip.app';
-// Numéro WhatsApp en format international sans "+" (défini via VITE_WHATSAPP_NUMBER en prod).
 const WHATSAPP_NUMBER = (import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined) ?? '2250700000000';
 const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=Bonjour%20HEALTH%20IS%20PRICELESS%2C%20j%27ai%20une%20question.`;
 const waDisplay = '+225 07 00 00 00 00';
 
 export default function AboutPage() {
-  const { t, loc } = useLanguage();
-  usePageTitle(t.nav.about);
+  const { t } = useLanguage();
+  usePageTitle(t.nav.about, t.about.heroSubtitle);
   const [params] = useSearchParams();
 
-  // Deep links from the footer: /a-propos?section=faq|contact|legal
+  useEffect(() => {
+    document.title = 'À propos | HEALTH IS PRICELESS';
+  }, []);
+
   useEffect(() => {
     const section = params.get('section');
     if (!section) return;
@@ -35,60 +33,135 @@ export default function AboutPage() {
   return (
     <>
       <PageHero
-        eyebrow={t.about.eyebrow}
-        title={
-          <>
-            {t.about.title1} <span className="text-volt">{t.about.title2}</span>
-          </>
-        }
-        subtitle={t.about.intro}
+        eyebrow={t.about.heroEyebrow}
+        title={t.about.heroTitle}
+        subtitle={t.about.heroSubtitle}
         image={media.aboutHero}
-      />
+      >
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <a
+            href="#vision"
+            className="inline-flex h-13 items-center justify-center rounded-full bg-volt px-7 text-[13px] font-extrabold uppercase tracking-[0.12em] text-night-900 transition-all duration-150 hover:-translate-y-0.5 hover:bg-volt-dark active:scale-[0.97]"
+          >
+            {t.about.heroVisionCta}
+          </a>
+          <ButtonLink to="/programmes" size="lg" variant="outline">
+            {t.about.heroProgramsCta}
+          </ButtonLink>
+        </div>
+      </PageHero>
 
-      {/* Mission */}
-      <section className="py-16 lg:py-24">
-        <div className={cn(container, 'grid items-center gap-14 lg:grid-cols-2')}>
+      {/* Vision */}
+      <section id="vision" className="scroll-mt-24 py-16 lg:py-24">
+        <div className={cn(container, 'grid items-start gap-12 lg:grid-cols-2')}>
           <Reveal>
-            <div className="relative isolate mr-4 sm:mr-6">
-              <img src={media.aboutMission} alt="" className="aspect-[4/3] w-full rounded-2xl object-cover lg:aspect-[4/5]" />
-              <div aria-hidden className="absolute -bottom-4 -right-4 -z-10 h-full w-full rounded-2xl border-2 border-volt/60 sm:-bottom-6 sm:-right-6" />
-            </div>
+            <Eyebrow>{t.about.visionLabel}</Eyebrow>
+            <h2 className="mt-4 font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{t.about.visionTitle}</h2>
+            <p className="mt-5 whitespace-pre-line text-lg leading-relaxed text-muted">{t.about.visionText}</p>
           </Reveal>
-          <Reveal delay={100}>
-            <Eyebrow>{t.about.missionEyebrow}</Eyebrow>
-            <h2 className="mt-4 font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{t.about.missionTitle}</h2>
-            <p className="mt-5 text-lg leading-relaxed text-muted">{t.about.missionText}</p>
-            <dl className="mt-10 grid grid-cols-2 gap-4">
-              {t.about.stats.map((stat) => (
-                <div key={stat.label} className="flex flex-col-reverse rounded-xl border border-edge bg-night-800 p-5">
-                  <dt className="mt-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{stat.label}</dt>
-                  <dd className="font-display text-4xl text-volt">{stat.value}</dd>
-                </div>
+          <div className="grid gap-4">
+            {t.about.visionBlocks.map((block, index) => (
+              <Reveal key={block.title} delay={index * 80}>
+                <article className="flex items-start gap-4 rounded-2xl border border-edge bg-night-800 p-6 transition-colors duration-300 hover:border-volt/40">
+                  <span aria-hidden className="font-display text-4xl leading-none txt-outline-soft">0{index + 1}</span>
+                  <div>
+                    <h3 className="font-display text-2xl uppercase">{block.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted">{block.text}</p>
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pourquoi */}
+      <section className="border-y border-edge bg-night-800/40 py-16 lg:py-24">
+        <div className={container}>
+          <Reveal>
+            <Eyebrow>{t.about.whyLabel}</Eyebrow>
+            <h2 className="mt-4 max-w-3xl font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{t.about.whyTitle}</h2>
+            <p className="mt-6 max-w-3xl border-l-2 border-volt pl-5 font-display text-2xl uppercase leading-snug text-ink sm:text-3xl">{t.about.whyQuote}</p>
+            <p className="mt-5 max-w-2xl text-muted">{t.about.whyText}</p>
+          </Reveal>
+          <ol className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {t.about.whySteps.map((step, index) => (
+              <Reveal key={step.title} delay={index * 70} className="h-full">
+                <li className="h-full rounded-2xl border border-edge bg-night-800 p-6">
+                  <span className="font-display text-4xl text-volt">0{index + 1}</span>
+                  <h3 className="mt-4 font-display text-xl uppercase">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{step.text}</p>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Problème */}
+      <section className="py-16 lg:py-24">
+        <div className={container}>
+          <Reveal>
+            <SectionHeading title={t.about.problemTitle} />
+          </Reveal>
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            {t.about.problems.map((problem, index) => (
+              <Reveal key={problem.title} delay={index * 80} className="h-full">
+                <article className="flex h-full flex-col rounded-2xl border border-edge bg-night-800 p-6">
+                  <span className="font-display text-5xl leading-none txt-outline">0{index + 1}</span>
+                  <h3 className="mt-6 font-display text-2xl uppercase">{problem.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">{problem.text}</p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Réponse / écosystème */}
+      <section className="border-t border-edge bg-night-950 py-16 lg:py-24">
+        <div className={cn(container, 'grid items-center gap-12 lg:grid-cols-2')}>
+          <Reveal>
+            <Eyebrow>{t.about.responseLabel}</Eyebrow>
+            <h2 className="mt-4 font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{t.about.responseTitle}</h2>
+            <p className="mt-5 text-muted">{t.about.responseText}</p>
+            <ul className="mt-8 grid grid-cols-2 gap-3">
+              {t.about.responseFeatures.map((feature) => (
+                <li key={feature} className="rounded-xl border border-edge bg-night-800 px-4 py-3 text-sm font-semibold text-ink/90">
+                  {feature}
+                </li>
               ))}
-            </dl>
+            </ul>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="relative mx-auto grid aspect-square w-full max-w-md place-items-center rounded-3xl border border-edge bg-night-800">
+              <div aria-hidden className="absolute inset-6 rounded-full border border-edge/60" />
+              <div aria-hidden className="absolute inset-16 rounded-full border border-edge/40" />
+              <p className="absolute font-display text-2xl uppercase leading-none text-volt">HEALTH IS<br />PRICELESS</p>
+              <span className="absolute left-1/2 top-4 -translate-x-1/2 rounded-full border border-edge bg-night-900 px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.16em]">Sport</span>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-edge bg-night-900 px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.16em]">Nutrition</span>
+              <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-edge bg-night-900 px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.16em]">Progression</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-edge bg-night-900 px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.16em]">Analyse</span>
+            </div>
           </Reveal>
         </div>
       </section>
 
-      {/* Values */}
-      <section className="border-y border-edge bg-night-800/40 py-16 lg:py-24">
+      {/* 3 piliers */}
+      <section className="py-16 lg:py-24">
         <div className={container}>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {t.about.values.map((value, index) => {
-              const Icon = valueIcons[index % valueIcons.length];
+          <div className="grid gap-4 md:grid-cols-3">
+            {t.about.pillars.map((pillar, index) => {
+              const Icon = [Dumbbell, Salad, TrendingUp][index % 3];
               return (
-                <Reveal key={value.title} delay={index * 70} className="h-full">
-                  <article className="h-full rounded-2xl border border-edge bg-night-800 p-6 transition-colors duration-300 hover:border-volt/40">
-                    <div className="flex items-center justify-between">
-                      <span className="grid h-12 w-12 place-items-center rounded-xl border border-volt/30 bg-volt/10 text-volt">
-                        <Icon className="h-5 w-5" aria-hidden />
-                      </span>
-                      <span aria-hidden className="font-display text-4xl leading-none txt-outline-soft">
-                        0{index + 1}
-                      </span>
-                    </div>
-                    <h3 className="mt-6 font-display text-2xl uppercase">{value.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted">{value.text}</p>
+                <Reveal key={pillar.title} delay={index * 80} className="h-full">
+                  <article className="flex h-full flex-col rounded-2xl border border-edge bg-night-800 p-8 transition-all duration-300 hover:-translate-y-1 hover:border-volt/40 hover:shadow-2xl hover:shadow-black/40">
+                    <span className="grid h-12 w-12 place-items-center rounded-xl border border-volt/30 bg-volt/10 text-volt">
+                      <Icon className="h-5 w-5" aria-hidden />
+                    </span>
+                    <span className="mt-8 font-display text-2xl text-volt">0{index + 1}</span>
+                    <h3 className="mt-2 font-display text-3xl uppercase">{pillar.title}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-muted">{pillar.text}</p>
                   </article>
                 </Reveal>
               );
@@ -97,28 +170,92 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Coaches */}
-      <section className="py-16 lg:py-24">
+      {/* Cofondateurs */}
+      <section className="border-t border-edge bg-night-800/40 py-16 lg:py-24">
         <div className={container}>
           <Reveal>
-            <SectionHeading eyebrow={t.about.teamEyebrow} title={t.about.teamTitle} />
+            <SectionHeading title={t.about.foundersTitle} />
           </Reveal>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {coaches.map((coach, index) => (
-              <Reveal
-                key={coach.id}
-                delay={index * 80}
-                className={cn('h-full', index === coaches.length - 1 && 'sm:col-span-2 lg:col-span-1')}
-              >
-                <article className="flex h-full flex-col items-start rounded-2xl border border-edge bg-night-800 p-6">
-                  <img src={coach.avatar} alt="" className="h-20 w-20 rounded-full object-cover ring-2 ring-volt/60 ring-offset-4 ring-offset-night-800" />
-                  <h3 className="mt-6 font-display text-2xl uppercase">{coach.name}</h3>
-                  <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-volt">{loc(coach.role)}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-muted">{loc(coach.bio)}</p>
-                </article>
+          <div className="mt-10 grid gap-6 md:grid-cols-2">
+            {[t.about.foundersQuote1, t.about.foundersQuote2].map((quote, index) => (
+              <Reveal key={index} delay={index * 100}>
+                <figure className="flex h-full flex-col rounded-2xl border border-edge bg-night-800 p-8">
+                  <div className="flex items-center gap-4">
+                    <span className="grid h-14 w-14 place-items-center rounded-full border border-dashed border-edge-strong text-muted">
+                      <UserRound className="h-6 w-6" aria-hidden />
+                    </span>
+                    <figcaption className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">{t.about.foundersAuthor}</figcaption>
+                  </div>
+                  <blockquote className="mt-6 text-base leading-relaxed text-ink/90">« {quote} »</blockquote>
+                </figure>
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Approche */}
+      <section className="py-16 lg:py-24">
+        <div className={container}>
+          <Reveal>
+            <Eyebrow>{t.about.approachLabel}</Eyebrow>
+            <h2 className="mt-4 max-w-3xl font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{t.about.approachTitle}</h2>
+            <p className="mt-5 max-w-2xl text-muted">{t.about.approachText}</p>
+          </Reveal>
+          <ol className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {t.about.approachSteps.map((step, index) => (
+              <li key={step.title} className="border-l border-edge pl-5">
+                <span className="font-display text-4xl text-volt">0{index + 1}</span>
+                <h3 className="mt-3 font-display text-xl uppercase">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Valeurs */}
+      <section className="border-y border-edge bg-night-800/40 py-16 lg:py-24">
+        <div className={container}>
+          <div className="grid gap-x-10 gap-y-8 md:grid-cols-2 lg:grid-cols-5">
+            {t.about.values.map((value, index) => (
+              <Reveal key={value.title} delay={index * 60}>
+                <h3 className="font-display text-2xl uppercase text-volt">{value.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{value.text}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Ambition */}
+      <section className="relative isolate overflow-hidden">
+        <img src={media.aboutMission} alt="" aria-hidden className="absolute inset-0 -z-20 h-full w-full object-cover opacity-30" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-night-950/70" />
+        <div className={cn(container, 'py-20 lg:py-28')}>
+          <Reveal>
+            <Eyebrow>{t.about.ambitionLabel}</Eyebrow>
+            <h2 className="mt-4 max-w-3xl font-display text-4xl uppercase leading-[0.95] sm:text-6xl">{t.about.ambitionTitle}</h2>
+            <p className="mt-6 max-w-2xl leading-relaxed text-muted">{t.about.ambitionText}</p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Ce que nous construisons */}
+      <section className="py-16 lg:py-24">
+        <div className={container}>
+          <Reveal>
+            <h2 className="max-w-2xl font-display text-4xl uppercase leading-[0.95] sm:text-5xl">{t.about.buildingTitle}</h2>
+          </Reveal>
+          <ul className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3">
+            {t.about.buildingItems.map((item, index) => (
+              <li key={item} className="flex items-center gap-3 rounded-2xl border border-edge bg-night-800 p-5">
+                <span className="font-display text-xl text-volt">0{index + 1}</span>
+                <span className="text-sm font-bold uppercase tracking-[0.1em]">{item}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-8 font-display text-2xl uppercase text-volt">{t.about.buildingFooter}</p>
         </div>
       </section>
 
@@ -134,40 +271,19 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Contact — volt CTA banner */}
+      {/* Contact */}
       <section id="contact" className="scroll-mt-24 py-16 lg:py-24">
         <div className={container}>
           <Reveal>
             <div className="relative overflow-hidden rounded-3xl bg-volt text-night-900">
-              <div aria-hidden className="pointer-events-none absolute -right-14 -top-14 h-64 w-64 rotate-12 pattern-stripes-dark opacity-15" />
-              <span
-                aria-hidden
-                className="pointer-events-none absolute -bottom-10 right-4 hidden select-none font-display text-[12rem] leading-none txt-outline-dark opacity-60 sm:block lg:right-10"
-              >
-                ?
-              </span>
-              <div className="relative grid gap-10 p-7 sm:p-12 lg:grid-cols-12 lg:gap-8 lg:p-16">
+              <div className="relative grid gap-10 p-7 sm:p-12 lg:grid-cols-12 lg:p-16">
                 <div className="lg:col-span-7">
-                  <SectionHeading
-                    tone="light"
-                    eyebrow={t.about.contactEyebrow}
-                    title={t.about.contactTitle}
-                  />
+                  <SectionHeading tone="light" eyebrow={t.about.contactEyebrow} title={t.about.contactTitle} />
                   <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                    <ButtonLink
-                      to={waLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      size="lg"
-                      variant="dark"
-                      icon={<MessageCircle className="h-5 w-5" aria-hidden />}
-                    >
+                    <ButtonLink to={waLink} target="_blank" rel="noopener noreferrer" size="lg" variant="dark" icon={<MessageCircle className="h-5 w-5" aria-hidden />}>
                       {t.about.contactCta}
                     </ButtonLink>
-                    <a
-                      href={`mailto:${CONTACT_EMAIL}`}
-                      className="group inline-flex h-13 items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-night-900/20 px-7 text-[13px] font-extrabold uppercase tracking-[0.12em] transition-all duration-200 hover:border-night-900 active:scale-[0.98]"
-                    >
+                    <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex h-13 items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-night-900/20 px-7 text-[13px] font-extrabold uppercase tracking-[0.12em] transition-colors hover:border-night-900">
                       <Mail className="h-4 w-4" aria-hidden />
                       {CONTACT_EMAIL}
                     </a>
@@ -177,9 +293,7 @@ export default function AboutPage() {
                   <ul className="flex h-full flex-col justify-center gap-2 rounded-2xl bg-night-900 p-6 text-ink sm:p-7">
                     <li>
                       <a href={`mailto:${CONTACT_EMAIL}`} className="group flex items-center gap-4 rounded-xl p-2 transition-colors hover:bg-night-800">
-                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-volt text-night-900">
-                          <Mail className="h-5 w-5" aria-hidden />
-                        </span>
+                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-volt text-night-900"><Mail className="h-5 w-5" aria-hidden /></span>
                         <span className="min-w-0">
                           <span className="block text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">Email</span>
                           <span className="block truncate font-bold group-hover:text-volt">{CONTACT_EMAIL}</span>
@@ -187,15 +301,8 @@ export default function AboutPage() {
                       </a>
                     </li>
                     <li>
-                      <a
-                        href={waLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center gap-4 rounded-xl p-2 transition-colors hover:bg-night-800"
-                      >
-                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-volt text-night-900">
-                          <MessageCircle className="h-5 w-5" aria-hidden />
-                        </span>
+                      <a href={waLink} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-4 rounded-xl p-2 transition-colors hover:bg-night-800">
+                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-volt text-night-900"><MessageCircle className="h-5 w-5" aria-hidden /></span>
                         <span className="min-w-0">
                           <span className="block text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted">WhatsApp</span>
                           <span className="block font-bold group-hover:text-volt">{waDisplay}</span>
@@ -210,6 +317,19 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* CTA final */}
+      <section className="border-t border-edge bg-night-950 py-16 lg:py-24">
+        <div className={cn(container, 'text-center')}>
+          <Reveal>
+            <h2 className="font-display text-5xl uppercase leading-[0.95] sm:text-6xl lg:text-7xl">{t.about.finalTitle}</h2>
+            <p className="mx-auto mt-5 max-w-xl text-muted">{t.about.finalSubtitle}</p>
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <ButtonLink to="/quiz" size="lg">{t.about.finalPrimary}</ButtonLink>
+              <ButtonLink to="/programmes" size="lg" variant="outline">{t.about.finalSecondary}</ButtonLink>
+            </div>
+          </Reveal>
+        </div>
+      </section>
     </>
   );
 }
