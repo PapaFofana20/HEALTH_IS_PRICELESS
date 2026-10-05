@@ -12,7 +12,6 @@ export type LegalDocKey = 'confidentialite' | 'cgu';
 
 const DOCS: Record<LegalDocKey, LegalDoc> = { confidentialite: privacy, cgu };
 
-const DOC_ICONS = { confidentialite: ShieldCheck, cgu: FileText } as const;
 
 /* Paragraphe mis en avant (callout) : cite un passage existant du document,
    retire du flux pour eviter le doublon. */
@@ -36,7 +35,6 @@ export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
   const [activeSection, setActiveSection] = useState(0);
   const [tocOpen, setTocOpen] = useState(false);
   const isPrivacy = docKey === 'confidentialite';
-  const HeroIcon = DOC_ICONS[docKey];
   const featured = FEATURED[docKey];
 
   usePageTitle(
@@ -73,12 +71,7 @@ export function LegalPageLayout({ docKey }: { docKey: LegalDocKey }) {
       <section className="relative isolate overflow-hidden border-b border-edge bg-night-900 pb-12 pt-32 sm:pb-14 lg:pb-16 lg:pt-40">
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
         <div className={container}>
-          <div className="flex items-center gap-5">
-            <span aria-hidden className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-volt/30 bg-volt/10 text-volt">
-              <HeroIcon className="h-6 w-6" />
-            </span>
-            <Eyebrow className="animate-fade-up">{t.about.legalEyebrow}</Eyebrow>
-          </div>
+          <Eyebrow className="animate-fade-up">{t.about.legalEyebrow}</Eyebrow>
           <h1 className="mt-5 max-w-3xl animate-fade-up font-display text-4xl uppercase leading-[0.95] tracking-tight [animation-delay:60ms] sm:text-5xl lg:text-6xl">
             {loc(doc.title)}
           </h1>
