@@ -8,8 +8,10 @@ const px = (id: number, w = 1200, h = 800) =>
 
 export const avatar = (gender: 'men' | 'women', n: number) => `https://randomuser.me/api/portraits/${gender}/${n}.jpg`;
 
-const un = (id: string, w = 1200, h = 800) =>
+export const unsplash = (id: string, w = 1200, h = 800) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=70`;
+
+const un = unsplash;
 
 export const media = {
   goals: {

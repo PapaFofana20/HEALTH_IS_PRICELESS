@@ -6,7 +6,7 @@ import { ArrowRight, Beef, BookOpen, Dumbbell, Flame, Salad, Scale, Zap } from '
 import { cn } from '../../../utils/cn';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { bmiGaugePosition } from '../../../utils/fitness';
-import { media } from '../../../data/media';
+import { media, unsplash } from '../../../data/media';
 import { Button } from '../../ui/Button';
 import { Modal } from '../../ui/Modal';
 import { Reveal } from '../../ui/Reveal';
@@ -136,7 +136,7 @@ export function FreeTools() {
             <ToolCard
               icon={Flame}
               title={t.freeTools.calories.title}
-              text={t.freeTools.calories.text}              image={media.recipes.chickenBowl}
+              text={t.freeTools.calories.text}              image={unsplash('photo-1744444202869-54debf97b285')}
               action={
                 <Button variant="outline" size="sm" onClick={() => setTool('calories')} iconRight={<ArrowRight />}>
                   {t.freeTools.calories.cta}
@@ -149,7 +149,7 @@ export function FreeTools() {
             <ToolCard
               icon={Beef}
               title={t.freeTools.protein.title}
-              text={t.freeTools.protein.text}              image={media.recipes.shake}
+              text={t.freeTools.protein.text}              image={unsplash('photo-1652769710760-c7a93ad559c0')}
               action={
                 <Button variant="outline" size="sm" onClick={() => setTool('protein')} iconRight={<ArrowRight />}>
                   {t.freeTools.protein.cta}
@@ -176,7 +176,7 @@ export function FreeTools() {
               className="group relative flex h-full min-h-[220px] overflow-hidden rounded-2xl border border-edge bg-night-800 transition-colors duration-300 hover:border-edge-strong lg:min-h-[280px]"
             >
               <img
-                src={media.recipes.chickenBowl}
+                src={unsplash('photo-1770966666349-7b7708a8c0c2')}
                 alt=""
                 loading="lazy"
                 className="absolute inset-y-0 right-0 h-full w-3/5 object-cover transition-transform duration-700 ease-out group-hover:scale-105 lg:w-1/2"
