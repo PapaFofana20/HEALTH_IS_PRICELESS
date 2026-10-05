@@ -291,7 +291,7 @@ export function UpgradeBanner() {
 export function NoticeBanner({ message, onClose }: { message: string; onClose: () => void }) {
   const { t } = useLanguage();
   return (
-    <div role="status" className="mb-8 flex  items-center gap-3 rounded-2xl border border-success/30 bg-success/10 px-5 py-4 text-sm font-semibold text-ink shadow-lg shadow-black/20">
+    <div role="status" className="mb-8 flex animate-fade-up items-center gap-3 rounded-2xl border border-success/30 bg-success/10 px-5 py-4 text-sm font-semibold text-ink shadow-lg shadow-black/20">
       <CircleCheck className="h-5 w-5 shrink-0 text-success" aria-hidden />
       <p className="flex-1">{message}</p>
       <button

@@ -159,7 +159,7 @@ export default function QuizPage() {
         </ol>
 
         {!isResult ? (
-          <div key={currentKey} className="mt-12 ">
+          <div key={currentKey} className="mt-12 animate-fade-up">
             <h1 ref={headingRef} tabIndex={-1} className="font-display text-4xl uppercase leading-[0.95] tracking-tight focus:outline-none sm:text-6xl">
               {question.title}
             </h1>
@@ -265,7 +265,7 @@ export default function QuizPage() {
             </div>
           </div>
         ) : (
-          <div className="mt-12 ">
+          <div className="mt-12 animate-fade-up">
             <h1 ref={headingRef} tabIndex={-1} className="font-display text-5xl uppercase leading-[0.92] tracking-tight focus:outline-none sm:text-7xl">
               {t.quiz.resultTitle1} <span className="text-volt">{t.quiz.resultTitle2}</span>
             </h1>

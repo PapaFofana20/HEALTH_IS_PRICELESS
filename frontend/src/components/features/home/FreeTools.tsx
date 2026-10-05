@@ -26,8 +26,7 @@ function IconTile({ icon: Icon, large }: { icon: LucideIcon; large?: boolean }) 
 interface ToolCardProps {
   icon: LucideIcon;
   title: string;
-  text: string;
-  image: string;
+  text: string;  image: string;
   action: ReactNode;
 }
 
@@ -137,8 +136,7 @@ export function FreeTools() {
             <ToolCard
               icon={Flame}
               title={t.freeTools.calories.title}
-              text={t.freeTools.calories.text}
-              image={media.recipes.chickenBowl}
+              text={t.freeTools.calories.text}              image={media.recipes.chickenBowl}
               action={
                 <Button variant="outline" size="sm" onClick={() => setTool('calories')} iconRight={<ArrowRight />}>
                   {t.freeTools.calories.cta}
@@ -151,8 +149,7 @@ export function FreeTools() {
             <ToolCard
               icon={Beef}
               title={t.freeTools.protein.title}
-              text={t.freeTools.protein.text}
-              image={media.recipes.shake}
+              text={t.freeTools.protein.text}              image={media.recipes.shake}
               action={
                 <Button variant="outline" size="sm" onClick={() => setTool('protein')} iconRight={<ArrowRight />}>
                   {t.freeTools.protein.cta}

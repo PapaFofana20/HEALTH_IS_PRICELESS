@@ -189,7 +189,7 @@ export function PlanShowcaseCard({ plan, variant = 'compact' }: PlanShowcaseCard
           </div>
 
           {pending && (
-            <p role="status" className=" rounded-2xl border border-volt/40 bg-volt/10 p-5 text-sm font-semibold leading-relaxed text-volt">
+            <p role="status" className="animate-fade-up rounded-2xl border border-volt/40 bg-volt/10 p-5 text-sm font-semibold leading-relaxed text-volt">
               {t.dashboard.coaching.pending}
             </p>
           )}

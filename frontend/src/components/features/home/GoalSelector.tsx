@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Dumbbell, Flame } from 'lucide-react';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { media } from '../../../data/media';
-import { Reveal } from '../../ui/Reveal';
 import { SectionHeading, container } from '../../ui/SectionHeading';
 import type { Goal } from '../../../types';
 
@@ -17,15 +16,13 @@ export function GoalSelector() {
   return (
     <section aria-labelledby="goal-title" className="relative bg-night-900 pb-20 pt-10 lg:pb-28 lg:pt-16">
       <div className={container}>
-        <Reveal>
-          <SectionHeading id="goal-title" eyebrow={t.goalSection.eyebrow} title={t.goalSection.title} subtitle={t.goalSection.subtitle} />
-        </Reveal>
+        <SectionHeading id="goal-title" eyebrow={t.goalSection.eyebrow} title={t.goalSection.title} subtitle={t.goalSection.subtitle} />
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          {cards.map(({ goal, number, image, content, Icon }, index) => {
+          {cards.map(({ goal, number, image, content, Icon }) => {
             return (
-              <Reveal key={goal} delay={index * 120} className="h-full">
-                <Link
-                  to={`/programmes?goal=${goal}`}
+              <Link
+                key={goal}
+                to={`/programmes?goal=${goal}`}
                   className="group relative flex h-[380px] flex-col justify-end overflow-hidden rounded-2xl border border-edge bg-night-800 p-6 transition-colors duration-300 hover:border-volt/70 sm:h-[440px] sm:p-8 lg:h-[560px] lg:p-10"
                 >
                   <img
@@ -52,7 +49,6 @@ export function GoalSelector() {
                     </span>
                   </div>
                 </Link>
-              </Reveal>
             );
           })}
         </div>

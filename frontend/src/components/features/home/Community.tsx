@@ -75,7 +75,7 @@ export function Newsletter() {
                           )}
                         />
                       </div>
-                      <Button type="submit" variant="dark" size="lg" disabled={status === 'loading'} icon={status === 'loading' ? <LoaderCircle className="" /> : undefined}>
+                      <Button type="submit" variant="dark" size="lg" disabled={status === 'loading'} icon={status === 'loading' ? <LoaderCircle className="animate-spin" /> : undefined}>
                         {t.newsletter.cta}
                       </Button>
                     </div>

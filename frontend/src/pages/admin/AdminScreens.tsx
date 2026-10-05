@@ -12,7 +12,7 @@ export function AdminGuestScreen() {
   return (
     <section className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-night-900 px-4 py-16 sm:px-6">
       <div aria-hidden className="absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
-      <div className="w-full max-w-lg  rounded-2xl border border-edge/70 bg-night-800/70 p-6 text-center sm:p-10">
+      <div className="w-full max-w-lg animate-fade-up rounded-2xl border border-edge/70 bg-night-800/70 p-6 text-center sm:p-10">
         <div className="flex justify-center">
           <Logo />
         </div>
@@ -45,7 +45,7 @@ export function AdminDeniedScreen() {
   return (
     <section className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-night-900 px-4 py-16 sm:px-6">
       <div aria-hidden className="absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
-      <div className="w-full max-w-lg  rounded-2xl border border-edge/70 bg-night-800/70 p-6 text-center sm:p-10">
+      <div className="w-full max-w-lg animate-fade-up rounded-2xl border border-edge/70 bg-night-800/70 p-6 text-center sm:p-10">
         <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl border border-danger/40 bg-danger/10 text-danger">
           <ShieldAlert className="h-7 w-7" aria-hidden />
         </span>
