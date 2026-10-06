@@ -56,13 +56,37 @@ export const nutritionTips = [
     id: 'hydration',
     icon: 'droplets',
     title: { fr: 'Bois régulièrement', en: 'Stay hydrated' },
-    text: { fr: '1,5 à 2 L d\'eau par jour.', en: '1.5-2 L of water a day.' },
+    text: { fr: '1,5 à 2 L d\'eau par jour, davantage les jours d\'entraînement.', en: '1.5–2 L of water a day, more on training days.' },
   },
   {
     id: 'protein',
     icon: 'beef',
     title: { fr: 'Des protéines à chaque repas', en: 'Protein at every meal' },
-    text: { fr: 'Répartir ton apport sur 3 à 4 repas.', en: 'Spread intake over 3-4 meals.' },
+    text: { fr: 'Répartir ton apport sur 3 à 4 repas facilite la récupération et la satiété.', en: 'Spreading intake over 3–4 meals helps recovery and satiety.' },
+  },
+  {
+    id: 'veggies',
+    icon: 'salad',
+    title: { fr: 'La moitié de l\'assiette en légumes', en: 'Half your plate in vegetables' },
+    text: { fr: 'Fibres, volume et micronutriments pour peu de calories.', en: 'Fibre, volume and micronutrients for few calories.' },
+  },
+  {
+    id: 'sleep',
+    icon: 'moon',
+    title: { fr: 'Dors 7 à 9 heures', en: 'Sleep 7–9 hours' },
+    text: { fr: 'Le sommeil régule l\'appétit et conditionne ta récupération musculaire.', en: 'Sleep regulates appetite and drives muscle recovery.' },
+  },
+  {
+    id: 'mealprep',
+    icon: 'chef',
+    title: { fr: 'Prépare à l\'avance', en: 'Prep ahead' },
+    text: { fr: 'Cuisiner deux fois par semaine évite les choix impulsifs.', en: 'Cooking twice a week prevents impulsive choices.' },
+  },
+  {
+    id: 'balance',
+    icon: 'scale',
+    title: { fr: 'La règle du 80/20', en: 'The 80/20 rule' },
+    text: { fr: 'Des aliments bruts la plupart du temps, de la souplesse le reste : c\'est ce qui dure.', en: 'Whole foods most of the time, flexibility the rest: that\'s what lasts.' },
   },
 ];
 
