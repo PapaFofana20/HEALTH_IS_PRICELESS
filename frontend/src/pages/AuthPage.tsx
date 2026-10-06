@@ -147,7 +147,6 @@ export default function AuthPage() {
       <section className="relative isolate flex min-h-[85vh] items-center justify-center px-4 pb-20 pt-32">
         <div aria-hidden className="absolute inset-0 -z-10 pattern-grid fade-mask-radial" />
         <div className="w-full max-w-md animate-fade-up rounded-2xl border border-edge bg-night-800 p-8 text-center">
-          <img src={user.avatar} alt="" className="mx-auto h-16 w-16 rounded-full object-cover ring-2 ring-volt" />
           <h1 className="mt-5 font-display text-4xl uppercase">{t.auth.loggedInTitle}</h1>
           <p className="mt-2 text-muted">{t.auth.loggedInText(user.firstName)}</p>
           <div className="mt-8 flex flex-col gap-3">
