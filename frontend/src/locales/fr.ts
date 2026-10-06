@@ -198,7 +198,7 @@ export const fr = {
     prev: 'Témoignage précédent',
     next: 'Témoignage suivant',
     goTo: (n: number) => `Afficher le témoignage ${n}`,
-    summary: '4,8/5 · plus de 1 200 avis',
+    summary: '',
     followed: 'Programme suivi',
   },
   space: {
@@ -246,7 +246,7 @@ export const fr = {
     privacy: 'Confidentialité',
     terms: 'CGU',
     rights: 'Tous droits réservés.',
-    disclaimer: 'Les informations proposées ne remplacent pas l’avis d’un professionnel de santé.',
+    disclaimer: '',
     social: 'Suivre HEALTH IS PRICELESS sur',
   },
   calc: {
@@ -272,7 +272,7 @@ export const fr = {
     goal: 'Objectif',
     goals: { lose: 'Perdre', maintain: 'Maintenir', gain: 'Prendre' },
     invalid: 'Vérifie les valeurs saisies pour afficher le résultat.',
-    disclaimer: 'Estimation indicative. Ne remplace pas l’avis d’un professionnel de santé.',
+    disclaimer: '',
     bmi: {
       title: 'Calculateur IMC',
       intro: 'L’indice de masse corporelle donne une indication générale. Il ne tient pas compte de la masse musculaire.',
@@ -506,6 +506,7 @@ export const fr = {
     week: (n: number) => `Semaine ${n}`,
     day: (n: number) => `Jour ${n}`,
     sessionsTitle: 'Séances incluses',
+    session: (n: number) => `Séance ${n}`,
     exercise: 'Exercice',
     setsReps: 'Séries × reps',
     rest: 'Repos',
