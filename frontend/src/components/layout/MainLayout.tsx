@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../hooks/useLanguage';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { ScrollToTopButton } from './ScrollToTopButton';
 
 export function MainLayout() {
   const { t } = useLanguage();
@@ -33,6 +34,7 @@ export function MainLayout() {
         <Outlet />
       </main>
       {(pathname === '/' || pathname === '/a-propos' || pathname === '/confidentialite' || pathname === '/cgu') && <Footer />}
+      <ScrollToTopButton />
     </div>
   );
 }
